@@ -1,5 +1,5 @@
 
 ## Member
 - Beomsu Koh
-- Shreyas Desai 
+- Shreyas Desai (testing university email)
 - Asti Dhiya Anzaria
