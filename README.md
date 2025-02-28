@@ -4,3 +4,4 @@
 - Shreyas Desai (testing university email)
 - Asti Dhiya Anzaria
 - Gaziza Zarkinbek
+- Jeklin Indriani Purba
