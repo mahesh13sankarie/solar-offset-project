@@ -2,12 +2,23 @@ package org.example.server.repository;
 
 import org.example.server.dto.UserDto;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
 public class UserRepository implements CrudRepository {
+    private PasswordEncoder passwordEncoder;
+
     public UserDto findByEmail(String email) {
         return new UserDto();
+    }
+
+    private boolean isAccountExists(String email) {
+        return false; //TODO: adjust logic
+    }
+
+    private String encodePassword(String password) {
+        return passwordEncoder.encode(password);
     }
 
     @Override
