@@ -1,24 +1,16 @@
 package org.example.server.entity;
 
-//TODO(): need to ensure data for standard account
-public class User {
-    String email, name, address;
+import lombok.Getter;
+import org.example.server.dto.AccountType;
 
-    User(String email, String name, String address) {
+public class User {
+    @Getter String email, name, address;
+    AccountType accountType;
+
+    User(String email, String name, String address, AccountType accountType) {
         this.email = email;
         this.name = name;
         this.address = address;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public String getName() {
-        return name;
+        this.accountType = accountType;
     }
 }

@@ -1,39 +1,46 @@
 package org.example.server.dto;
 
-//TODO(): need to ensure data for standard account
-public class UserDto {
-    private String email, firstName, lastName, phoneNumber, password, address; //all fields mandatory
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
-    UserDto(String email, String firstName, String lastName, String phoneNumber, String password, String address) {
-        this.email = email;
+import java.time.LocalDate;
+
+@Entity
+@Table(name = "users")
+public class UserDto {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter @Setter private Long id;
+    @Getter @Setter private String firstName;
+    @Getter @Setter private String lastName;
+    @Getter @Setter private LocalDate loginDate;
+    @Getter @Setter private String email;
+    @Getter @Setter private String password;
+    @Getter @Setter private int accountType;
+
+    public UserDto(Long id, String firstName, String lastName, LocalDate loginDate, String email, String password, int accountType) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.phoneNumber = phoneNumber;
+        this.loginDate = loginDate;
+        this.email = email;
         this.password = password;
-        this.address = address;
+        this.accountType = accountType;
     }
 
-    public String getEmail() {
-        return email;
+    public UserDto() {
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getAddress() {
-        return address;
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", loginDate=" + loginDate +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", accountType='" + accountType + '\'' +
+                '}';
     }
 }
