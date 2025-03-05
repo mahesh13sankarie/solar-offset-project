@@ -106,6 +106,31 @@
             resetForm.classList.add('hidden');
             authForm.classList.remove('hidden');
         });
+
+    //     Code to send username and password in database
+
+    document.getElementById('auth-form').addEventListener("click",(event)=>{
+        event.preventDefault(); // Prevent default form submission
+
+        const email = document.getElementById("email").value;
+// Send data to backend
+        fetch("http://localhost:8080/api/users", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ name: name, email: email })
+        })
+            .then(response => response.json())
+            .then(data => {
+                alert("User saved successfully!");
+                console.log(data);
+            })
+            .catch(error => console.error("Error:", error));
+    })
+
+
+
     </script>
 </body>
 </html>
