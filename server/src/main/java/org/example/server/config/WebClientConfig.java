@@ -11,11 +11,11 @@ public class WebClientConfig {
 
     // Latest Carbon Intensity
     // https://portal.electricitymaps.com/docs/api#latest-carbon-intensity
-    @Bean(name ="electricityMapApiWebClient")
+    @Bean(name = "electricityMapApiWebClient")
     public WebClient webClient() {
         return WebClient.builder()
                 .baseUrl("https://api.electricitymap.org")
-                .defaultHeader(HttpHeaders.AUTHORIZATION, MediaType.APPLICATION_JSON_VALUE)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }
 }
