@@ -5,6 +5,7 @@ import org.example.server.dto.CarbonIntensityResponseDTO;
 import org.example.server.entity.CarbonIntensity;
 import org.example.server.repository.ElectricityMapRepository;
 import org.example.server.service.external.ElectricityMapWebClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,11 @@ public class ElectricityMapServiceImpl implements ElectricityMapService {
     private final ElectricityMapWebClient electricityMapWebClient;
     private final ElectricityMapRepository electricityMapRepository;
 
-    @Scheduled(fixedRate = 3600000)  // 1시간마다 실행
+    // Tokens loaded from application.yml for API calls
+    @Value("${electricityMap.tokens}")
+    private String[] tokens;
+
+    @Scheduled(fixedRate = 3600000)
     public void fetchAndSaveElectricityData() {
         String token = ""; // Todo: add secret api key
         CarbonIntensityResponseDTO response = electricityMapWebClient.fetchCarbonIntensity(token);
