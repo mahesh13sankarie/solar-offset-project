@@ -1,6 +1,7 @@
 package org.example.server.service.external;
 
 import org.example.server.dto.CarbonIntensityResponseDTO;
+import org.example.server.dto.ElectricityMapCredentialDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -14,10 +15,13 @@ public class ElectricityMapWebClient {
         this.webClient = webClient;
     }
 
-    public CarbonIntensityResponseDTO fetchCarbonIntensity(String token) {
+    public CarbonIntensityResponseDTO fetchCarbonIntensity(ElectricityMapCredentialDTO credential) {
         return webClient.get()
-                .uri("/v3/carbon-intensity/latest")
-                .header("auth-token", token)
+                .uri(uriBuilder -> uriBuilder
+                        .path("/v3/carbon-intensity/latest")
+                        .queryParam("zone", credential.getCountryCode())
+                        .build())
+                .header("auth-token", credential.getToken())
                 .retrieve()
                 .bodyToMono(CarbonIntensityResponseDTO.class)
                 .block();
