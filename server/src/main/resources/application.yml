@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: solar-offset
+  profiles:
+    active: dev
