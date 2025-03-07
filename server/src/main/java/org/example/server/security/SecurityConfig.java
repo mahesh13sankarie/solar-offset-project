@@ -15,7 +15,7 @@ public class SecurityConfig {
         return http.authorizeHttpRequests((authorize) ->
                         authorize.anyRequest().authenticated()
                 )
-                .oauth2Login((oauth2) -> oauth2.defaultSuccessUrl("/home"))
+                .oauth2Login((oauth2) -> oauth2.defaultSuccessUrl("/generatetoken"))
                 .logout((logout) -> logout.logoutSuccessUrl("/logout"))
                 .build();
     }
