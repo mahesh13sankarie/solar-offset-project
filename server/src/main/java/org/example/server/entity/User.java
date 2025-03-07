@@ -1,6 +1,4 @@
 package org.example.server.entity;
-
-
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -8,44 +6,31 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "users")
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String firstName;
-    private String lastName;
-    private LocalDate loginDate;
+
+    @Column(unique = true, nullable = false)
     private String email;
+
+    @Column(nullable = false)
     private String password;
 
-    public User(Long id, String firstName, String lastName, LocalDate loginDate, String email, String password) {
+    @Column(nullable = false)
+    private String fullName;
+
+    private String Country;
+
+    public User(Long id, String email, String password, String fullName, String country) {
         this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.loginDate = loginDate;
         this.email = email;
         this.password = password;
+        this.fullName = fullName;
+        Country = country;
     }
-
-    public User() {
-
-    }
-
 
     public Long getId() {
         return id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public LocalDate getLoginDate() {
-        return loginDate;
     }
 
     public String getEmail() {
@@ -56,39 +41,33 @@ public class User {
         return password;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public String getCountry() {
+        return Country;
+    }
+
+    public User() {    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public void setEmail(String email) {
         this.email = email;
     }
 
-    public void setLoginDate(LocalDate loginDate) {
-        this.loginDate = loginDate;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", loginDate=" + loginDate +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                '}';
+    public void setCountry(String country) {
+        Country = country;
     }
 }

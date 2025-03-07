@@ -1,28 +1,26 @@
 package org.example.server.controller;
 import org.example.server.entity.User;
 import org.example.server.repository.UserRepository;
+import org.example.server.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 @RestController
 @RequestMapping("/api/register")
-@CrossOrigin(origins = "http://127.0.0.1:5500") // Allow frontend to connect
+//@CrossOrigin(origins = "http://127.0.0.1:5500") // Allow frontend to connect
 public class UserController {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @PostMapping("/register")
-    public Map<String, Object> registerUser(@RequestBody User user) {
-        userRepository.save(user); // Save to database
+    public String registerUser(@RequestBody User user) {
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("message", "User registered successfully");
-        return response;
+        try {
+            userService.registerUser(user);
+            return "success user registered";
+        }
+        catch (Exception e) {
+            return "Error: " +  e.getMessage();
+        }
     }
 }
