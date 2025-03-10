@@ -3,9 +3,11 @@ package org.example.server.repository;
 import org.example.server.dto.UserDto;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+@Repository
 public class UserRepository implements CrudRepository {
     private PasswordEncoder passwordEncoder;
 
