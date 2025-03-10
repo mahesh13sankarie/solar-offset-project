@@ -7,24 +7,21 @@ const Navbar = () => {
         style={{
             background:"#37517E",
             color:"white",
-            
-
-
         }}
         >
             <div className="container-fluid container-xl position-relative d-flex align-items-center">
                 {/* Logo */}
-                <a href="/" className="logo d-flex align-items-center me-auto" style={{textDecoration:"none",}}>
+                <a href="/client/public" className="logo d-flex align-items-center me-auto" style={{textDecoration:"none",}}>
                     <h1 className="sitename">Solar Offset</h1>
                 </a>
 
                 {/* Navigation Menu */}
                 <nav id="navmenu" className="navmenu">
                     <ul>
-                        <li><a href="/" className="active" style={{textDecoration:"none",}}>Home</a></li>
-                        <li><a href="/about" style={{textDecoration:"none",}} >About</a></li>
+                        <li><a href="/client/public" className="active" style={{textDecoration:"none",}}>Home</a></li>
+                        <li><a href="/Users/shreyasdesai/Documents/Uni/Team Software Project/project/client/src/components/LandingPage/About" style={{textDecoration:"none",}} >About</a></li>
                         <li><a href="/donate" style={{textDecoration:"none",}}>Donate</a></li>
-                        <li><a href="/contact" style={{textDecoration:"none",}}>Contact</a></li>
+                        <li><a href="/Users/shreyasdesai/Documents/Uni/Team Software Project/project/client/src/components/LandingPage/Contact" style={{textDecoration:"none",}}>Contact</a></li>
                     </ul>
                     <i className="mobile-nav-toggle d-xl-none bi bi-list"></i>
                 </nav>
