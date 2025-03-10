@@ -1,33 +1,24 @@
 import React from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
 
 // Styles
 import './css/main.css';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import '../node_modules/bootstrap-icons/font/bootstrap-icons.css';
-
 // Components
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import About from './components/About';
-import Services from './components/Services';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
+import Home from "./components/LandingPage/Home"
+import { createBrowserRouter, RouterProvider } from "react-router-dom"; // used to find all the routes in our app, and they can be connected to the component.
+import AuthForm from "./components/Login/AuthForm";
+
+
+const router = createBrowserRouter([
+  {path:"/",element:<Home />},
+  {path:"/login",element:<AuthForm />}
+])
+
 
 const App = () => {
     return (
-        <Router>
-            <div className="index-page">
-                <Navbar />
-                <main className="main">
-                    <Hero />
-                    <About />
-                    <Services />
-                    <Contact />
-                </main>
-                <Footer />
-            </div>
-        </Router>
+        <RouterProvider router={router} />
     );
 };
 
