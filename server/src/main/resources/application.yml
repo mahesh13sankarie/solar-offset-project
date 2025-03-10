@@ -3,3 +3,41 @@ spring:
     name: solar-offset
   profiles:
     active: dev
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/solaroffset?serverTimezone=UTC&useLegacyDatetimeCode=false
+    username: root
+    password: Shreyas@123
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 234686151907-h0egb9h34beugoudlrffovu95nkt4a10.apps.googleusercontent.com
+            client-secret: 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
+
+server:
+  port: 8000
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+
+
+electricity-map:
+  credentials:
+    - countryCode: "GB"
+      token: VCyrqfmKZlIHOhXxW3Gu
+    - countryCode: "FR"
+      token: twSM0Q2rLNgp0jZlh520
+    - countryCode: "NO"
+      token: e2lyFnJUmL4AZ6fPJ7Sf
+    - countryCode: "ZA"
+      token: I2GDiqQULbIqNPTXlLYs
+    - countryCode: "CA"
+      token: WInPiA3w3DwlnCIE91ej
