@@ -1,9 +1,75 @@
-import React from 'react';
+import React, { useState } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const AuthForm = () => {
+  const [formState, setFormState] = useState('login'); // 'login', 'register', 'reset'
+
   return (
-    <div>
-     <h1>Login Form</h1>
+    <div className="container">
+      <div className="form-container">
+        {formState === 'reset' ? (
+          <>
+            <h3 className="text-center">Reset Password</h3>
+            <form>
+              <div className="mb-3">
+                <label className="form-label">Enter your email</label>
+                <input type="email" className="form-control" required />
+              </div>
+              <button className="btn btn-primary w-100">Send Reset Link</button>
+              <p className="text-center mt-3">
+                <a href="#" onClick={() => setFormState('login')}>Back to Login</a>
+              </p>
+            </form>
+          </>
+        ) : (
+          <>
+            <h3 className="text-center">{formState === 'login' ? 'Login' : 'Register'}</h3>
+            <form>
+              <div className="mb-3">
+                <label className="form-label">Email</label>
+                <input type="email" className="form-control" required />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Password</label>
+                <input type="password" className="form-control" required />
+              </div>
+
+              {formState === 'register' && (
+                <>
+                  <div className="mb-3">
+                    <label className="form-label">Full Name</label>
+                    <input type="text" className="form-control" required />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Country</label>
+                    <input type="text" className="form-control" required />
+                  </div>
+                </>
+              )}
+
+              <button className="btn btn-primary w-100">Submit</button>
+
+              <p className="text-center mt-3">
+                {formState === 'login' ? (
+                  <a href="#" onClick={() => setFormState('register')}>Don't have an account? Register</a>
+                ) : (
+                  <a href="#" onClick={() => setFormState('login')}>Already have an account? Login</a>
+                )}
+              </p>
+
+              {formState === 'login' && (
+                <p className="text-center mt-2">
+                  <a href="#" onClick={() => setFormState('reset')}>Forgot Password?</a>
+                </p>
+              )}
+
+              <p className="text-center mt-2">
+                <a href="#">Google Login</a>
+              </p>
+            </form>
+          </>
+        )}
+      </div>
     </div>
   );
 };
