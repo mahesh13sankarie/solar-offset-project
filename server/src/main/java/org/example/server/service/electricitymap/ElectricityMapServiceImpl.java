@@ -22,22 +22,21 @@ public class ElectricityMapServiceImpl implements ElectricityMapService {
     private final ElectricityMapWebClient electricityMapWebClient;
     private final ElectricityMapRepository electricityMapRepository;
 
-    // Tokens loaded from application.yml for API calls
     private final ElectricityMapPropertiesDTO properties;
 
     // Scheduler to execute every hour (fixedRate: 3600000 milliseconds)
     // Loop sends API requests 5 times if tokens array contains 5 tokens
     @Scheduled(fixedRate = 3600000)
-    public void fetchAndSaveElectricityData() {
+    public void saveCarbonIntensity() {
         List<ElectricityMapCredentialDTO> credentials = properties.getCredentials();
         for (ElectricityMapCredentialDTO credential : credentials) {
-            fetchAndSaveElectricityDataAsync(credential);
+            processCarbonIntensity(credential);
         }
     }
 
     // Asynchronous method to process each API call concurrently
     @Async
-    public void fetchAndSaveElectricityDataAsync(ElectricityMapCredentialDTO credential) {
+    public void processCarbonIntensity(ElectricityMapCredentialDTO credential) {
         CarbonIntensityResponseDTO response = electricityMapWebClient.fetchCarbonIntensity(credential);
         CarbonIntensity entity = CarbonIntensity.builder()
                 .carbonIntensity(response.carbonIntensity())
