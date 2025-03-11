@@ -23,7 +23,7 @@ class ElectricityMapServiceTest {
     @Test
     void shouldFetchAndSaveElectricityData() {
         // Call scheduled method directly
-        electricityMapService.fetchAndSaveElectricityData();
+        electricityMapService.saveCarbonIntensity();
 
         // Validate repository saved data (assert count or content)
         long count = electricityMapRepository.count();
