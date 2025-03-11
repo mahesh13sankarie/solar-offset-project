@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://127.0.0.1:5173") // Allow frontend to connect
+//@CrossOrigin(origins = "http://127.0.0.1:5500") // Allow frontend to connect
 public class UserController {
 
     @Autowired
