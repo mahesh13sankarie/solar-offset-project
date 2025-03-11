@@ -5,8 +5,8 @@ import org.example.server.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 @RestController
-@RequestMapping("/api/register")
-//@CrossOrigin(origins = "http://127.0.0.1:5500") // Allow frontend to connect
+@RequestMapping("/api")
+@CrossOrigin(origins = "http://127.0.0.1:5173") // Allow frontend to connect
 public class UserController {
 
     @Autowired

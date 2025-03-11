@@ -98,6 +98,12 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-resolver-dns-native-macos</artifactId>
+            <version>4.1.107.Final</version> <!-- Make sure this matches your Netty version -->
+            <classifier>osx-aarch_64</classifier> <!-- Use this for Apple Silicon Macs (M1/M2) -->
+        </dependency>
     </dependencies>
 
     <build>
