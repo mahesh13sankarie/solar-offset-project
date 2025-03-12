@@ -44,8 +44,7 @@ public class AuthController {
 
     @PostMapping("/register")
     ResponseEntity<?> register(@RequestBody UserDto userDto) {
-        //TODO: check if account is exist!
-        //TODO: encrypt passsword
+        //TODO: check if account is exist! throw from SQLException
         authService.saveUser(userDto);
         return ResponseEntity.ok("200");
     }

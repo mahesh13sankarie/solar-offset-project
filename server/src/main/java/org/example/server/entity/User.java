@@ -23,8 +23,7 @@ public class User {
     @Column
     private int accountType;
 
-    public User(Long id, String email, String password, String fullName, int accountType) {
-        this.id = id;
+    public User(String email, String password, String fullName, int accountType) {
         this.email = email;
         this.password = password;
         this.fullName = fullName;
