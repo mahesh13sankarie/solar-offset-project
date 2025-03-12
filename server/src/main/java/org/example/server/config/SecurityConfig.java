@@ -1,11 +1,11 @@
 package org.example.server.config;
 
 import org.example.server.mapper.UserMapper;
+import org.example.server.utils.TokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -28,5 +28,10 @@ public class SecurityConfig {
     @Bean
     UserMapper userMapper() {
         return new UserMapper();
+    }
+
+    @Bean
+    TokenProvider tokenProvider() {
+        return new TokenProvider();
     }
 }

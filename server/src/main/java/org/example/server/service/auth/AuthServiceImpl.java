@@ -29,8 +29,4 @@ public class AuthServiceImpl implements AuthService {
     private String encryptPassword(String password) {
         return encoder.encode(password);
     }
-
-    private boolean isValidPassword(String password, String encryptedPassword) {
-        return encoder.matches(password, encryptedPassword);
-    }
 }
