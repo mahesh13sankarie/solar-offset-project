@@ -7,8 +7,8 @@ import org.example.server.dto.ElectricityMapCredentialDTO;
 import org.example.server.dto.ElectricityMapPropertiesDTO;
 import org.example.server.entity.CarbonIntensity;
 import org.example.server.entity.ElectricityBreakdown;
+import org.example.server.repository.CarbonIntensityRepository;
 import org.example.server.repository.ElectricityBreakdownRepository;
-import org.example.server.repository.ElectricityMapRepository;
 import org.example.server.service.external.ElectricityMapWebClient;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.scheduling.annotation.Async;
@@ -23,7 +23,7 @@ import java.util.List;
 public class ElectricityMapServiceImpl implements ElectricityMapService {
 
     private final ElectricityMapWebClient electricityMapWebClient;
-    private final ElectricityMapRepository electricityMapRepository;
+    private final CarbonIntensityRepository carbonIntensityRepository;
     private final ElectricityBreakdownRepository electricityBreakdownRepository;
 
     private final ElectricityMapPropertiesDTO properties;
@@ -48,7 +48,7 @@ public class ElectricityMapServiceImpl implements ElectricityMapService {
                 .datetime(response.datetime())
                 .updatedAt(response.updatedAt())
                 .build();
-        electricityMapRepository.save(entity);
+        carbonIntensityRepository.save(entity);
     }
 
     @Scheduled(fixedRate = 3600000)
