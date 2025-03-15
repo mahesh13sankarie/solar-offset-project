@@ -1,7 +1,7 @@
 package org.example.server;
 
 import org.example.server.entity.CarbonIntensity;
-import org.example.server.repository.ElectricityMapRepository;
+import org.example.server.repository.CarbonIntensityRepository;
 import org.example.server.service.electricitymap.ElectricityMapServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ class ElectricityMapServiceTest {
     private ElectricityMapServiceImpl electricityMapService;
 
     @Autowired
-    private ElectricityMapRepository electricityMapRepository;
+    private CarbonIntensityRepository carbonIntensityRepository;
 
     @Test
     void shouldFetchAndSaveElectricityData() {
@@ -26,11 +26,11 @@ class ElectricityMapServiceTest {
         electricityMapService.saveCarbonIntensity();
 
         // Validate repository saved data (assert count or content)
-        long count = electricityMapRepository.count();
+        long count = carbonIntensityRepository.count();
         assertThat(count).isGreaterThan(0);  // 데이터가 저장되는지 확인
 
         // Fetch and print all saved data for verification
-        List<CarbonIntensity> allData = electricityMapRepository.findAll();
+        List<CarbonIntensity> allData = carbonIntensityRepository.findAll();
         System.out.println("=== Fetched Carbon Intensity Data ===");
         for (CarbonIntensity data : allData) {
             System.out.printf("Country: %s, Carbon Intensity: %s, Datetime: %s, UpdatedAt: %s%n",
