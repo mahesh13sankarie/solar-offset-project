@@ -1,0 +1,39 @@
+{
+  "countries": [
+    {
+      "id": 1,
+      "country": "Fakeland",
+      "carbon_emission": 250.5,
+      "electricity_consumption": 5000,
+      "population": 10000000
+    },
+    {
+      "id": 2,
+      "country": "Exampleia",
+      "carbon_emission": 180.2,
+      "electricity_consumption": 4200,
+      "population": 7500000
+    },
+    {
+      "id": 3,
+      "country": "Demo Nation",
+      "carbon_emission": 310.7,
+      "electricity_consumption": 6000,
+      "population": 15000000
+    },
+    {
+      "id": 4,
+      "country": "Testland",
+      "carbon_emission": 95.3,
+      "electricity_consumption": 3200,
+      "population": 5000000
+    },
+    {
+      "id": 5,
+      "country": "Mockovia",
+      "carbon_emission": 200.9,
+      "electricity_consumption": 4800,
+      "population": 9000000
+    }
+  ]
+}
