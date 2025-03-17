@@ -14,9 +14,9 @@ import java.util.Date;
 @Component
 public class TokenProvider {
     //TODO: use annotation @Value?
-    private final String secret_key = "SyntaxSquadSecretKey2024";
+    private final String secret_key = "SyntaxSquadSecretKeySheffield20242025";
     private final Algorithm algorithm = Algorithm.HMAC256(secret_key);
-    private final int expires_in = 3600;
+    private final int expires_in = 3600 * 60;
 
     public String generateToken(User user) {
         return JWT.create()
