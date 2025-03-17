@@ -21,6 +21,7 @@ public class ElectricityController {
     }
 
     // @return List of electricity metrics for all available zones
+    // todo checking auth token
     @GetMapping("/metrics")
     public List<ElectricityResponseDto> getAllElectricityMetrics() {
         System.out.println("Fetching all electricity metrics");
