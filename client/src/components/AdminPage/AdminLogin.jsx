@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const AdminLogin = () => {
     const [formData, setFormData] = useState({
@@ -20,26 +21,18 @@ const AdminLogin = () => {
         setMessage('');
         
         try {
-            const response = await fetch('http://localhost:8080/api/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
-
-            const data = await response.json();
-            if (response.ok) {
+            const response = await axios.post('http://localhost:8080/api/register', formData);
+            if (response.status === 200) {
                 setMessage('Success: Logged in successfully');
                 // Redirect to admin dashboard after successful login
                 setTimeout(() => {
                     window.location.href = '/admin/dashboard';
                 }, 1000);
             } else {
-                setMessage(`Error: ${data.message || 'Login failed'}`);
+                setMessage(`Error: ${response.data.message || 'Login failed'}`);
             }
         } catch (error) {
-            setMessage('Error: Unable to connect to server');
+            setMessage(`Error: ${error.response?.data?.message || 'Unable to connect to server'}`);
             console.error('Error:', error);
         }
     };
