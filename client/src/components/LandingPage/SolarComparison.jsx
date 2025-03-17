@@ -51,10 +51,6 @@ const SolarComparison = () => {
         fetchData();
     }, []);
 
-    const handleSearch = (event) => {
-        setSearch(event.target.value);
-    };
-
     const filteredData = data.filter((item) =>
         item.country.toLowerCase().includes(search.toLowerCase())
     );
@@ -77,8 +73,9 @@ const SolarComparison = () => {
                             className="form-control mb-3 w-25"
                             placeholder="Search country..."
                             value={search}
-                            onChange={handleSearch}
+                            onChange={(e) => setSearch(e.target.value)}
                         />
+
                         <table className="table table-bordered table-striped">
                             <thead>
                             <tr>
