@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/electricity")
+@RequestMapping("/api/v1/electricity")
 public class ElectricityController {
 
     private final ElectricityMetricsService electricityMetricsService;
@@ -21,7 +21,6 @@ public class ElectricityController {
     }
 
     // @return List of electricity metrics for all available zones
-    // todo checking auth token
     @GetMapping("/metrics")
     public List<ElectricityResponseDto> getAllElectricityMetrics() {
         System.out.println("Fetching all electricity metrics");

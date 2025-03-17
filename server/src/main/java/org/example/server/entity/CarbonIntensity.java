@@ -9,8 +9,8 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter
 @Builder
+@Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED) //// Generates a protected no-argument constructor
 public class CarbonIntensity {
