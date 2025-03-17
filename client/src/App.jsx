@@ -8,11 +8,12 @@ import '../node_modules/bootstrap-icons/font/bootstrap-icons.css';
 import Home from "./components/LandingPage/Home"
 import { createBrowserRouter, RouterProvider } from "react-router-dom"; // used to find all the routes in our app, and they can be connected to the component.
 import AuthForm from "./components/Login/AuthForm";
-
+import AdminLogin from './components/AdminPage/AdminLogin';
 
 const router = createBrowserRouter([
   {path:"/",element:<Home />},
-  {path:"/login",element:<AuthForm />}
+  {path:"/login",element:<AuthForm />},
+  {path:"/admin",element:<AdminLogin />}
 ])
 
 
