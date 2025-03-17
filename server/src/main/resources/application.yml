@@ -8,7 +8,11 @@ spring:
     url: jdbc:mysql://localhost:3306/solaroffset?serverTimezone=UTC&useLegacyDatetimeCode=false
     username: root
     password: Shreyas@123
-
+  sql:
+    init:
+      mode: always  # 애플리케이션 실행 시 항상 init.sql 실행
+      schema-locations: classpath:sql/schema.sql
+      data-locations: classpath:sql/init.sql
   jpa:
     hibernate:
       ddl-auto: update

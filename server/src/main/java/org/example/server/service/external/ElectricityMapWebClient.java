@@ -1,6 +1,7 @@
 package org.example.server.service.external;
 
 import org.example.server.dto.CarbonIntensityResponseDTO;
+import org.example.server.dto.ElectricityBreakdownResponseDTO;
 import org.example.server.dto.ElectricityMapCredentialDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,18 @@ public class ElectricityMapWebClient {
                 .header("auth-token", credential.getToken())
                 .retrieve()
                 .bodyToMono(CarbonIntensityResponseDTO.class)
+                .block();
+    }
+
+    public ElectricityBreakdownResponseDTO fetchElectricityBreakdown(ElectricityMapCredentialDTO credential) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/v3/power-breakdown/latest")
+                        .queryParam("zone", credential.getCountryCode())
+                        .build())
+                .header("auth-token", credential.getToken())
+                .retrieve()
+                .bodyToMono(ElectricityBreakdownResponseDTO.class)
                 .block();
     }
 }
