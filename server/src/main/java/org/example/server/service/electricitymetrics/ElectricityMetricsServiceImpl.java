@@ -19,7 +19,7 @@ public class ElectricityMetricsServiceImpl implements ElectricityMetricsService 
     private final ElectricityBreakdownRepository electricityBreakdownRepository;
 
     public ElectricityMetricsServiceImpl(CarbonIntensityRepository carbonIntensityRepository,
-                                         ElectricityBreakdownRepository electricityBreakdownRepository) {
+            ElectricityBreakdownRepository electricityBreakdownRepository) {
         this.carbonIntensityRepository = carbonIntensityRepository;
         this.electricityBreakdownRepository = electricityBreakdownRepository;
     }
@@ -30,18 +30,38 @@ public class ElectricityMetricsServiceImpl implements ElectricityMetricsService 
 
         return breakdowns.stream().map(breakdown -> {
             CarbonIntensity carbonIntensity = carbonIntensityRepository.findByCountryCode(breakdown.getZone())
-                    .orElseThrow(() ->
-                            new DataNotFoundException("Carbon intensity data not found for zone: " + breakdown.getZone())); //todo
+                    .orElseThrow(() -> new DataNotFoundException(
+                            "Carbon intensity data not found for zone: " + breakdown.getZone())); // todo
 
             ElectricityResponseDto response = new ElectricityResponseDto(
                     breakdown.getZone(),
                     CalculationUtils.calculateCarbonEmissions(breakdown, carbonIntensity),
                     CalculationUtils.calculateElectricityAvailability(breakdown),
                     CalculationUtils.calculateSolarPowerPotential(breakdown),
-                    breakdown.getRenewablePercentage()
-            );
+                    breakdown.getRenewablePercentage());
             System.out.println("Computed metrics: " + response);
             return response;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public ElectricityResponseDto getElectricityDataByCountry(String countryCode) {
+        ElectricityBreakdown breakdown = electricityBreakdownRepository.findByZone(countryCode)
+                .orElseThrow(() -> new DataNotFoundException(
+                        "Electricity breakdown data not found for country: " + countryCode));
+
+        CarbonIntensity carbonIntensity = carbonIntensityRepository.findByCountryCode(countryCode)
+                .orElseThrow(
+                        () -> new DataNotFoundException("Carbon intensity data not found for country: " + countryCode));
+
+        ElectricityResponseDto response = new ElectricityResponseDto(
+                breakdown.getZone(),
+                CalculationUtils.calculateCarbonEmissions(breakdown, carbonIntensity),
+                CalculationUtils.calculateElectricityAvailability(breakdown),
+                CalculationUtils.calculateSolarPowerPotential(breakdown),
+                breakdown.getRenewablePercentage());
+
+        System.out.println("Computed metrics for country " + countryCode + ": " + response);
+        return response;
     }
 }
