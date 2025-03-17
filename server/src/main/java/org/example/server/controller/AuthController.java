@@ -56,7 +56,7 @@ public class AuthController {
     ResponseEntity<?> register(@RequestBody UserDto userDto) {
         //TODO: check if account is exist! throw from SQLException
         authService.saveUser(userDto);
-        return ResponseEntity.ok("200");
+        return ResponseEntity.ok("Registration is successful!");
     }
 
     @PostMapping("/login")
@@ -73,7 +73,7 @@ public class AuthController {
 
         String token = tokenProvider.generateToken(user);
 
-        return ResponseEntity.ok("200 - token -- " + token);//TODO: return token
+        return ResponseEntity.ok(token);//TODO: return token
     }
 
     private boolean isValidPassword(String password, String encryptedPassword) {
