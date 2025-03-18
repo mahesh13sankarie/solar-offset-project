@@ -8,12 +8,15 @@ import org.example.server.service.auth.AuthService;
 import org.example.server.utils.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Map;
 /**
  * *
@@ -38,6 +41,9 @@ public class AuthController {
     @Autowired
     TokenProvider tokenProvider;
 
+    @Autowired
+    AuthenticationManager authenticationManager;
+
     //token for Google - OAuth2
     @GetMapping("/generatetoken")
     public ResponseEntity<Map<String, String>> generateOAuthToken(OAuth2AuthenticationToken authentication) {
@@ -54,13 +60,13 @@ public class AuthController {
 
     @PostMapping("/register")
     ResponseEntity<?> register(@RequestBody UserDto userDto) {
-        //TODO: check if account is exist! throw from SQLException
         authService.saveUser(userDto);
         return ResponseEntity.ok("Registration is successful!");
     }
 
     @PostMapping("/login")
     ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
+
         User user = getUser(loginDto.email());
 
         if (user == null) {
@@ -69,19 +75,18 @@ public class AuthController {
         if (!isValidPassword(loginDto.password(), user.getPassword())) {
             return ResponseEntity.notFound().build();
         }
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                loginDto.email(), loginDto.password()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = tokenProvider.generateToken(user);
         return ResponseEntity.ok(token);//TODO: return token
     }
 
-    //remove in front end; refresh token!
+    //remove in front end;
     @PostMapping("/logout")
-    ResponseEntity<?> logout(@RequestBody LoginDto loginDto) {
-        User user = getUser(loginDto.email());
-        if (user == null) {
-            return ResponseEntity.notFound().build();
-        }
-        String token = tokenProvider.generateToken(user);
-        return ResponseEntity.ok(token); //refresh token
+    ResponseEntity<?> logout() {
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.ok().body(""); //refresh token
     }
 
     private User getUser(String email) {
