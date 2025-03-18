@@ -38,6 +38,8 @@ public class User implements UserDetails {
     public User() {
     }
 
+    public User(String email, String fullName, Long id) {}
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
@@ -66,5 +68,9 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
+    }
+
+    public User getDetail(User user) {
+        return new User(user.email, user.fullName, user.id);
     }
 }

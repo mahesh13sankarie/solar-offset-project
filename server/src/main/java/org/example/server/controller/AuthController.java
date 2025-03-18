@@ -3,6 +3,7 @@ package org.example.server.controller;
 import org.example.server.dto.LoginDto;
 import org.example.server.dto.UserDto;
 import org.example.server.entity.User;
+import org.example.server.mapper.AuthResponseMapper;
 import org.example.server.repository.UserRepository;
 import org.example.server.service.auth.AuthService;
 import org.example.server.utils.TokenProvider;
@@ -17,7 +18,9 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.Map;
+
 /**
  * *
  * Google login path: <a href="http://localhost:8000/login/oauth2/code/google">...</a>
@@ -44,6 +47,9 @@ public class AuthController {
     @Autowired
     AuthenticationManager authenticationManager;
 
+    @Autowired
+    AuthResponseMapper responseMapper;
+
     //token for Google - OAuth2
     @GetMapping("/generatetoken")
     public ResponseEntity<Map<String, String>> generateOAuthToken(OAuth2AuthenticationToken authentication) {
@@ -61,7 +67,7 @@ public class AuthController {
     @PostMapping("/register")
     ResponseEntity<?> register(@RequestBody UserDto userDto) {
         authService.saveUser(userDto);
-        return ResponseEntity.ok("Registration is successful!");
+        return ResponseEntity.ok().body(responseMapper.buildSuccessResponse());
     }
 
     @PostMapping("/login")
@@ -79,14 +85,14 @@ public class AuthController {
                 loginDto.email(), loginDto.password()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = tokenProvider.generateToken(user);
-        return ResponseEntity.ok(token);//TODO: return token
+        return ResponseEntity.ok().body(responseMapper.buildLoginResponse(user.getDetail(user), token));
     }
 
     //remove in front end;
     @PostMapping("/logout")
     ResponseEntity<?> logout() {
         SecurityContextHolder.clearContext();
-        return ResponseEntity.ok().body(""); //refresh token
+        return ResponseEntity.ok().body(responseMapper.buildSuccessResponse());
     }
 
     private User getUser(String email) {
