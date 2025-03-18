@@ -52,16 +52,20 @@ public class AuthController {
 
     //token for Google - OAuth2
     @GetMapping("/generatetoken")
-    public ResponseEntity<Map<String, String>> generateOAuthToken(OAuth2AuthenticationToken authentication) {
+    public ResponseEntity<?> generateOAuthToken(OAuth2AuthenticationToken authentication) {
         if (authentication == null) {
             return ResponseEntity.ok(Map.of("token", "")); //throw Error
-        } //TODO adjust return type for customized error
+        }
+        //Logout is via /logout
         OAuth2AuthorizedClient client = oAuth2AuthorizedClientService.loadAuthorizedClient(
                 authentication.getAuthorizedClientRegistrationId(), authentication.getName()
         );
-
         String accessToken = client.getAccessToken().getTokenValue();
-        return ResponseEntity.ok(Map.of("token", accessToken)); //put constant in util?
+        String email = authentication.getPrincipal().getAttribute("email");
+        String name = authentication.getPrincipal().getAttribute("name");
+        User user = new User(email, name);
+
+        return ResponseEntity.ok().body(responseMapper.buildLoginResponse(user.getDetail(user), accessToken));
     }
 
     @PostMapping("/register")
@@ -72,7 +76,6 @@ public class AuthController {
 
     @PostMapping("/login")
     ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
-
         User user = getUser(loginDto.email());
 
         if (user == null) {

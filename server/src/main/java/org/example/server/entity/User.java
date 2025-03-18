@@ -36,9 +36,13 @@ public class User implements UserDetails {
     }
 
     public User() {
+
     }
 
-    public User(String email, String fullName, Long id) {}
+    public User(String email, String fullName) {
+        this.email = email;
+        this.fullName = fullName;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -71,6 +75,6 @@ public class User implements UserDetails {
     }
 
     public User getDetail(User user) {
-        return new User(user.email, user.fullName, user.id);
+        return new User(user.email, user.fullName);
     }
 }
