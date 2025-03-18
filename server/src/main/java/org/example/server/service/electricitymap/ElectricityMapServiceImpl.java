@@ -16,6 +16,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -48,7 +49,16 @@ public class ElectricityMapServiceImpl implements ElectricityMapService {
                 .datetime(response.datetime())
                 .updatedAt(response.updatedAt())
                 .build();
-        carbonIntensityRepository.save(entity);
+        Optional<CarbonIntensity> existingCarbonIntensity = carbonIntensityRepository.findByCountryCode(entity.getCountryCode());
+        if (existingCarbonIntensity.isPresent()) {
+            CarbonIntensity existingEntity = existingCarbonIntensity.get();
+            existingEntity.setCarbonIntensity(entity.getCarbonIntensity());
+            existingEntity.setDatetime(entity.getDatetime());
+            existingEntity.setUpdatedAt(entity.getUpdatedAt());
+            carbonIntensityRepository.save(existingEntity); // Update existing record
+        } else {
+            carbonIntensityRepository.save(entity); // Insert new record
+        }
     }
 
     @Scheduled(fixedRate = 3600000)
