@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface ElectricityMetricsService {
     List<ElectricityResponseDto> getAllElectricityData();
+
+    ElectricityResponseDto getElectricityDataByCountry(String countryCode);
 }
