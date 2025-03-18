@@ -14,7 +14,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
@@ -57,15 +56,12 @@ public class AuthController {
             return ResponseEntity.ok(Map.of("token", "")); //throw Error
         }
         //Logout is via /logout
-        OAuth2AuthorizedClient client = oAuth2AuthorizedClientService.loadAuthorizedClient(
-                authentication.getAuthorizedClientRegistrationId(), authentication.getName()
-        );
-        String accessToken = client.getAccessToken().getTokenValue();
         String email = authentication.getPrincipal().getAttribute("email");
         String name = authentication.getPrincipal().getAttribute("name");
+        String token = tokenProvider.generateToken(email);
         User user = new User(email, name);
 
-        return ResponseEntity.ok().body(responseMapper.buildLoginResponse(user.getDetail(user), accessToken));
+        return ResponseEntity.ok().body(responseMapper.buildLoginResponse(user.getDetail(user), token));
     }
 
     @PostMapping("/register")
@@ -87,7 +83,7 @@ public class AuthController {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginDto.email(), loginDto.password()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = tokenProvider.generateToken(user);
+        String token = tokenProvider.generateToken(loginDto.email());
         return ResponseEntity.ok().body(responseMapper.buildLoginResponse(user.getDetail(user), token));
     }
 

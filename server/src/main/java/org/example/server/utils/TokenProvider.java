@@ -18,10 +18,10 @@ public class TokenProvider {
     private final Algorithm algorithm = Algorithm.HMAC256(secret_key);
     private final int expires_in = 3600 * 60;
 
-    public String generateToken(User user) {
+    public String generateToken(String email) {
         return JWT.create()
-                .withSubject(user.getEmail())
-                .withClaim("email", user.getEmail())
+                .withSubject(email)
+                .withClaim("email", email)
                 .withExpiresAt(new Date(System.currentTimeMillis() + expires_in * 1000))
                 .sign(algorithm);
     }
