@@ -61,19 +61,31 @@ public class AuthController {
 
     @PostMapping("/login")
     ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
-        User user = userRepository.findByEmail(loginDto.email());
+        User user = getUser(loginDto.email());
 
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
-
         if (!isValidPassword(loginDto.password(), user.getPassword())) {
             return ResponseEntity.notFound().build();
         }
-
         String token = tokenProvider.generateToken(user);
-
         return ResponseEntity.ok(token);//TODO: return token
+    }
+
+    //remove in front end; refresh token!
+    @PostMapping("/logout")
+    ResponseEntity<?> logout(@RequestBody LoginDto loginDto) {
+        User user = getUser(loginDto.email());
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        String token = tokenProvider.generateToken(user);
+        return ResponseEntity.ok(token); //refresh token
+    }
+
+    private User getUser(String email) {
+        return userRepository.findByEmail(email);
     }
 
     private boolean isValidPassword(String password, String encryptedPassword) {

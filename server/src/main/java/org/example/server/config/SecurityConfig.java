@@ -1,5 +1,6 @@
 package org.example.server.config;
 
+import org.example.server.mapper.AuthResponseMapper;
 import org.example.server.mapper.UserMapper;
 import org.example.server.utils.TokenProvider;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +29,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/*").permitAll()
                         .anyRequest().authenticated()
                 )
+                .oauth2Login((oauth2) -> oauth2.defaultSuccessUrl("/api/v1/auth/generatetoken"))
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
         ;
         return http.build();
@@ -54,4 +56,7 @@ public class SecurityConfig {
         SecretKey secretKey = new SecretKeySpec("SyntaxSquadSecretKeySheffield20242025".getBytes(), "HMAC256"); //move to constant
         return NimbusJwtDecoder.withSecretKey(secretKey).build();
     }
+
+    @Bean
+    AuthResponseMapper authResponseMapper() { return new AuthResponseMapper(); }
 }
