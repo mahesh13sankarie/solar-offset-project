@@ -104,6 +104,11 @@
             <version>4.1.107.Final</version> <!-- Make sure this matches your Netty version -->
             <classifier>osx-aarch_64</classifier> <!-- Use this for Apple Silicon Macs (M1/M2) -->
         </dependency>
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>4.4.0</version>
+        </dependency>
     </dependencies>
 
     <build>
