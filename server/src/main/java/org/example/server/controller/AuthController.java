@@ -3,18 +3,23 @@ package org.example.server.controller;
 import org.example.server.dto.LoginDto;
 import org.example.server.dto.UserDto;
 import org.example.server.entity.User;
+import org.example.server.mapper.AuthResponseMapper;
 import org.example.server.repository.UserRepository;
 import org.example.server.service.auth.AuthService;
 import org.example.server.utils.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+
 /**
  * *
  * Google login path: <a href="http://localhost:8000/login/oauth2/code/google">...</a>
@@ -27,9 +32,6 @@ public class AuthController {
     private UserRepository userRepository;
 
     @Autowired
-    private OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
-
-    @Autowired
     private AuthService authService;
 
     @Autowired
@@ -38,42 +40,59 @@ public class AuthController {
     @Autowired
     TokenProvider tokenProvider;
 
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    @Autowired
+    AuthResponseMapper responseMapper;
+
     //token for Google - OAuth2
     @GetMapping("/generatetoken")
-    public ResponseEntity<Map<String, String>> generateOAuthToken(OAuth2AuthenticationToken authentication) {
+    public ResponseEntity<?> generateOAuthToken(OAuth2AuthenticationToken authentication) {
         if (authentication == null) {
             return ResponseEntity.ok(Map.of("token", "")); //throw Error
-        } //TODO adjust return type for customized error
-        OAuth2AuthorizedClient client = oAuth2AuthorizedClientService.loadAuthorizedClient(
-                authentication.getAuthorizedClientRegistrationId(), authentication.getName()
-        );
+        }
+        //Logout is via /logout
+        String email = authentication.getPrincipal().getAttribute("email");
+        String name = authentication.getPrincipal().getAttribute("name");
+        String token = tokenProvider.generateToken(email);
+        User user = new User(email, name);
 
-        String accessToken = client.getAccessToken().getTokenValue();
-        return ResponseEntity.ok(Map.of("token", accessToken)); //put constant in util?
+        return ResponseEntity.ok().body(responseMapper.buildLoginResponse(user.getDetail(user), token));
     }
 
     @PostMapping("/register")
     ResponseEntity<?> register(@RequestBody UserDto userDto) {
-        //TODO: check if account is exist! throw from SQLException
         authService.saveUser(userDto);
-        return ResponseEntity.ok("Registration is successful!");
+        return ResponseEntity.ok().body(responseMapper.buildSuccessResponse());
     }
 
     @PostMapping("/login")
     ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
-        User user = userRepository.findByEmail(loginDto.email());
+        User user = getUser(loginDto.email());
 
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
-
         if (!isValidPassword(loginDto.password(), user.getPassword())) {
             return ResponseEntity.notFound().build();
         }
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                loginDto.email(), loginDto.password()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = tokenProvider.generateToken(loginDto.email());
+        return ResponseEntity.ok().body(responseMapper.buildLoginResponse(user.getDetail(user), token));
+    }
 
-        String token = tokenProvider.generateToken(user);
+    //remove in front end;
+    @PostMapping("/logout")
+    ResponseEntity<?> logout() {
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.ok().body(responseMapper.buildSuccessResponse());
+    }
 
-        return ResponseEntity.ok(token);//TODO: return token
+    private User getUser(String email) {
+        return userRepository.findByEmail(email);
     }
 
     private boolean isValidPassword(String password, String encryptedPassword) {
