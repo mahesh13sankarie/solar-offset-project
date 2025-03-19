@@ -9,9 +9,8 @@ import org.example.server.repository.CarbonIntensityRepository;
 import org.example.server.repository.ElectricityBreakdownRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,51 +29,29 @@ public class ElectricityMetricsServiceImpl implements ElectricityMetricsService 
     @Override
     public List<ElectricityResponseDto> getAllElectricityData() {
         List<ElectricityBreakdown> breakdowns = electricityBreakdownRepository.findAll();
+        List<CarbonIntensity> carbonIntensities = carbonIntensityRepository.findAll();
 
+        Map<String, CarbonIntensity> intensitiesByZone = carbonIntensities.stream()
+                .collect(Collectors.toMap(CarbonIntensity::getCountryCode, carbonIntensity -> carbonIntensity));
         return breakdowns.stream().map(breakdown -> {
-            List<CarbonIntensity> carbonIntensities = carbonIntensityRepository.findByCountryCodeOrderByUpdatedAtDesc(breakdown.getZone());
-
-            if (carbonIntensities.isEmpty()) {
-                throw new DataNotFoundException("Carbon intensity data not found for zone: " + breakdown.getZone());
-            }
-
-            int avgCarbonIntensity = electricityMetricsMapper.calculateAverageCarbonIntensity(carbonIntensities);
-            ElectricityResponseDto response = electricityMetricsMapper.toDtoWithAvgIntensity(breakdown, avgCarbonIntensity);
-
-            System.out.println("Computed metrics for zone " + breakdown.getZone() + " from " + carbonIntensities.size() + " carbon intensity records: " + response);
-            return response;
+            CarbonIntensity intensitiesForZone = intensitiesByZone.get(breakdown.getZone());
+            return electricityMetricsMapper.toDTO(breakdown, intensitiesForZone);
         }).collect(Collectors.toList());
     }
 
     @Override
     public ElectricityResponseDto getElectricityDataByCountry(String countryCode) {
-        // Get the start of today
-        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
 
-        // Fetch all data for today for the specific country
-        List<ElectricityBreakdown> todayData = electricityBreakdownRepository.findTodayDataByZone(countryCode, startOfDay);
+        ElectricityBreakdown breakdownData = electricityBreakdownRepository.findByZone(countryCode).orElseThrow(
+                () -> new DataNotFoundException("Electricity breakdown data not found for country: " + countryCode)
+        );
 
-        if (todayData.isEmpty()) {
-            throw new DataNotFoundException("No electricity breakdown data found for today for country: " + countryCode);
-        }
+        CarbonIntensity carbonIntensity = carbonIntensityRepository.findByCountryCode(countryCode).orElseThrow(
+                () -> new DataNotFoundException("Carbon intensity data not found for country: " + countryCode)
+        );
 
-        // Create an average ElectricityBreakdown object
-        ElectricityBreakdown averageBreakdown = electricityMetricsMapper.createAverageBreakdown(todayData, countryCode);
-
-        // Get carbon intensity data for this country
-        List<CarbonIntensity> carbonIntensities = carbonIntensityRepository.findByCountryCodeOrderByUpdatedAtDesc(countryCode);
-
-        if (carbonIntensities.isEmpty()) {
-            throw new DataNotFoundException("Carbon intensity data not found for country: " + countryCode);
-        }
-
-        // Calculate average carbon intensity
-        int avgCarbonIntensity = electricityMetricsMapper.calculateAverageCarbonIntensity(carbonIntensities);
-
-        // Create the response with calculated metrics
-        ElectricityResponseDto response = electricityMetricsMapper.toDtoWithAvgIntensity(averageBreakdown, avgCarbonIntensity);
-
-        System.out.println("Computed average metrics for country " + countryCode + " from " + todayData.size() + " records and " + carbonIntensities.size() + " carbon intensity records: " + response);
+        ElectricityResponseDto response = electricityMetricsMapper.toDTO(breakdownData, carbonIntensity);
+        System.out.println("Computed average metrics for country " + countryCode + "carbon intensity records: " + response);
         return response;
     }
 
