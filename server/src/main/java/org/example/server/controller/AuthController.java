@@ -32,9 +32,6 @@ public class AuthController {
     private UserRepository userRepository;
 
     @Autowired
-    private OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
-
-    @Autowired
     private AuthService authService;
 
     @Autowired
