@@ -16,7 +16,7 @@ public class PanelController {
     private final PanelService panelService;
 
     @GetMapping
-    public List<PanelResponseDTO> getPanelByZone(@RequestParam String code) {
+    public List<PanelResponseDTO> getPanelByZone(@RequestParam(required = false) String code) {
         if (code == null || code.isEmpty()) {
             return panelService.getAllPanels();
         }
