@@ -1,24 +1,20 @@
 package org.example.server.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED) // Generates a protected no-argument constructor
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 @Getter
 public class Country {
-
-
-    @Id // Specifies the primary key of the entity
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-generates ID values using the database identity strategy
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String name;
 
     @Column(nullable = false, unique = true)
     private String code;
