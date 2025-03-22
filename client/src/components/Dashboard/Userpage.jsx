@@ -30,6 +30,7 @@ const UsersPage = () => {
         e.preventDefault();
         try {
             if (editingUserId) {
+                console.log(formData);
                 await axios.put(`${api}/users/${editingUserId}`, formData);
             } else {
                 await axios.post(`${api}/users`, formData);
@@ -64,9 +65,9 @@ const UsersPage = () => {
 
     return (
         <div>
-            <h2 className="mb-4">User Management</h2>
+            <h2 className="mb-4 text-center d-flex" >User Management</h2>
 
-            <button className="btn btn-success mb-3" onClick={() => setShowCreateModal(true)}>Create User</button>
+            <button className="btn btn-success mb-4 " onClick={() => setShowCreateModal(true)}>Create User</button>
 
             {showCreateModal && (
                 <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
@@ -82,7 +83,7 @@ const UsersPage = () => {
                                         <input
                                             type="text"
                                             className="form-control"
-                                            placeholder="Name"
+                                            placeholder="Full Name"
                                             value={formData.name}
                                             required
                                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -104,9 +105,9 @@ const UsersPage = () => {
                                             value={formData.role}
                                             onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                                         >
-                                            <option value="user">User</option>
-                                            <option value="staff">Staff</option>
-                                            <option value="admin">Admin</option>
+                                            <option value="3">User</option>
+                                            <option value="2">Staff</option>
+                                            <option value="1">Admin</option>
                                         </select>
                                     </div>
                                 </div>
@@ -134,7 +135,7 @@ const UsersPage = () => {
                                         <input
                                             type="text"
                                             className="form-control"
-                                            placeholder="Name"
+                                            placeholder="Full Name"
                                             value={formData.name}
                                             required
                                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
