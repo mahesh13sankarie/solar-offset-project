@@ -29,4 +29,7 @@ public class Country {
 
     @OneToMany(mappedBy = "country", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ElectricityBreakdown> breakdowns;
+
+    @OneToMany(mappedBy = "country", cascade = CascadeType.ALL)
+    private List<CountryPanel> countryPanels;
 }
