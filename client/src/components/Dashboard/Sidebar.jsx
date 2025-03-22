@@ -1,45 +1,63 @@
 import React from "react";
 
 import './SideNav.css'; // Optional: for custom styling
+import {Link, useLocation} from 'react-router-dom';
 
 const SideNav = () => {
-    return (
-        <div className="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style={{ width: '250px', height: '100vh' }}>
-            <a href="/" className="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
 
-                <span className="fs-4">User Name</span>
-            </a>
-            <hr />
-            <ul className="nav nav-pills flex-column mb-auto">
-                <li className="nav-item">
-                    <a href="/dashboard" className="nav-link text-white" aria-current="page">
-                        Dashboard
-                    </a>
-                </li>
-                <li>
-                    <a href="/dashboard/users" className="nav-link text-white">
-                        Users
-                    </a>
-                </li>
-                <li>
-                    <a href="/settings" className="nav-link text-white">
-                        Settings
-                    </a>
-                </li>
-                <li>
-                    <a href="/logs" className="nav-link text-white">
-                        Logs
-                    </a>
-                </li>
-                <li>
-                    <a href="/logout" className="nav-link text-white">
-                        Logout
-                    </a>
-                </li>
-            </ul>
-            <hr />
-        </div>
-    );
+    const location = useLocation();
+    const currentPath = location.pathname;
+return (
+    <div className="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style={{ width: '250px', height: '100vh' }}>
+        <Link to="/dashboard" className="d-flex align-items-center mb-3 text-white text-decoration-none">
+            <span className="fs-4">Admin Panel</span>
+        </Link>
+        <hr />
+        <ul className="nav nav-pills flex-column mb-auto">
+            <li className="nav-item">
+                <Link
+                    to="/dashboard"
+                    className={`nav-link text-white ${currentPath === '/dashboard' ? 'active bg-primary' : ''}`}
+                >
+                    Dashboard
+                </Link>
+            </li>
+            <li>
+                <Link
+                    to="/dashboard/users"
+                    className={`nav-link text-white ${currentPath === '/dashboard/users' ? 'active bg-primary' : ''}`}
+                >
+                    Users
+                </Link>
+            </li>
+            <li>
+                <Link
+                    to="/dashboard/settings"
+                    className={`nav-link text-white ${currentPath === '/dashboard/settings' ? 'active bg-primary' : ''}`}
+                >
+                    Settings
+                </Link>
+            </li>
+            <li>
+                <Link
+                    to="/dashboard/logs"
+                    className={`nav-link text-white ${currentPath === '/dashboard/logs' ? 'active bg-primary' : ''}`}
+                >
+                    Logs
+                </Link>
+            </li>
+            <li>
+                <Link
+                    to="/logout"
+                    className={`nav-link text-white ${currentPath === '/logout' ? 'active bg-primary' : ''}`}
+                >
+                    Logout
+                </Link>
+            </li>
+        </ul>
+        <hr />
+    </div>
+);
+
 };
-
 export default SideNav;

@@ -8,7 +8,6 @@ const Dashboard = () => {
             <SideNav />
             <div className="p-4" style={{flexGrow:1}}>
                 <Outlet />
-
             </div>
         </div>
     )
