@@ -1,11 +1,11 @@
 package org.example.server.service.panel;
 
-import org.example.server.dto.PanelResponseDTO;
+import org.example.server.dto.countryPanelDTO;
 
 import java.util.List;
 
 public interface PanelService {
 
-    List<PanelResponseDTO> getAllPanels();
-    List<PanelResponseDTO> getPanelByZone(String zone);
+    List<countryPanelDTO> getAllPanels();
+    List<countryPanelDTO> getPanelByZone(String zone);
 }

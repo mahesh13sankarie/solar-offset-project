@@ -1,7 +1,7 @@
 package org.example.server.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.server.dto.PanelResponseDTO;
+import org.example.server.dto.countryPanelDTO;
 import org.example.server.service.panel.PanelService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +16,7 @@ public class PanelController {
     private final PanelService panelService;
 
     @GetMapping
-    public List<PanelResponseDTO> getPanelByZone(@RequestParam(required = false) String code) {
+    public List<countryPanelDTO> getPanelByZone(@RequestParam(required = false) String code) {
         if (code == null || code.isEmpty()) {
             return panelService.getAllPanels();
         }
@@ -24,10 +24,9 @@ public class PanelController {
 
     }
 
-
     // Get panel details by ID
     @GetMapping("/{id}")
-    public ResponseEntity<PanelResponseDTO> getPanelById(@PathVariable Long id) {
+    public ResponseEntity<countryPanelDTO> getPanelById(@PathVariable Long id) {
         return null;
     }
 

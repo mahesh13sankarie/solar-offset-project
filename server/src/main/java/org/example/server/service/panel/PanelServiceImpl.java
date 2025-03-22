@@ -1,33 +1,42 @@
 package org.example.server.service.panel;
 
-import lombok.RequiredArgsConstructor;
-import org.example.server.dto.PanelResponseDTO;
-import org.example.server.entity.Panel;
-import org.example.server.repository.PanelRepository;
+import java.util.List;
+
+import org.example.server.dto.countryPanelDTO;
+import org.example.server.entity.CountryPanel;
+import org.example.server.repository.CountryPanelRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class PanelServiceImpl implements PanelService {
 
-    private final PanelRepository panelRepository;
+    private final CountryPanelRepository countryPanelRepository;
 
     @Override
-    public List<PanelResponseDTO> getAllPanels() {
-        List<Panel> panels = panelRepository.findAll();
+    public List<countryPanelDTO> getAllPanels() {
 
-        return panels.stream()
-                .map(panel -> new PanelResponseDTO(
-                        panel.getName(),
-                        panel.getInstallationCost(),
-                        panel.getCountry().getCode()))
+        List<CountryPanel> countryPanels = countryPanelRepository.findAll();
+
+        return countryPanels.stream()
+                .map(countryPanel -> new countryPanelDTO(
+                        countryPanel.getPanel().getName(),
+                        countryPanel.getPanel().getInstallationCost(),
+                        countryPanel.getCountry().getCode(),
+                        countryPanel.getPanel().getDescription()))
                 .toList();
     }
 
     @Override
-    public List<PanelResponseDTO> getPanelByZone(String code) {
-        return panelRepository.findByCountryCode(code);
+    public List<countryPanelDTO> getPanelByZone(String code) {
+        return countryPanelRepository.findByCountryCode(code).stream()
+                .map(countryPanel -> new countryPanelDTO(
+                        countryPanel.getPanel().getName(),
+                        countryPanel.getPanel().getInstallationCost(),
+                        countryPanel.getCountry().getCode(),
+                        countryPanel.getPanel().getDescription()))
+                .toList();
     }
 }

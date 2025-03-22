@@ -24,9 +24,7 @@ public class Panel {
     @Column(nullable = false)
     private Double productionPerPanel;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "country_id", nullable = false)
-    private Country country;
+    private String description;
 
     @OneToMany(mappedBy = "panel", cascade = CascadeType.ALL)
     private List<CountryPanel> countryPanels;
