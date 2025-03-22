@@ -1,7 +1,8 @@
 package org.example.server.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.server.dto.countryPanelDTO;
+import org.example.server.dto.CountryPanelDTO;
+import org.example.server.dto.PanelCreateRequestDTO;
 import org.example.server.service.panel.PanelService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,7 @@ public class PanelController {
     private final PanelService panelService;
 
     @GetMapping
-    public List<countryPanelDTO> getPanelByZone(@RequestParam(required = false) String code) {
+    public List<CountryPanelDTO> getPanelByZone(@RequestParam(required = false) String code) {
         if (code == null || code.isEmpty()) {
             return panelService.getAllPanels();
         }
@@ -26,14 +27,21 @@ public class PanelController {
 
     // Get panel details by ID
     @GetMapping("/{id}")
-    public ResponseEntity<countryPanelDTO> getPanelById(@PathVariable Long id) {
+    public ResponseEntity<CountryPanelDTO> getPanelById(@PathVariable Long id) {
         return null;
     }
 
     // Create new panel
     @PostMapping
-    public ResponseEntity<?> createPanel(@RequestBody Object panelRequest) {
-        return null;
+    public ResponseEntity<List<CountryPanelDTO>> createPanel(@RequestBody PanelCreateRequestDTO panelRequest) {
+        // TODO: Validate that the user is an admin before proceeding
+
+        // Validate that at least one country is selected
+        if (panelRequest.getCountryCodes() == null || panelRequest.getCountryCodes().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        List<CountryPanelDTO> createdPanel = panelService.createPanel(panelRequest);
+        return ResponseEntity.ok(createdPanel);
     }
 
     // Delete panel by ID

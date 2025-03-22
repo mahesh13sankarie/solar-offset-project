@@ -1,4 +1,18 @@
 package org.example.server.dto;
 
-public record countryPanelDTO(String name, Double installationCost, String code, String description) {
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class CountryPanelDTO {
+	private String panelName;
+	private Double installationCost;
+	private Double productionPerPanel;
+	private String description;
+	private String countryCode;
 }
