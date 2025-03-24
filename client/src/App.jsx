@@ -11,7 +11,7 @@ import AuthForm from "./components/Login/AuthForm";
 import AdminLogin from './components/Login/AdminLogin.jsx';
 import SideNav from "./components/Dashboard/Sidebar.jsx";
 import Dashboard from "./components/Dashboard/Dashboard.jsx";
-import Userpage from "./components/Dashboard/Userpage.jsx";
+import Userpage from "./components/Dashboard/UserSection.jsx";
 
 const router = createBrowserRouter([
   {path:"/",element:<Home />},
