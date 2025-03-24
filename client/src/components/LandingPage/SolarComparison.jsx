@@ -62,30 +62,31 @@ const SolarComparison = () => {
             </section>
 
             <section id="comparison" className="about section">
-                <div className="container section-title" data-aos="fade-up">
-                    <h2>Country Comparison</h2>
-                </div>
+
+
 
                 <div className="container">
+                    <a href="/">
+                        <button className="btn btn-link">
+                            <i className="bi bi-arrow-left-circle"></i> Back
+                        </button>
+                    </a>
                     <div className="row gy-4">
-                        <div className="col-sm-6">
-                            <input
-                                type="text"
-                                className="form-control mb-3 w-25"
-                                placeholder="Search country..."
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                            />
+                        <div className="container section-title" data-aos="fade-up">
+                            <h2>Countries</h2>
                         </div>
-                        <div className="col-sm-6">
-                            <h6>Not decided yet?</h6><button className="btn btn-success"><i className="bi bi-plus-square-fill"> </i> Compare!</button>
-                        </div>
-
+                        <input
+                            type="text"
+                            className="form-control mb-3 w-25"
+                            placeholder="Search country..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
 
                         <table className="table table-bordered table-striped">
                             <thead>
                             <tr>
-                            <td width="30%">
+                                <td width="30%">
                                     Country
                                 </td>
                                 <td>
@@ -109,11 +110,10 @@ const SolarComparison = () => {
                                     <td>{item.carbon_emission}</td>
                                     <td>{item.electricity_consumption}</td>
                                     <td>{item.population}</td>
-                                    <td>{<button className=' btn btn-sm btn-outline-success'><i
-                                        className="bi bi-info-circle-fill"> </i>Detail </button>}<br/>
-                                        <br/>{<button className='btn btn-sm btn-outline-info'><i
-                                            className="bi bi-wallet-fill"> </i> Donate</button>}<br/>
-                                       </td>
+                                    <td><a href={`/InstallationCost/${item.id}`}>
+                                        <button className=' btn btn-sm btn-outline-success'><i className="bi bi-ticket-detailed-fill"></i> Detail </button>
+                                    </a><br/>
+                                        <br/>{<button className='btn btn-sm btn-outline-info'><i className="bi bi-gift-fill"></i> Donate</button>}</td>
                                 </tr>
                             ))}
                             </tbody>
