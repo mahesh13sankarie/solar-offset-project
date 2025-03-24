@@ -13,9 +13,22 @@ import Services from "./components/LandingPage/Services.jsx";
 import Navbar from "./components/LandingPage/Navbar.jsx";
 
 
+import AdminLogin from './components/Login/AdminLogin.jsx';
+import SideNav from "./components/Dashboard/Sidebar.jsx";
+import Dashboard from "./components/Dashboard/Dashboard.jsx";
+import Userpage from "./components/Dashboard/UserSection.jsx";
 
 const router = createBrowserRouter([
   {path:"/",element:<Home />},
+  {path:"/login",element:<AuthForm />},
+  {path:"/admin",element:<AdminLogin />},
+    {
+        path:"/dashboard",
+        element:<Dashboard />,
+        children:[
+            {path:"/dashboard/users",element:<Userpage />}
+        ]
+    },
   {path:"/login",element:<AuthForm />},
     {path:"/SolarComparison", element:<SolarComparison/>},
     {path:"/navbar",element:<Navbar />},
