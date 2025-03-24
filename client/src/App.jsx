@@ -11,6 +11,7 @@ import AuthForm from "./components/Login/AuthForm";
 import SolarComparison from "./components/LandingPage/SolarComparison.jsx";
 import Services from "./components/LandingPage/Services.jsx";
 import Navbar from "./components/LandingPage/Navbar.jsx";
+import InstallationCost from "./components/LandingPage/InstallationCost.jsx"
 
 
 
@@ -20,6 +21,7 @@ const router = createBrowserRouter([
     {path:"/SolarComparison", element:<SolarComparison/>},
     {path:"/navbar",element:<Navbar />},
     {path:"/donate",element:<Services />},
+    {path:"/InstallationCost/:countryCode", element:<InstallationCost/>}
 ])
 
 
