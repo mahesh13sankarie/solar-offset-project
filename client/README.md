@@ -11,3 +11,4 @@ Hello team, I have succesfully migrated your code to React.js and we can start w
 --  npm run dev
 - Execute the above to commands. npm install is used to download bootstrap and etc. while npm run dev is used to run the react app on a server.
 
+-- Change git config to use university mail.
