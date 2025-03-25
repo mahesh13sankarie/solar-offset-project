@@ -28,11 +28,18 @@ const AuthForm = () => {
         }
 
         try {
-            const endpoint = formState === 'login' ? 'http://localhost:8080/api/login' : 'http://localhost:8080/api/register';
+            const endpoint = formState === 'login' ? 'http://localhost:8000/api/v1/auth/register' : 'http://localhost:8000/api/v1/auth/register';
+            const payload = formState === 'register' ? {
+                email: formData.email,
+                password: formData.password,
+                fullName: formData.fullName,   
+                accountType: 1
+            } : formData;
+
             const response = await fetch(endpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(payload),
             });
 
             const data = await response.json();

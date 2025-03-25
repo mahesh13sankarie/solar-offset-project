@@ -21,20 +21,19 @@ const AdminLogin = () => {
         setMessage('');
         
         try {
-            const response = await axios.get('http://localhost:3000/admins', {
-                params: {
+            const response = await axios.post('http://localhost:8000/api/v1/auth/register', {
+               
                     email: formData.email,
                     password: formData.password
-                }
+                
             });
-            if (response.data.length > 0) {
-                setMessage('Success: Logged in successfully');
+            const {token} = response.data;
+            localStorage.setItem('token',token);
+            setMessage('Success: Logged in successfully');
                 setTimeout(() => {
                     window.location.href = 'http://localhost:5173/dashboard';
                 }, 1000);
-            } else {
-                setMessage('Error: Invalid email or password');
-            }
+            
         } catch (error) {
             setMessage(`Error: ${error.response?.data?.message || 'Unable to connect to server'}`);
             console.error('Error:', error);
