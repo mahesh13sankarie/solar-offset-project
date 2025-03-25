@@ -43,4 +43,6 @@ export const validateToken = async () => {
 // Function to log out
 export const logout = () => {
     localStorage.removeItem('authToken');
+    // window.location.href = '/login'; // Redirect to login page
+
 };
