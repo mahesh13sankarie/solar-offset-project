@@ -1,9 +1,9 @@
 package org.example.server.entity;
 
-import java.util.List;
-
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -15,16 +15,22 @@ public class Panel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(name = "installation_cost", nullable = false)
     private Double installationCost;
 
-    @Column(nullable = false)
+    @Column(name = "production_per_panel", nullable = false)
     private Double productionPerPanel;
 
+    @Column(name = "description")
     private String description;
+
+    private String efficiency;
+    private String lifespan;
+    private String temperatureTolerance;
+    private String warranty;
 
     @OneToMany(mappedBy = "panel", cascade = CascadeType.ALL)
     private List<CountryPanel> countryPanels;
