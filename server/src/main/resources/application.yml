@@ -32,7 +32,9 @@ logging:
   level:
     org.hibernate.SQL: DEBUG
 
-
+stripe:
+  scret:
+    key: "sk_test_51QwmaiPrlrRfBw5poWTCLViYs4omAuLFYw2nxjXQAZaNlXFcGh5GK7JSWdBSEvrPvsrhAXpJ1cgcYM4vb1m1ZbuK00wjYwLacc"
 electricity-map:
   credentials:
     - countryCode: "GB"
