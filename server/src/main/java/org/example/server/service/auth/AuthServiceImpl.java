@@ -5,11 +5,14 @@ import org.example.server.entity.User;
 import org.example.server.mapper.UserMapper;
 import org.example.server.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthServiceImpl implements AuthService {
+public class AuthServiceImpl implements AuthService, UserDetailsService {
     @Autowired
     UserRepository userRepository;
 
@@ -28,5 +31,11 @@ public class AuthServiceImpl implements AuthService {
 
     private String encryptPassword(String password) {
         return encoder.encode(password);
+    }
+
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userRepository.findByEmail(email);
     }
 }

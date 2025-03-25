@@ -35,7 +35,7 @@ const AuthForm = () => {
                 body: JSON.stringify(formData),
             });
 
-            const data = await response.text();
+            const data = await response.json();
             if (response.ok) {
                 setMessage(formState === 'login' ? "Success: Logged in" : "Success: User registered");
 
@@ -49,10 +49,10 @@ const AuthForm = () => {
                     }, 1000); // Delay for user feedback
                 }
             } else {
-                setMessage(`Error: ${data}`);
+                setMessage(`Error: ${data.message || 'Something went wrong'}`);
             }
         } catch (error) {
-            setMessage(`Error: ${error.message}`);
+            setMessage('Error: Unable to connect to server');
         }
     };
 

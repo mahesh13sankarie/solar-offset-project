@@ -16,6 +16,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -48,7 +49,16 @@ public class ElectricityMapServiceImpl implements ElectricityMapService {
                 .datetime(response.datetime())
                 .updatedAt(response.updatedAt())
                 .build();
-        carbonIntensityRepository.save(entity);
+        Optional<CarbonIntensity> existingCarbonIntensity = carbonIntensityRepository.findByCountryCode(entity.getCountryCode());
+        if (existingCarbonIntensity.isPresent()) {
+            CarbonIntensity existingEntity = existingCarbonIntensity.get();
+            existingEntity.setCarbonIntensity(entity.getCarbonIntensity());
+            existingEntity.setDatetime(entity.getDatetime());
+            existingEntity.setUpdatedAt(entity.getUpdatedAt());
+            carbonIntensityRepository.save(existingEntity); // Update existing record
+        } else {
+            carbonIntensityRepository.save(entity); // Insert new record
+        }
     }
 
     @Scheduled(fixedRate = 3600000)
@@ -62,8 +72,6 @@ public class ElectricityMapServiceImpl implements ElectricityMapService {
     @Async
     public void processElectricityBreakdownData(ElectricityMapCredentialDTO credential) {
         ElectricityBreakdownResponseDTO response = electricityMapWebClient.fetchElectricityBreakdown(credential);
-        System.out.println(response.powerConsumptionBreakdown());
-
         ElectricityBreakdown entity = ElectricityBreakdown.builder()
                 .zone(response.zone())
                 .updatedAt(response.updatedAt())
@@ -76,6 +84,22 @@ public class ElectricityMapServiceImpl implements ElectricityMapService {
                 .powerImportTotal(response.powerImportTotal())
                 .powerExportTotal(response.powerExportTotal())
                 .build();
-        electricityBreakdownRepository.save(entity);
+
+        Optional<ElectricityBreakdown> existingElectricityBreakdown = electricityBreakdownRepository.findByZone(response.zone());
+        if (existingElectricityBreakdown.isPresent()) {
+            ElectricityBreakdown existingEntity = existingElectricityBreakdown.get();
+            existingEntity.setUpdatedAt(entity.getUpdatedAt());
+            existingEntity.setPowerConsumptionBreakdownSolar(entity.getPowerConsumptionBreakdownSolar());
+            existingEntity.setPowerProductionBreakdownSolar(entity.getPowerProductionBreakdownSolar());
+            existingEntity.setFossilFreePercentage(entity.getFossilFreePercentage());
+            existingEntity.setRenewablePercentage(entity.getRenewablePercentage());
+            existingEntity.setPowerConsumptionTotal(entity.getPowerConsumptionTotal());
+            existingEntity.setPowerProductionTotal(entity.getPowerProductionTotal());
+            existingEntity.setPowerImportTotal(entity.getPowerImportTotal());
+            existingEntity.setPowerExportTotal(entity.getPowerExportTotal());
+            electricityBreakdownRepository.save(existingEntity);
+        } else {
+            electricityBreakdownRepository.save(entity);
+        }
     }
 }
