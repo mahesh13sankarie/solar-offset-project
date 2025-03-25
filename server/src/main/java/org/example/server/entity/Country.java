@@ -18,6 +18,9 @@ public class Country {
 
     @Column(nullable = false, unique = true)
     private String code;
+
+    @Column(nullable = false)
+    private String name;
     private Long population;
 
     private LocalDateTime updatedAt;
