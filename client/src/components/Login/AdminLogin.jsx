@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
+const REGISTER_URL = 'http://localhost:8000/api/v1/auth/register';
+
 const AdminLogin = () => {
     const [formData, setFormData] = useState({
         email: '',
@@ -21,7 +23,7 @@ const AdminLogin = () => {
         setMessage('');
         
         try {
-            const response = await axios.post('http://localhost:8000/api/v1/auth/register', {
+            const response = await axios.post(REGISTER_URL, {
                
                     email: formData.email,
                     password: formData.password
