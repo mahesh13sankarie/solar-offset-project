@@ -1,9 +1,8 @@
 package org.example.server.service.panel;
 
-import java.util.List;
-
-import org.example.server.dto.CountryPanelDTO;
+import lombok.RequiredArgsConstructor;
 import org.example.server.dto.PanelCreateRequestDTO;
+import org.example.server.dto.SolarPanelDTO;
 import org.example.server.entity.Country;
 import org.example.server.entity.CountryPanel;
 import org.example.server.entity.Panel;
@@ -13,9 +12,8 @@ import org.example.server.repository.PanelRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import lombok.RequiredArgsConstructor;
-
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,7 +25,7 @@ public class PanelServiceImpl implements PanelService {
     private final CountryRepository countryRepository;
 
     @Override
-    public List<CountryPanelDTO> getAllPanels() {
+    public List<SolarPanelDTO> getAllPanels() {
         List<CountryPanel> countryPanels = countryPanelRepository.findAll();
         return countryPanels.stream()
                 .map(this::mapToDTO)
@@ -35,7 +33,7 @@ public class PanelServiceImpl implements PanelService {
     }
 
     @Override
-    public List<CountryPanelDTO> getPanelByZone(String zone) {
+    public List<SolarPanelDTO> getPanelByZone(String zone) {
         List<CountryPanel> countryPanels = countryPanelRepository.findByCountryCode(zone);
         return countryPanels.stream()
                 .map(this::mapToDTO)
@@ -43,13 +41,13 @@ public class PanelServiceImpl implements PanelService {
     }
 
     @Override
-    public CountryPanelDTO getPanelById(Long id) {
+    public SolarPanelDTO getPanelById(Long id) {
         return null;
     }
 
     @Override
     @Transactional
-    public List<CountryPanelDTO> createPanel(PanelCreateRequestDTO request) {
+    public List<SolarPanelDTO> createPanel(PanelCreateRequestDTO request) {
         // Create and save the new panel
         Panel panel = Panel.builder()
                 .name(request.getName())
@@ -83,11 +81,11 @@ public class PanelServiceImpl implements PanelService {
 
     }
 
-    private CountryPanelDTO mapToDTO(CountryPanel countryPanel) {
+    private SolarPanelDTO mapToDTO(CountryPanel countryPanel) {
         Panel panel = countryPanel.getPanel();
         Country country = countryPanel.getCountry();
 
-        return CountryPanelDTO.builder()
+        return SolarPanelDTO.builder()
                 .panelName(panel.getName())
                 .installationCost(panel.getInstallationCost())
                 .productionPerPanel(panel.getProductionPerPanel())
@@ -102,7 +100,7 @@ public class PanelServiceImpl implements PanelService {
     }
 
     @Override
-    public CountryPanelDTO updatePanel(Long id, Object panelRequest) {
+    public SolarPanelDTO updatePanel(Long id, Object panelRequest) {
         return null;
     }
 }
