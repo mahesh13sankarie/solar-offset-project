@@ -16,5 +16,6 @@ public class CountryDetailDTO {
     private double electricityAvailability;
     private double solarPowerPotential;
     private int renewablePercentage;
+    private Long population;
     private List<SolarPanelDTO> solarPanels;
 }

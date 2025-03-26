@@ -15,7 +15,7 @@ public class ElectricityMetricsMapper {
      * Maps a single ElectricityBreakdown and average CarbonIntensity value to
      * ElectricityResponseDto
      */
-    public CountryDetailDTO toDTO(ElectricityBreakdown breakdown, CarbonIntensity carbonIntensity) {
+    public CountryDetailDTO toDTO(ElectricityBreakdown breakdown, CarbonIntensity carbonIntensity, long population) {
         String countryName = breakdown.getCountry() != null ? breakdown.getCountry().getName() : breakdown.getZone();
 
         return new CountryDetailDTO(
@@ -25,6 +25,7 @@ public class ElectricityMetricsMapper {
                 CalculationUtils.calculateElectricityAvailability(breakdown),
                 CalculationUtils.calculateSolarPowerPotential(breakdown),
                 breakdown.getRenewablePercentage(),
+                population,
                 Collections.emptyList()
         );
     }
