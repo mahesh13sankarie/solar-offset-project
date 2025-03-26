@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1/panels")
 @RequiredArgsConstructor
@@ -22,7 +23,6 @@ public class PanelController {
             return panelService.getAllPanels();
         }
         return panelService.getPanelByZone(code);
-
     }
 
     // Get panel details by ID
