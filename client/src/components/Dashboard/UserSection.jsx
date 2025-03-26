@@ -82,48 +82,54 @@ const UsersPage = () => {
         <div >
             <h2 className="mb-4 text-center d-flex" >User Management</h2>
 
-            <nav className="navbar bg-light px-3 py-2 mb-4 rounded shadow-sm">
-                <div className="container-fluid d-flex align-items-center flex-wrap gap-3 justify-content-between">
-                    <div className="d-flex align-items-center gap-3 flex-wrap">
-                        <div className="d-flex align-items-center gap-1">
-                            <label className="mb-0">Display</label>
+            <nav className="navbar bg-light px-3 py-2 mb-4 rounded" style={{ boxShadow: '0 2px 8px rgba(0, 0, 0, 0.30)' }}>
+                <div className="container-fluid d-flex align-items-center justify-content-between flex-wrap gap-2" >
+                    <div className="d-flex align-items-center gap-5 flex-wrap">
+                        <div className="d-flex align-items-center justify-content-between gap-1">
+                            <label className="mb-0 small">Display</label>
                             <select
                                 className="form-select form-select-sm"
                                 value={displayLimit}
                                 onChange={(e) => setDisplayLimit(Number(e.target.value))}
-                                style={{ width: '80px' }}
+                                style={{ width: '70px' }}
                             >
                                 <option value={5}>5</option>
                                 <option value={10}>10</option>
                                 <option value={20}>20</option>
                             </select>
-                            <label className="mb-0">records</label>
+                            <label className="mb-0 small">records</label>
                         </div>
-
+                        <div className="d-flex align-items-center gap-1">
+                            <label htmlFor="sortByRole">Sort By:</label>
                         <select
                             className="form-select form-select-sm"
                             value={sortByRole}
                             onChange={(e) => setSortByRole(e.target.value)}
-                            style={{ minWidth: '140px' }}
+                            style={{ width: '120px' }}
                         >
                             <option value="">All Roles</option>
                             <option value="user">User</option>
                             <option value="staff">Staff</option>
                             <option value="admin">Admin</option>
                         </select>
+                        </div>
 
-                        <input
-                            type="text"
-                            className="form-control form-control-sm"
-                            placeholder="Search by name or email"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            style={{ minWidth: '220px' }}
-                        />
+                        <div className="d-flex align-items-center gap-1">
+                            <label htmlFor="">Search:</label>
+                            <input
+                                type="text"
+                                className="form-control form-control-sm"
+                                placeholder="Search for users"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                style={{ width: '180px' }}
+                            />
+                        </div>
+
                     </div>
 
                     <button
-                        className="btn btn-warning text-white fw-semibold px-3"
+                        className="btn btn-warning text-white fw-semibold btn-sm"
                         onClick={() => setShowCreateModal(true)}
                     >
                         + Create User
