@@ -1,6 +1,12 @@
 package org.example.server.dto;
 
 public enum AccountType {
+    Admin {
+        @Override
+        int getIdentifier() {
+            return 0;
+        }
+    },
     Standard {
         @Override
         int getIdentifier() {
