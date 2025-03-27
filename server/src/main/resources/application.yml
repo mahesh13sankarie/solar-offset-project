@@ -10,7 +10,7 @@ spring:
     password: Shreyas@123
   sql:
     init:
-      mode: always  # 애플리케이션 실행 시 항상 init.sql 실행
+      mode: always
       schema-locations: classpath:sql/schema.sql
       data-locations: classpath:sql/init.sql
   jpa:
@@ -33,7 +33,7 @@ logging:
     org.hibernate.SQL: DEBUG
 
 stripe:
-  scret:
+  secret:
     key: "sk_test_51QwmaiPrlrRfBw5poWTCLViYs4omAuLFYw2nxjXQAZaNlXFcGh5GK7JSWdBSEvrPvsrhAXpJ1cgcYM4vb1m1ZbuK00wjYwLacc"
 electricity-map:
   credentials:
