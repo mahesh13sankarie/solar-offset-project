@@ -18,6 +18,7 @@ import AdminLogin from './components/Login/AdminLogin.jsx';
 import SideNav from "./components/Dashboard/Sidebar.jsx";
 import Dashboard from "./components/Dashboard/Dashboard.jsx";
 import Userpage from "./components/Dashboard/UserSection.jsx";
+import ReportGenerate from "./components/Dashboard/ReportGenerate.jsx";
 
 const router = createBrowserRouter([
   {path:"/",element:<Home />},
@@ -27,7 +28,8 @@ const router = createBrowserRouter([
         path:"/dashboard",
         element:<Dashboard />,
         children:[
-            {path:"/dashboard/users",element:<Userpage />}
+            {path:"/dashboard/users",element:<Userpage />},
+            {path:"/dashboard/reports",element:<ReportGenerate />}
         ]
     },
   {path:"/login",element:<AuthForm />},
