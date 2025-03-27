@@ -15,5 +15,5 @@ public interface PanelTransactionService {
     List<PanelTransaction> fetchAll();
 
     @Query("select trx from PanelTransaction trx join trx.user usr where usr.id == :id")
-    List<PanelTransaction> fetchById(String id);
+    List<PanelTransaction> fetchById(Long id);
 }

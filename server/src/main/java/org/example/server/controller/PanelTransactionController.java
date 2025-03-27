@@ -36,8 +36,8 @@ public class PanelTransactionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getTransactionByUserId(@PathVariable String id) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> getTransactionByUserId(@PathVariable Long id) {
+        return ResponseEntity.ok().body(filteredResponse(panelTransactionService.fetchById(id)));
     }
 
     private List<PanelTransactionResponse> filteredResponse(List<PanelTransaction> panelTransactions) {

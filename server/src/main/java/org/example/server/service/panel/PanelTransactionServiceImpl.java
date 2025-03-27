@@ -31,7 +31,6 @@ public class PanelTransactionServiceImpl implements PanelTransactionService {
 
     @Override
     public PanelTransaction save(PanelTransactionDTO panelTransaction) {
-        //TODO: clean code!
         Optional<Panel> panel = panelRepository.findById(panelTransaction.panelId());
         Optional<User> user = userRepository.findById(panelTransaction.userId());
         PanelTransaction newPanel = new PanelTransaction(user.get(), panel.get());
@@ -44,8 +43,7 @@ public class PanelTransactionServiceImpl implements PanelTransactionService {
     }
 
     @Override
-    public List<PanelTransaction> fetchById(String id) {
-        return panelTransactionRepository.findAll();
+    public List<PanelTransaction> fetchById(Long id) {
+        return panelTransactionRepository.findByUserId(id);
     }
-
 }
