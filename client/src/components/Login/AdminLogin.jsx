@@ -8,7 +8,6 @@ const superAdmin = {
     password: "admin"
 };
 
-
 // const REGISTER_URL = 'http://localhost:3000/admins';
 
 const AdminLogin = () => {
