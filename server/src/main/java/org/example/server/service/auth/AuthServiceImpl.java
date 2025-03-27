@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthServiceImpl implements AuthService, UserDetailsService {
@@ -42,6 +43,9 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
 
     @Override
     public List<User> getUsers() {
-        return userRepository.fetchUsers();
+        return userRepository.fetchUsers().stream()
+                .map(user -> user.getDetail(user))
+                .collect(Collectors.toList());
+
     }
 }
