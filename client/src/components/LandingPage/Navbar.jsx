@@ -1,7 +1,24 @@
-import React from "react";
-
+import React, {useState,useEffect} from "react";
+import {logout} from "../Login/HelperFunction.jsx";
 
 const Navbar = () => {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    // Check if there's a token in localStorage to determine if the user is logged in
+    useEffect(() => {
+        const token = localStorage.getItem("authToken"); // Replace with your actual token key
+        if (token) {
+            setIsLoggedIn(true);
+        }
+    }, []);
+
+    const handleLogout = () => {
+        // Remove token from localStorage
+        localStorage.removeItem("authToken"); // Replace with your actual token key
+        setIsLoggedIn(false); // Update state to reflect that user is logged out
+        console.log("Logged out successfully");
+
+    };
+
     return (
         <header id="header" className="header d-flex align-items-center fixed-top"
         style={{
@@ -27,7 +44,17 @@ const Navbar = () => {
                 </nav>
 
                 {/* Login/Register Button */}
-                <a href="/login" className="btn-getstarted" style={{textDecoration:"none",}} >Login/Register</a>
+                <div>
+                    {
+                        isLoggedIn ? (
+                            <a href="/" className="btn-getstarted" style={{textDecoration:"none",}} onClick={handleLogout}>Logout</a>
+                        ): (
+                            <a href="/login" className="btn-getstarted" style={{textDecoration:"none",}} >Login/Register</a>
+
+                        )
+                    }
+
+                </div>
 
                 {/* Profile Section */}
                 {/* <div className="profile" id="profile">

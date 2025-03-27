@@ -11,6 +11,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class AuthServiceImpl implements AuthService, UserDetailsService {
     @Autowired
@@ -33,9 +36,16 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
         return encoder.encode(password);
     }
 
-
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public List<User> getUsers() {
+        return userRepository.fetchUsers().stream()
+                .map(user -> user.getDetail(user))
+                .collect(Collectors.toList());
+
     }
 }

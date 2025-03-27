@@ -11,10 +11,12 @@ import org.example.server.mapper.ElectricityMetricsMapper;
 import org.example.server.repository.CarbonIntensityRepository;
 import org.example.server.repository.CountryRepository;
 import org.example.server.repository.ElectricityBreakdownRepository;
+import org.example.server.utils.CalculationUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,29 +43,52 @@ public class ElectricityMetricsServiceImpl implements ElectricityMetricsService 
         List<CarbonIntensity> carbonIntensities = carbonIntensityRepository.findAll();
 
         Map<String, CarbonIntensity> intensitiesByZone = carbonIntensities.stream()
-                .collect(Collectors.toMap(CarbonIntensity::getCountryCode, carbonIntensity -> carbonIntensity));
-        return breakdowns.stream().map(breakdown -> {
-            CarbonIntensity intensitiesForZone = intensitiesByZone.get(breakdown.getZone());
-            return electricityMetricsMapper.toDTO(breakdown, intensitiesForZone);
-        }).collect(Collectors.toList());
+                .collect(Collectors.toMap(CarbonIntensity::getCountryCode,
+                        carbonIntensity -> carbonIntensity));
+
+        Map<String, Country> countryMap = countryRepository.findAll().stream()
+                .collect(Collectors.toMap(Country::getCode,
+                        country -> country));
+
+        return breakdowns.stream()
+                .map(breakdown -> {
+                    String zone = breakdown.getZone();
+
+                    Country country = Optional.ofNullable(countryMap.get(zone))
+                            .orElseThrow(() -> new DataNotFoundException("Country not found for code: " + zone));
+
+                    CarbonIntensity intensity = Optional.ofNullable(intensitiesByZone.get(zone))
+                            .orElseThrow(() -> new DataNotFoundException("Carbon intensity not found for country: " + zone));
+
+                    return electricityMetricsMapper.toDTO(breakdown, intensity, CalculationUtils.formatPopulation(country.getPopulation()));
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
     public CountryDetailDTO getElectricityDataByCountry(String countryCode) {
-        Country country = countryRepository.findByCode(countryCode)
+        Country country = getCountryOrThrow(countryCode);
+
+        ElectricityBreakdown breakdown = electricityBreakdownRepository.findByZone(countryCode)
+                .orElseThrow(() -> new DataNotFoundException("Electricity breakdown not found for: " + countryCode));
+
+        CarbonIntensity intensity = carbonIntensityRepository.findByCountryCode(countryCode)
+                .orElseThrow(() -> new DataNotFoundException("Carbon intensity not found for: " + countryCode));
+
+        CountryDetailDTO dto = electricityMetricsMapper.toDTO(breakdown, intensity, CalculationUtils.formatPopulation(country.getPopulation()));
+        dto.setSolarPanels(mapPanels(country));
+
+        System.out.println("Computed average metrics for country " + countryCode + "carbon intensity records: " + dto);
+        return dto;
+    }
+
+    private Country getCountryOrThrow(String countryCode) {
+        return countryRepository.findByCode(countryCode)
                 .orElseThrow(() -> new DataNotFoundException("Country not found for code: " + countryCode));
+    }
 
-
-        ElectricityBreakdown breakdownData = electricityBreakdownRepository.findByZone(countryCode).orElseThrow(
-                () -> new DataNotFoundException("Electricity breakdown data not found for country: " + countryCode)
-        );
-
-        CarbonIntensity carbonIntensity = carbonIntensityRepository.findByCountryCode(countryCode).orElseThrow(
-                () -> new DataNotFoundException("Carbon intensity data not found for country: " + countryCode)
-        );
-        CountryDetailDTO response = electricityMetricsMapper.toDTO(breakdownData, carbonIntensity);
-
-        List<SolarPanelDTO> panelDTOs = country.getCountryPanels().stream()
+    private List<SolarPanelDTO> mapPanels(Country country) {
+        return country.getCountryPanels().stream()
                 .map(cp -> {
                     Panel p = cp.getPanel();
                     return SolarPanelDTO.builder()
@@ -76,11 +101,8 @@ public class ElectricityMetricsServiceImpl implements ElectricityMetricsService 
                             .temperatureTolerance(p.getTemperatureTolerance())
                             .warranty(p.getWarranty())
                             .build();
-                }).toList();
-
-        response.setSolarPanels(panelDTOs);
-        System.out.println("Computed average metrics for country " + countryCode + "carbon intensity records: " + response);
-        return response;
+                })
+                .collect(Collectors.toList());
     }
 
 }

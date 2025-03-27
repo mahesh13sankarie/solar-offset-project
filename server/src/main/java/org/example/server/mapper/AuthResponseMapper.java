@@ -14,5 +14,9 @@ public class AuthResponseMapper {
     public BaseResponse buildSuccessResponse() {
         return new BaseResponse(200, "", "", null);
     }
+
+    public BaseResponse buildCustomResponse(Object data) {
+        return new BaseResponse(200, "", "", data);
+    }
 }
 
