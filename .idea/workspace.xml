@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="dcee3423-f797-491f-8610-9c8558d7139d" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources/7b543548-1137-425e-ba88-f7b01f7e2251.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources/7b543548-1137-425e-ba88-f7b01f7e2251/storage_v2/_src_/schema/information_schema.FNRwLQ.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources/7b543548-1137-425e-ba88-f7b01f7e2251/storage_v2/_src_/schema/mysql.osA4Bg.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources/7b543548-1137-425e-ba88-f7b01f7e2251/storage_v2/_src_/schema/performance_schema.kIw0nw.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources/7b543548-1137-425e-ba88-f7b01f7e2251/storage_v2/_src_/schema/solaroffset.lPWCCQ.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources/7b543548-1137-425e-ba88-f7b01f7e2251/storage_v2/_src_/schema/sys.zb4BAA.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/solaroffset.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/node_modules/.package-lock.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/node_modules/cors/CONTRIBUTING.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/node_modules/cors/HISTORY.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/node_modules/cors/LICENSE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/node_modules/cors/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/node_modules/cors/lib/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/node_modules/cors/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/node_modules/object-assign/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/node_modules/object-assign/license" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/node_modules/object-assign/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/node_modules/object-assign/readme.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/node_modules/vary/HISTORY.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/node_modules/vary/LICENSE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/node_modules/vary/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/node_modules/vary/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/node_modules/vary/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitLabMergeRequestFiltersHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPENED",
+    "assignee": {
+      "type": "org.jetbrains.plugins.gitlab.mergerequest.ui.filters.GitLabMergeRequestsFiltersValue.MergeRequestsMemberFilterValue.MergeRequestsAssigneeFilterValue",
+      "username": "acp23jip",
+      "fullname": "Jeklin Purba"
+    }
+  }
+}]]></component>
+  <component name="GitLabMergeRequestsSettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "first": "https://git.shefcompsci.org.uk/com6103-2024-25/team16/project.git",
+    "second": "72ec36d1-3ef2-4d07-ac9b-676f272ca4c4"
+  }
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 2
+}]]></component>
+  <component name="ProjectId" id="2up8V0jTykjvI9NhfY8sk92DeWW" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Node.js.SolarComparison.jsx.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "jeklin/feature/amountdonationpage",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable",
+    "ts.external.directory.path": "/Applications/IntelliJ IDEA.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
+    ]
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-fdfe4dae3a2d-intellij.indexing.shared.core-IU-243.21565.193" />
+        <option value="bundled-js-predefined-d6986cc7102b-e768b9ed790e-JavaScript-IU-243.21565.193" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="dcee3423-f797-491f-8610-9c8558d7139d" name="Changes" comment="" />
+      <created>1742934174934</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1742934174934</updated>
+      <workItem from="1742934175972" duration="11018000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
