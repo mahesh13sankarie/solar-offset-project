@@ -11,6 +11,7 @@ import org.example.server.mapper.ElectricityMetricsMapper;
 import org.example.server.repository.CarbonIntensityRepository;
 import org.example.server.repository.CountryRepository;
 import org.example.server.repository.ElectricityBreakdownRepository;
+import org.example.server.utils.CalculationUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -59,7 +60,7 @@ public class ElectricityMetricsServiceImpl implements ElectricityMetricsService 
                     CarbonIntensity intensity = Optional.ofNullable(intensitiesByZone.get(zone))
                             .orElseThrow(() -> new DataNotFoundException("Carbon intensity not found for country: " + zone));
 
-                    return electricityMetricsMapper.toDTO(breakdown, intensity, country.getPopulation());
+                    return electricityMetricsMapper.toDTO(breakdown, intensity, CalculationUtils.formatPopulation(country.getPopulation()));
                 })
                 .collect(Collectors.toList());
     }
@@ -74,7 +75,7 @@ public class ElectricityMetricsServiceImpl implements ElectricityMetricsService 
         CarbonIntensity intensity = carbonIntensityRepository.findByCountryCode(countryCode)
                 .orElseThrow(() -> new DataNotFoundException("Carbon intensity not found for: " + countryCode));
 
-        CountryDetailDTO dto = electricityMetricsMapper.toDTO(breakdown, intensity, country.getPopulation());
+        CountryDetailDTO dto = electricityMetricsMapper.toDTO(breakdown, intensity, CalculationUtils.formatPopulation(country.getPopulation()));
         dto.setSolarPanels(mapPanels(country));
 
         System.out.println("Computed average metrics for country " + countryCode + "carbon intensity records: " + dto);
