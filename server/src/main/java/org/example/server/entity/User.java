@@ -39,7 +39,8 @@ public class User implements UserDetails {
 
     }
 
-    public User(String email, String fullName) {
+    public User(Long id, String email, String fullName) {
+        this.id = id;
         this.email = email;
         this.fullName = fullName;
     }
@@ -75,6 +76,6 @@ public class User implements UserDetails {
     }
 
     public User getDetail(User user) {
-        return new User(user.email, user.fullName);
+        return new User(user.id, user.email, user.fullName);
     }
 }
