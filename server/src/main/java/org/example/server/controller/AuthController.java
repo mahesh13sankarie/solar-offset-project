@@ -56,8 +56,9 @@ public class AuthController {
         //Logout is via /logout
         String email = authentication.getPrincipal().getAttribute("email");
         String name = authentication.getPrincipal().getAttribute("name");
+        String id = authentication.getPrincipal().getAttribute("id");
         String token = tokenProvider.generateToken(email);
-        User user = new User(email, name);
+        User user = new User(Long.valueOf(id), email, name);
 
         return ResponseEntity.ok().body(responseMapper.buildLoginResponse(user.getDetail(user), token));
     }
