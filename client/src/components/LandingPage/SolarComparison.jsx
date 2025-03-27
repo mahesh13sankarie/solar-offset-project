@@ -96,6 +96,8 @@ const SolarComparison = () => {
                 return `${value.toFixed(2)}%`;
             case "population":
                 return `${value} million`;
+            case "solarPowerPotential":
+                return `${value.toFixed(2)}%`;
             default:
                 return value;
         }
@@ -124,6 +126,7 @@ const SolarComparison = () => {
                         <th>Carbon Emissions</th>
                         <th>Electricity</th>
                         <th>Renewables</th>
+                        <th>Solar Power Potential</th>
                         <th>Population</th>
                         <th>Actions</th>
                     </tr>
@@ -135,6 +138,7 @@ const SolarComparison = () => {
                             <td>{formatValue("carbonEmissions", item.carbonEmissions)}</td>
                             <td>{formatValue("electricityAvailability", item.electricityAvailability)}</td>
                             <td>{formatValue("renewablePercentage", item.renewablePercentage)}</td>
+                            <td>{formatValue("solarPowerPotential", item.solarPowerPotential)}</td>
                             <td>{formatValue("population", item.population)}</td>
                             <td>
                                 <div className="d-flex gap-1">
