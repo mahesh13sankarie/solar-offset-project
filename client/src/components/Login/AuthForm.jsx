@@ -75,7 +75,7 @@ const AuthForm = () => {
     };
 
     return (
-        <div className="container d-flex justify-content-center align-items-center vh-100">
+        <div className="container d-flex justify-content-center align-items-center vh-100" >
             <div className="card p-4 shadow-lg" style={{maxWidth: '800px', width: '100%'}}>
                 <div className="row g-0">
                     <div className="col-md-6 d-flex flex-column justify-content-center p-3 bg-light rounded-start">
