@@ -1,115 +1,136 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { login, isAuthenticated } from './HelperFunction.jsx'; // Import helper functions
+import { useNavigate } from 'react-router-dom';
+import axios from "axios";
 
 const AuthForm = () => {
-  const [formState, setFormState] = useState('login'); // 'login', 'register', 'reset'
-    const [formData, setFormData] = useState({ email: '', password: '', fullName: '', country: '' });
+    const [formState, setFormState] = useState('login'); // 'login', 'register', 'reset'
+    const [formData, setFormData] = useState({ email: '', password: '', confirmPassword: '', fullName: '', country: '' });
     const [message, setMessage] = useState('');
+    const [submitted, setSubmitted] = useState(false);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (isAuthenticated()) {
+            navigate('/dashboard'); // Redirect to dashboard if already logged in
+        }
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
             ...prevData,
-            [name]: value,  // ✅ Correctly updates the field dynamically
-
+            [name]: value,
         }));
-        console.log("Updated State:", formData);  // ✅ Debugging
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setMessage('');
+        setSubmitted(true);
+
+        if (formState === 'register' && formData.password !== formData.confirmPassword) {
+            setMessage('Error: Passwords do not match');
+            setSubmitted(false);
+            return;
+        }
 
         try {
-            const response = await fetch('http://localhost:8080/api/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
-            });
-
-            const data = await response.text();
-            if (response.ok) {
-                setMessage("Success: User registered");
+            if (formState === 'login') {
+                const response = await login(formData.email, formData.password);
+                if (response.success) {
+                    setMessage('Success: Logged in');
+                    setTimeout(() => navigate('/dashboard'), 1000);
+                } else {
+                    setMessage(`Error: ${response.error}`);
+                }
             } else {
-                setMessage(`Error: ${data}`);
+                // Register API Call
+                const registerResponse = await axios.post('http://localhost:8000/api/v1/auth/register', {
+                    email: formData.email,
+                    password: formData.password,
+                    fullName: formData.fullName,
+                    accountType: 1
+                });
+
+                if (registerResponse.status === 200) {
+                    setMessage("Success: User registered");
+                    setFormState('login'); // Switch to login after successful registration
+                } else {
+                    setMessage("Error: Registration failed");
+                }
             }
-        } catch (error) {
-            setMessage(`Error: ${error.message}`);
+        } catch (err) {
+            setMessage('Error: Unable to connect to server');
+        } finally {
+            setSubmitted(false);
         }
     };
 
+    const switchForm = (state) => {
+        setFormState(state);
+        setFormData({ email: '', password: '', confirmPassword: '', fullName: '', country: '' });
+        setMessage('');
+    };
+
     return (
-    <div className="container">
-      <div className="form-container">
-        {formState === 'reset' ? (
-          <>
-            <h3 className="text-center">Reset Password</h3>
-            <form>
-              <div className="mb-3">
-                <label className="form-label">Enter your email</label>
-                <input type="email" className="form-control" required />
-              </div>
-              <button className="btn btn-primary w-100">Send Reset Link</button>
-              <p className="text-center mt-3">
-                <a href="#" onClick={() => setFormState('login')}>Back to Login</a>
-              </p>
-            </form>
-          </>
-        ) : (
-          <>
-            <h3 className="text-center">{formState === 'login' ? 'Login' : 'Register'}</h3>
-            <form onSubmit={handleSubmit}>
-              <div className="mb-3">
-                <label className="form-label">Email</label>
-                <input type="email" className="form-control" defaultValue={formData.email}
-                       required />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Password</label>
-                <input type="password" className="form-control" defaultValue={formData.password}
-                       required />
-              </div>
+        <div className="container d-flex justify-content-center align-items-center vh-100">
+            <div className="card p-4 shadow-lg" style={{ maxWidth: '800px', width: '100%' }}>
+                <div className="row g-0">
+                    <div className="col-md-6 d-flex flex-column justify-content-center p-3 bg-light rounded-start">
+                        <h3 className="text-center">Welcome</h3>
+                        <p className="text-muted">Login or Register to continue.</p>
+                    </div>
 
-              {formState === 'register' && (
-                <>
-                  <div className="mb-3">
-                    <label className="form-label">Full Name</label>
-                    <input type="text" className="form-control" defaultValue={formData.fullName}
-                           required />
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label">Country</label>
-                    <input type="text" className="form-control" defaultValue={formData.country}
-                           required />
-                  </div>
-                </>
-              )}
+                    <div className="col-md-6 p-4">
+                        {!submitted ? (
+                            <>
+                                <h3 className="text-center">{formState === 'login' ? 'Login' : 'Register'}</h3>
+                                <form onSubmit={handleSubmit}>
+                                    <div className="mb-3">
+                                        <label className="form-label">Email</label>
+                                        <input type="email" className="form-control" name="email" value={formData.email} onChange={handleChange} required />
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label">Password</label>
+                                        <input type="password" className="form-control" name="password" value={formData.password} onChange={handleChange} required />
+                                    </div>
 
-              <button type="submit" className="btn btn-primary w-100">Submit</button>
+                                    {formState === 'register' && (
+                                        <>
+                                            <div className="mb-3">
+                                                <label className="form-label">Confirm Password</label>
+                                                <input type="password" className="form-control" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required />
+                                            </div>
+                                            <div className="mb-3">
+                                                <label className="form-label">Full Name</label>
+                                                <input type="text" className="form-control" name="fullName" value={formData.fullName} onChange={handleChange} required />
+                                            </div>
+                                        </>
+                                    )}
 
-              <p className="text-center mt-3">
-                {formState === 'login' ? (
-                  <a href="#" onClick={() => setFormState('register')}>Don't have an account? Register</a>
-                ) : (
-                  <a href="#" onClick={() => setFormState('login')}>Already have an account? Login</a>
-                )}
-              </p>
+                                    {message && <p className="text-danger text-center">{message}</p>}
 
-              {formState === 'login' && (
-                <p className="text-center mt-2">
-                  <a href="#" onClick={() => setFormState('reset')}>Forgot Password?</a>
-                </p>
-              )}
+                                    <button type="submit" className="btn btn-primary w-100">Submit</button>
 
-              <p className="text-center mt-2">
-                <a href="#">Google Login</a>
-              </p>
-            </form>
-          </>
-        )}
-      </div>
-    </div>
-  );
+                                    <p className="text-center mt-3">
+                                        {formState === 'login' ? (
+                                            <a href="#" onClick={() => switchForm('register')}>Don't have an account? Register</a>
+                                        ) : (
+                                            <a href="#" onClick={() => switchForm('login')}>Already have an account? Login</a>
+                                        )}
+                                    </p>
+                                </form>
+                            </>
+                        ) : (
+                            <h3 className="text-center">Submitted Successfully</h3>
+                        )}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
 };
 
 export default AuthForm;

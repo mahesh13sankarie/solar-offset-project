@@ -23,8 +23,10 @@ import java.util.Map;
  * *
  * Google login path: <a href="http://localhost:8000/login/oauth2/code/google">...</a>
  */
+@CrossOrigin
 @RequestMapping("api/v1/auth")
 @RestController
+@CrossOrigin
 public class AuthController {
 
     @Autowired
