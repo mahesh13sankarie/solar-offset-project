@@ -32,6 +32,7 @@ public class ElectricityBreakdown {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "zone", referencedColumnName = "code", insertable = false, updatable = false)
+    //todo in join column should we use country_id instead of zone??
     private Country country;
 
 }

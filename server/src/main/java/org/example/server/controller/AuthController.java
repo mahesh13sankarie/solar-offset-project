@@ -14,7 +14,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,8 +23,10 @@ import java.util.Map;
  * *
  * Google login path: <a href="http://localhost:8000/login/oauth2/code/google">...</a>
  */
+@CrossOrigin
 @RequestMapping("api/v1/auth")
 @RestController
+@CrossOrigin
 public class AuthController {
 
     @Autowired
@@ -55,8 +56,9 @@ public class AuthController {
         //Logout is via /logout
         String email = authentication.getPrincipal().getAttribute("email");
         String name = authentication.getPrincipal().getAttribute("name");
+        String id = authentication.getPrincipal().getAttribute("id");
         String token = tokenProvider.generateToken(email);
-        User user = new User(email, name);
+        User user = new User(Long.valueOf(id), email, name);
 
         return ResponseEntity.ok().body(responseMapper.buildLoginResponse(user.getDetail(user), token));
     }
