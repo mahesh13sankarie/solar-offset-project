@@ -1,11 +1,14 @@
 package org.example.server.controller;
 
 import org.example.server.dto.LoginDto;
+import org.example.server.dto.MailDto;
 import org.example.server.dto.UserDto;
+import org.example.server.entity.MailAttributes;
 import org.example.server.entity.User;
 import org.example.server.mapper.AuthResponseMapper;
 import org.example.server.repository.UserRepository;
 import org.example.server.service.auth.AuthService;
+import org.example.server.service.mail.MailService;
 import org.example.server.utils.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +48,9 @@ public class AuthController {
 
     @Autowired
     AuthResponseMapper responseMapper;
+
+    @Autowired
+    MailService mailService;
 
     //token for Google - OAuth2
     @GetMapping("/generatetoken")
@@ -93,9 +99,12 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
-    ResponseEntity<?> sendEmail(@RequestBody String email) {
+    ResponseEntity<?> sendEmail(@RequestBody MailDto email) {
         //TODO: send email with information and link, in link put email info so FE could retrieve!
-        return ResponseEntity.ok().body(email);
+        //check if user exist
+        String mail = email.email();
+        mailService.sendEmail(new MailAttributes(mail, "Solar Offset: Change password!", "Dear " + mail + " please change your password thru out this link!")); //construct body with link!
+        return ResponseEntity.ok().body(responseMapper.buildCustomMessage("Please check your e-mail!"));
     }
 
     //could be use as regular change password as well!
