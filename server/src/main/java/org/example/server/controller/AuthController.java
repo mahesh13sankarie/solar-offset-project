@@ -1,9 +1,11 @@
 package org.example.server.controller;
 
+import org.example.server.dto.AccountType;
 import org.example.server.dto.LoginDto;
 import org.example.server.dto.UserDto;
 import org.example.server.entity.User;
 import org.example.server.mapper.AuthResponseMapper;
+import org.example.server.mapper.UserMapper;
 import org.example.server.repository.UserRepository;
 import org.example.server.service.auth.AuthService;
 import org.example.server.utils.TokenProvider;
@@ -55,11 +57,10 @@ public class AuthController {
         //Logout is via /logout
         String email = authentication.getPrincipal().getAttribute("email");
         String name = authentication.getPrincipal().getAttribute("name");
-        String id = authentication.getPrincipal().getAttribute("id");
         String token = tokenProvider.generateToken(email);
-        User user = new User(Long.valueOf(id), email, name);
-
-        return ResponseEntity.ok().body(responseMapper.buildLoginResponse(user.getDetail(user), token));
+        UserDto user = new UserDto(email, "", name, AccountType.Google);
+        authService.saveUser(user);
+        return ResponseEntity.ok().body(responseMapper.buildLoginResponse(user, token));
     }
 
     @PostMapping("/register")
