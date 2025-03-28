@@ -23,7 +23,6 @@ import java.util.Map;
  * *
  * Google login path: <a href="http://localhost:8000/login/oauth2/code/google">...</a>
  */
-@CrossOrigin
 @RequestMapping("api/v1/auth")
 @RestController
 @CrossOrigin
@@ -91,6 +90,19 @@ public class AuthController {
     ResponseEntity<?> logout() {
         SecurityContextHolder.clearContext();
         return ResponseEntity.ok().body(responseMapper.buildSuccessResponse());
+    }
+
+    @PostMapping("/forgot-password")
+    ResponseEntity<?> sendEmail(@RequestBody String email) {
+        //TODO: send email with information and link, in link put email info so FE could retrieve!
+        return ResponseEntity.ok().body(email);
+    }
+
+    //could be use as regular change password as well!
+    @PutMapping("/update-password")
+    ResponseEntity<?> updatePassword(@RequestBody LoginDto loginDto) {
+        authService.updatePassword(loginDto);
+        return ResponseEntity.ok().body(responseMapper.buildCustomMessage("Password updated successfully!"));
     }
 
     private User getUser(String email) {
