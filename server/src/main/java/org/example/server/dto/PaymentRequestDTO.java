@@ -6,6 +6,5 @@ public record PaymentRequestDTO(
 		Long userId,
 		Long countryPanelId,
 		BigDecimal amount,
-		String type,
-		String paymentToken) {
+		String type) {
 }
