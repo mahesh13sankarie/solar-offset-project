@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import org.example.server.utils.PaymentType;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -39,19 +41,23 @@ public class Payment {
 	@Column
 	private String receipUrl;
 
+	@Column
+	private LocalDateTime createdAt;
+
+	@Column
+	private LocalDateTime updatedAt;
+
 	@Builder
-	public Payment(User user, CountryPanel countryPanel, BigDecimal amount, String type, String transactionId,
+	public Payment(User user, CountryPanel countryPanel, BigDecimal amount, PaymentType type, String transactionId,
 			String status, String receipUrl) {
 		this.user = user;
 		this.countryPanel = countryPanel;
 		this.amount = amount;
-		this.type = type;
+		this.type = type.toString();
 		this.transactionId = transactionId;
 		this.receipUrl = receipUrl;
 		this.updatedAt = LocalDateTime.now();
 		this.createdAt = LocalDateTime.now();
 	}
 
-	private LocalDateTime createdAt;
-	private LocalDateTime updatedAt;
 }
