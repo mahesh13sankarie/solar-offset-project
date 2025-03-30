@@ -53,6 +53,8 @@ public class Payment {
 		this.user = user;
 		this.countryPanel = countryPanel;
 		this.amount = amount;
+
+		// https://www.linkedin.com/pulse/why-should-you-avoid-using-enums-mysql-eyad-mohammed-osama/
 		this.type = type.toString();
 		this.transactionId = transactionId;
 		this.receipUrl = receipUrl;
