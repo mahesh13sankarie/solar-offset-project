@@ -81,6 +81,7 @@ const AuthForm = () => {
                     <div className="col-md-6 d-flex flex-column justify-content-center p-3 bg-light rounded-start">
                         <h3 className="text-center">Welcome</h3>
                         <p className="text-muted">Login or Register to continue.</p>
+                        
                     </div>
 
                     <div className="col-md-6 p-4">
@@ -119,15 +120,18 @@ const AuthForm = () => {
 
                                     <button type="submit" className="btn btn-primary w-100">Submit</button>
 
-                                    <p className="text-center mt-3">
-                                        {formState === 'login' ? (
-                                            <a href="#" onClick={() => switchForm('register')}>Don't have an account?
-                                                Register</a>
-                                        ) : (
-                                            <a href="#" onClick={() => switchForm('login')}>Already have an account?
-                                                Login</a>
-                                        )}
-                                    </p>
+                                 <div className="text-center mt-3">
+                                   {formState === 'login' ? (
+                                     <>
+                                       <a href="#" onClick={() => switchForm('register')}>Don't have an account? Register</a>
+                                       <br />
+                                       <a href="/change-password" className="text-decoration-none mt-2 d-inline-block">Forgot Password?</a>
+                                     </>
+                                   ) : (
+                                     <a href="#" onClick={() => switchForm('login')}>Already have an account? Login</a>
+                                   )}
+                                </div>
+
                                 </form>
                             </>
                         ) : (
