@@ -1,5 +1,6 @@
 package org.example.server.controller;
 
+import org.example.server.dto.UserRequest;
 import org.example.server.mapper.AuthResponseMapper;
 import org.example.server.service.auth.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +28,14 @@ public class AdminController {
     }
 
     @PutMapping("/update-role")
-    public ResponseEntity<?> updateRole() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> updateRole(@RequestBody UserRequest userRequest) {
+        authService.updateRole(userRequest);
+        return ResponseEntity.ok().body(responseMapper.buildSuccessResponse());
     }
 
-    @PutMapping("/delete-user")
-    public ResponseEntity<?> deleteUser() {
-        return ResponseEntity.ok().build();
+    @DeleteMapping("/delete-user")
+    public ResponseEntity<?> deleteUser(@RequestBody UserRequest userRequest) {
+        authService.deleteUser(userRequest.userId());
+        return ResponseEntity.ok().body(responseMapper.buildSuccessResponse());
     }
 }
