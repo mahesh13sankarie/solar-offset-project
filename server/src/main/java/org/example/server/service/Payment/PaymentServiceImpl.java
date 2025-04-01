@@ -110,7 +110,7 @@ public class PaymentServiceImpl implements PaymentService {
 						.user(user)
 						.countryPanel(countryPanel)
 						.amount(request.amount())
-						.type(request.type())
+						.type(request.paymentType())
 						.transactionId(paymentIntent.getId())
 						.receipUrl(receiptUrl)
 						.build();

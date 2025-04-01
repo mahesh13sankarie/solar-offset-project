@@ -14,6 +14,6 @@ public record PaymentRequestDTO(
 		Long userId,
 		Long countryPanelId,
 		BigDecimal amount,
-		PaymentType type,
+		PaymentType paymentType,
 		String paymentMethodId) {
 }
