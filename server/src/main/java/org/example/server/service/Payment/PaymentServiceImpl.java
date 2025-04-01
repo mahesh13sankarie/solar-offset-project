@@ -20,6 +20,19 @@ import com.stripe.param.PaymentIntentCreateParams;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * PaymentService Implementation
+ * 
+ * Stripe recommended payment processing flow:
+ * 1. Client-side: Collect card information using Stripe.js and generate a
+ * PaymentMethod ID
+ * 2. Server-side: Process only the PaymentMethod ID received from the client
+ * 3. Card information is processed only on the client-side and never sent to
+ * the server
+ * 
+ * Reference documentation:
+ * - https://docs.stripe.com/payments/accept-a-payment-synchronously
+ */
 @Service
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
@@ -30,6 +43,29 @@ public class PaymentServiceImpl implements PaymentService {
 
 	private final PaymentRepository paymentRepository;
 
+	/**
+	 * Process a payment.
+	 * 
+	 * Following Stripe's recommended approach, this method uses the PaymentMethod
+	 * ID directly
+	 * without a separate authentication process.
+	 * 
+	 * How to test in the backend:
+	 * 1. You can use Stripe's test PaymentMethod IDs:
+	 * - pm_card_visa: Test successful Visa card payment
+	 * - pm_card_visa_chargeDeclined: Test payment decline
+	 * - pm_card_authenticationRequired: Test authentication required
+	 * 
+	 * Test example:
+	 * curl -X POST http://localhost:8000/api/payments \
+	 * -H "Content-Type: application/json" \
+	 * -d '{"userId": 1, "countryPanelId": 1, "amount": 100, "type": "STRIPE",
+	 * "paymentMethodId": "pm_card_visa"}'
+	 * 
+	 * @param request Payment request information
+	 * @return Payment response
+	 * @throws StripeException Stripe API exception
+	 */
 	@Override
 	@Transactional
 	public PaymentResponseDTO processPayment(PaymentRequestDTO request) throws StripeException {
@@ -40,47 +76,62 @@ public class PaymentServiceImpl implements PaymentService {
 		CountryPanel countryPanel = countryPanelRepository.findById(request.countryPanelId())
 				.orElseThrow(() -> new IllegalArgumentException("Country Panel not found"));
 
+		// Validate payment method ID
+		if (request.paymentMethodId() == null || request.paymentMethodId().isEmpty()) {
+			return new PaymentResponseDTO(
+					null,
+					null,
+					null,
+					false,
+					"Missing or invalid payment method ID. A valid PaymentMethod ID must be provided.");
+		}
+
 		// Amount : installation cost * amount
 		BigDecimal totalCostInPounds = request.amount()
 				.multiply(BigDecimal.valueOf(countryPanel.getPanel().getInstallationCost()));
 		long amountInSmallestUnit = totalCostInPounds.movePointRight(2).longValueExact();
 
 		try {
-			// Create a PaymentIntent with the order amount and currency
+			// Create a PaymentIntent with the order amount, currency and payment method
 			PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
 					.setAmount(amountInSmallestUnit)
-					.setCurrency("gbp") // Set currency to GBP
-					.setAutomaticPaymentMethods(
-							PaymentIntentCreateParams.AutomaticPaymentMethods.builder()
-									.setEnabled(true)
-									.build())
+					.setCurrency("gbp")
+					.setPaymentMethod(request.paymentMethodId())
+					.setConfirm(true)
 					.build();
 
 			PaymentIntent paymentIntent = PaymentIntent.create(params);
 
-			// Generate a receipt URL - normally this would come from Stripe
-			// For now we'll use a simple placeholder
-			String receiptUrl = "https://dashboard.stripe.com/payments/" + paymentIntent.getId();
+			if ("succeeded".equals(paymentIntent.getStatus())) {
+				String receiptUrl = "https://dashboard.stripe.com/payments/" + paymentIntent.getId();
 
-			// Save the payment record
-			Payment payment = Payment.builder()
-					.user(user)
-					.countryPanel(countryPanel)
-					.amount(request.amount())
-					.type(request.type())
-					.transactionId(paymentIntent.getId())
-					.receipUrl(receiptUrl)
-					.build();
+				// Save payment record
+				Payment payment = Payment.builder()
+						.user(user)
+						.countryPanel(countryPanel)
+						.amount(request.amount())
+						.type(request.type())
+						.transactionId(paymentIntent.getId())
+						.receipUrl(receiptUrl)
+						.build();
 
-			Payment savedPayment = paymentRepository.save(payment);
+				Payment savedPayment = paymentRepository.save(payment);
 
-			// Return success response
-			return new PaymentResponseDTO(
-					savedPayment.getId(),
-					paymentIntent.getId(),
-					receiptUrl,
-					true,
-					null);
+				// Return success response
+				return new PaymentResponseDTO(
+						savedPayment.getId(),
+						paymentIntent.getId(),
+						receiptUrl,
+						true,
+						null);
+			} else {
+				return new PaymentResponseDTO(
+						null,
+						paymentIntent.getId(),
+						null,
+						false,
+						"Payment failed: " + paymentIntent.getStatus());
+			}
 		} catch (StripeException e) {
 			// Handle payment failure
 			return new PaymentResponseDTO(
@@ -88,7 +139,7 @@ public class PaymentServiceImpl implements PaymentService {
 					null,
 					null,
 					false,
-					e.getMessage());
+					"Error processing payment: " + e.getMessage());
 		}
 	}
 
@@ -97,4 +148,5 @@ public class PaymentServiceImpl implements PaymentService {
 		// Implementation to be added
 		throw new UnsupportedOperationException("Unimplemented method 'getUserPayments'");
 	}
+
 }
