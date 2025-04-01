@@ -27,6 +27,7 @@ public class PanelTransactionController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addTransaction(@RequestBody PanelTransactionDTO panelTransaction) {
+        panelTransactionService.save(panelTransaction);
         return ResponseEntity.ok().build();
     }
 
