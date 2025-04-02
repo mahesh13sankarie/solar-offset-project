@@ -1,5 +1,6 @@
 package org.example.server.service.auth;
 
+import org.example.server.dto.LoginDto;
 import org.example.server.dto.UserDto;
 import org.example.server.entity.User;
 import org.example.server.mapper.UserMapper;
@@ -47,5 +48,16 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
                 .map(user -> user.getDetail(user))
                 .collect(Collectors.toList());
 
+    }
+
+    @Override
+    public void updatePassword(LoginDto loginDto) {
+        //check if user is exist!
+        UserDetails user = loadUserByUsername(loginDto.email());
+        if (user == null) {
+            throw new UsernameNotFoundException(loginDto.email());
+        } else {
+            userRepository.updatePassword(loginDto.email(), encryptPassword(loginDto.password()));
+        }
     }
 }
