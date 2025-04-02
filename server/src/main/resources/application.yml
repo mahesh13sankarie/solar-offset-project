@@ -24,6 +24,17 @@ spring:
           google:
             client-id: 234686151907-h0egb9h34beugoudlrffovu95nkt4a10.apps.googleusercontent.com
             client-secret: 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
+  mail:
+      host: smtp.gmail.com
+      port: 587
+      username: managesyntaxsquad@gmail.com
+      password: haxm eebh qcit ktvz    # Google App Password
+      properties:
+        mail:
+          smtp:
+            auth: true
+            starttls:
+              enable: true
 
 server:
   port: 8000
