@@ -1,5 +1,6 @@
 package org.example.server.service.auth;
 
+import org.example.server.dto.LoginDto;
 import org.example.server.dto.UserDto;
 import org.example.server.dto.UserRequest;
 import org.example.server.entity.User;
@@ -50,7 +51,6 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
 
     }
 
-    @Override
     public void deleteUser(Long id) {
         //check if user exist, make a global function..!
         userRepository.findById(id).orElseThrow(
@@ -64,4 +64,13 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
         userRepository.updateRole(userRequest);
     }
 
+    public void updatePassword(LoginDto loginDto) {
+        //check if user is exist!
+        UserDetails user = loadUserByUsername(loginDto.email());
+        if (user == null) {
+            throw new UsernameNotFoundException(loginDto.email());
+        } else {
+            userRepository.updatePassword(loginDto.email(), encryptPassword(loginDto.password()));
+        }
+    }
 }

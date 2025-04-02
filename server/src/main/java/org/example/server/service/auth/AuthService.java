@@ -1,5 +1,6 @@
 package org.example.server.service.auth;
 
+import org.example.server.dto.LoginDto;
 import org.example.server.dto.UserDto;
 import org.example.server.dto.UserRequest;
 import org.example.server.entity.User;
@@ -11,4 +12,5 @@ public interface AuthService {
     List<User> getUsers();
     void deleteUser(Long id);
     void updateRole(UserRequest userRequest);
+    void updatePassword(LoginDto loginDto);
 }

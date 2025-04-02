@@ -1,11 +1,16 @@
 package org.example.server.controller;
 
+import org.example.server.dto.AccountType;
 import org.example.server.dto.LoginDto;
+import org.example.server.dto.MailDto;
 import org.example.server.dto.UserDto;
+import org.example.server.entity.MailAttributes;
 import org.example.server.entity.User;
 import org.example.server.mapper.AuthResponseMapper;
+import org.example.server.mapper.UserMapper;
 import org.example.server.repository.UserRepository;
 import org.example.server.service.auth.AuthService;
+import org.example.server.service.mail.MailService;
 import org.example.server.utils.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +28,6 @@ import java.util.Map;
  * *
  * Google login path: <a href="http://localhost:8000/login/oauth2/code/google">...</a>
  */
-@CrossOrigin
 @RequestMapping("api/v1/auth")
 @RestController
 public class AuthController {
@@ -46,6 +50,9 @@ public class AuthController {
     @Autowired
     AuthResponseMapper responseMapper;
 
+    @Autowired
+    MailService mailService;
+
     //token for Google - OAuth2
     @GetMapping("/generatetoken")
     public ResponseEntity<?> generateOAuthToken(OAuth2AuthenticationToken authentication) {
@@ -55,11 +62,10 @@ public class AuthController {
         //Logout is via /logout
         String email = authentication.getPrincipal().getAttribute("email");
         String name = authentication.getPrincipal().getAttribute("name");
-        String id = authentication.getPrincipal().getAttribute("id");
         String token = tokenProvider.generateToken(email);
-        User user = new User(Long.valueOf(id), email, name);
-
-        return ResponseEntity.ok().body(responseMapper.buildLoginResponse(user.getDetail(user), token));
+        UserDto user = new UserDto(email, "", name, AccountType.Google);
+        authService.saveUser(user);
+        return ResponseEntity.ok().body(responseMapper.buildLoginResponse(user, token));
     }
 
     @PostMapping("/register")
@@ -90,6 +96,22 @@ public class AuthController {
     ResponseEntity<?> logout() {
         SecurityContextHolder.clearContext();
         return ResponseEntity.ok().body(responseMapper.buildSuccessResponse());
+    }
+
+    @PostMapping("/forgot-password")
+    ResponseEntity<?> sendEmail(@RequestBody MailDto email) {
+        //TODO: send email with information and link, in link put email info so FE could retrieve!
+        //check if user exist
+        String mail = email.email();
+        mailService.sendEmail(new MailAttributes(mail, "Solar Offset: Change password!", "Dear " + mail + " please change your password thru out this link!")); //construct body with link!
+        return ResponseEntity.ok().body(responseMapper.buildCustomMessage("Please check your e-mail!"));
+    }
+
+    //could be use as regular change password as well!
+    @PutMapping("/update-password")
+    ResponseEntity<?> updatePassword(@RequestBody LoginDto loginDto) {
+        authService.updatePassword(loginDto);
+        return ResponseEntity.ok().body(responseMapper.buildCustomMessage("Password updated successfully!"));
     }
 
     private User getUser(String email) {
