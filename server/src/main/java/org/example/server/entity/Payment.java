@@ -39,7 +39,7 @@ public class Payment {
 	private String transactionId;
 
 	@Column
-	private String receipUrl;
+	private String receiptUrl;
 
 	@Column
 	private LocalDateTime createdAt;
@@ -49,7 +49,7 @@ public class Payment {
 
 	@Builder
 	public Payment(User user, CountryPanel countryPanel, BigDecimal amount, PaymentType type, String transactionId,
-			String status, String receipUrl) {
+			String status, String receiptUrl) {
 		this.user = user;
 		this.countryPanel = countryPanel;
 		this.amount = amount;
@@ -57,7 +57,7 @@ public class Payment {
 		// https://www.linkedin.com/pulse/why-should-you-avoid-using-enums-mysql-eyad-mohammed-osama/
 		this.type = type.toString();
 		this.transactionId = transactionId;
-		this.receipUrl = receipUrl;
+		this.receiptUrl = receiptUrl;
 		this.updatedAt = LocalDateTime.now();
 		this.createdAt = LocalDateTime.now();
 	}
