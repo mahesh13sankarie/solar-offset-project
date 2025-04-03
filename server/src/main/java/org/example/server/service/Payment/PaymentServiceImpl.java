@@ -98,6 +98,7 @@ public class PaymentServiceImpl implements PaymentService {
 					.setAmount(amountInSmallestUnit)
 					.setCurrency("gbp")
 					.setPaymentMethod(request.paymentMethodId())
+					.setReceiptEmail(user.getEmail())
 					.setConfirm(true)
 					.build();
 
@@ -114,7 +115,7 @@ public class PaymentServiceImpl implements PaymentService {
 						.amount(request.amount())
 						.type(request.paymentType())
 						.transactionId(paymentIntent.getId())
-						.receipUrl(actualReceiptUrl)
+						.receiptUrl(actualReceiptUrl)
 						.build();
 
 				Payment savedPayment = paymentRepository.save(payment);
