@@ -103,7 +103,7 @@ public class PaymentServiceImpl implements PaymentService {
 			PaymentIntent paymentIntent = PaymentIntent.create(params);
 
 			if ("succeeded".equals(paymentIntent.getStatus())) {
-				String receipttUrl = "https://dashboard.stripe.com/payments/" + paymentIntent.getId();
+				String receiptUrl = "https://dashboard.stripe.com/payments/" + paymentIntent.getId();
 
 				// Save payment record
 				Payment payment = Payment.builder()
@@ -112,7 +112,7 @@ public class PaymentServiceImpl implements PaymentService {
 						.amount(request.amount())
 						.type(request.paymentType())
 						.transactionId(paymentIntent.getId())
-						.receipUrl(receipttUrl)
+						.receipUrl(receiptUrl)
 						.build();
 
 				Payment savedPayment = paymentRepository.save(payment);
@@ -121,7 +121,7 @@ public class PaymentServiceImpl implements PaymentService {
 				return new PaymentResponseDTO(
 						savedPayment.getId(),
 						paymentIntent.getId(),
-						receipttUrl,
+						receiptUrl,
 						true,
 						null);
 			} else {
