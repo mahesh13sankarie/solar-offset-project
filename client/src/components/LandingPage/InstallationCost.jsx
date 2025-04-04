@@ -89,7 +89,10 @@ const InstallationCost = () => {
 												</li>
 											</ul>
 											<div className="mt-auto">
-												<Link to="/donate" className="btn btn-success w-100">
+												<Link
+													to={`/Payment/${countryCode}?panelIndex=${i}`}
+													className="btn btn-success w-100"
+												>
 													<i className="bi bi-heart-fill"></i> Donate
 												</Link>
 											</div>
