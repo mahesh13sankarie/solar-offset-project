@@ -1,11 +1,17 @@
-    package org.example.server.entity;
-import jakarta.persistence.*;
+package org.example.server.entity;
 
-import java.time.LocalDate;
+import jakarta.persistence.*;
+import lombok.Getter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 @Entity
-@Table(name = "website_users")
-public class User {
+@Table(name = "users")
+@Getter
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,55 +25,57 @@ public class User {
     @Column(nullable = false)
     private String fullName;
 
-    private String Country;
+    @Column
+    private int accountType;
 
-    public User(Long id, String email, String password, String fullName, String country) {
-        this.id = id;
+    public User(String email, String password, String fullName, int accountType) {
         this.email = email;
         this.password = password;
         this.fullName = fullName;
-        Country = country;
+        this.accountType = accountType;
     }
 
-    public Long getId() {
-        return id;
+    public User() {
+
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public String getCountry() {
-        return Country;
-    }
-
-    public User() {    }
-
-    public void setId(Long id) {
+    public User(Long id, String email, String fullName) {
         this.id = id;
-    }
-
-    public void setEmail(String email) {
         this.email = email;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setFullName(String fullName) {
         this.fullName = fullName;
     }
 
-    public void setCountry(String country) {
-        Country = country;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(); //TODO: this could be use as admin, staff to distinguish role!
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return UserDetails.super.isAccountNonExpired();
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return UserDetails.super.isAccountNonLocked();
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return UserDetails.super.isCredentialsNonExpired();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return UserDetails.super.isEnabled();
+    }
+
+    public User getDetail(User user) {
+        return new User(user.id, user.email, user.fullName);
     }
 }

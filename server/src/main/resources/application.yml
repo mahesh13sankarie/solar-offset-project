@@ -8,7 +8,11 @@ spring:
     url: jdbc:mysql://localhost:3306/solaroffset?serverTimezone=UTC&useLegacyDatetimeCode=false
     username: root
     password: Shreyas@123
-
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:sql/schema.sql
+      data-locations: classpath:sql/init.sql
   jpa:
     hibernate:
       ddl-auto: update
@@ -20,6 +24,17 @@ spring:
           google:
             client-id: 234686151907-h0egb9h34beugoudlrffovu95nkt4a10.apps.googleusercontent.com
             client-secret: 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
+  mail:
+      host: smtp.gmail.com
+      port: 587
+      username: managesyntaxsquad@gmail.com
+      password: haxm eebh qcit ktvz    # Google App Password
+      properties:
+        mail:
+          smtp:
+            auth: true
+            starttls:
+              enable: true
 
 server:
   port: 8000
@@ -28,7 +43,9 @@ logging:
   level:
     org.hibernate.SQL: DEBUG
 
-
+stripe:
+  secret:
+    key: "sk_test_51QwmaiPrlrRfBw5poWTCLViYs4omAuLFYw2nxjXQAZaNlXFcGh5GK7JSWdBSEvrPvsrhAXpJ1cgcYM4vb1m1ZbuK00wjYwLacc"
 electricity-map:
   credentials:
     - countryCode: "GB"

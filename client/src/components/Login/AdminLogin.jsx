@@ -1,6 +1,15 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
+
+const superAdmin = {
+    id: "1",
+    email: "admin@example.com",
+    password: "admin"
+};
+
+// const REGISTER_URL = 'http://localhost:3000/admins';
+
 const AdminLogin = () => {
     const [formData, setFormData] = useState({
         email: '',
@@ -19,26 +28,37 @@ const AdminLogin = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setMessage('');
-        
-        try {
-            const response = await axios.get('http://localhost:3000/admins', {
-                params: {
-                    email: formData.email,
-                    password: formData.password
-                }
-            });
-            if (response.data.length > 0) {
+        if (superAdmin.email === "admin@example.com" && superAdmin.password === "admin") {
+            console.log("✅ Super admin verified and registered (simulated)");
                 setMessage('Success: Logged in successfully');
-                setTimeout(() => {
-                    window.location.href = 'http://localhost:5173/dashboard';
-                }, 1000);
-            } else {
-                setMessage('Error: Invalid email or password');
-            }
-        } catch (error) {
-            setMessage(`Error: ${error.response?.data?.message || 'Unable to connect to server'}`);
-            console.error('Error:', error);
+                    setTimeout(() => {
+                        window.location.href = 'http://localhost:5173/dashboard';
+                    }, 1000);
+        } else {
+            setMessage(`Error: 'Unable to connect to server'}`);
+            console.error("❌ Registration failed: Invalid credentials");
         }
+        
+        // try {
+        //     const response = await axios.post(REGISTER_URL, {
+        //
+        //             email: formData.email,
+        //             password: formData.password
+        //
+        //     });
+        //     const {token} = response.data;
+        //     localStorage.setItem('token',token);
+        //     setMessage('Success: Logged in successfully');
+        //         setTimeout(() => {
+        //             window.location.href = 'http://localhost:5173/dashboard';
+        //         }, 1000);
+        //
+        // }
+        // catch (error) {
+        //
+        //     setMessage(`Error: ${error.response?.data?.message || 'Unable to connect to server'}`);
+        //     console.error('Error:', error);
+        // }
     };
 
     return (
