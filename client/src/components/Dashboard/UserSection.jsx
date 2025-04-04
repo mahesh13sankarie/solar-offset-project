@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import './UserSection.css'
 
-const api = 'http://localhost:3000';
+const api = 'http://localhost:8000/api/v1/dashboard';
 
 const UsersPage = () => {
     const [users, setUsers] = useState([]);
@@ -9,6 +10,11 @@ const UsersPage = () => {
     const [editingUserId, setEditingUserId] = useState(null);
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
+
+    // Add state for search, sort, and limit
+    const [searchTerm, setSearchTerm] = useState('');
+    const [sortByRole, setSortByRole] = useState('');
+    const [displayLimit, setDisplayLimit] = useState(10);
 
     // Fetch users
     const fetchUsers = async () => {
@@ -24,6 +30,15 @@ const UsersPage = () => {
     useEffect(() => {
         fetchUsers();
     }, []);
+
+    // Compute filtered, sorted, and limited users
+    const filteredUsers = users
+        .filter(user =>
+            user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.email.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        .filter(user => (sortByRole ? user.role === sortByRole : true))
+        .slice(0, displayLimit);
 
     // Create or update user
     const handleSubmit = async (e) => {
@@ -64,10 +79,59 @@ const UsersPage = () => {
     };
 
     return (
-        <div>
+        <div >
             <h2 className="mb-4 text-center d-flex" >User Management</h2>
 
-            <button className="btn btn-success mb-4 " onClick={() => setShowCreateModal(true)}>Create User</button>
+            <nav className="navbar bg-light px-3 py-2 mb-4 rounded shadow-sm">
+                <div className="container-fluid d-flex align-items-center flex-wrap gap-3 justify-content-between">
+                    <div className="d-flex align-items-center gap-3 flex-wrap">
+                        <div className="d-flex align-items-center gap-1">
+                            <label className="mb-0">Display</label>
+                            <select
+                                className="form-select form-select-sm"
+                                value={displayLimit}
+                                onChange={(e) => setDisplayLimit(Number(e.target.value))}
+                                style={{ width: '80px' }}
+                            >
+                                <option value={5}>5</option>
+                                <option value={10}>10</option>
+                                <option value={20}>20</option>
+                            </select>
+                            <label className="mb-0">records</label>
+                        </div>
+
+                        <select
+                            className="form-select form-select-sm"
+                            value={sortByRole}
+                            onChange={(e) => setSortByRole(e.target.value)}
+                            style={{ minWidth: '140px' }}
+                        >
+                            <option value="">All Roles</option>
+                            <option value="user">User</option>
+                            <option value="staff">Staff</option>
+                            <option value="admin">Admin</option>
+                        </select>
+
+                        <input
+                            type="text"
+                            className="form-control form-control-sm"
+                            placeholder="Search by name or email"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            style={{ minWidth: '220px' }}
+                        />
+                    </div>
+
+                    <button
+                        className="btn btn-warning text-white fw-semibold px-3"
+                        onClick={() => setShowCreateModal(true)}
+                    >
+                        + Create User
+                    </button>
+                </div>
+            </nav>
+
+
 
             {showCreateModal && (
                 <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
@@ -183,7 +247,7 @@ const UsersPage = () => {
                 </tr>
                 </thead>
                 <tbody>
-                {users.map((user) => (
+                {filteredUsers.map((user) => (
                     <tr key={user.id}>
                         <td>{user.name}</td>
                         <td>{user.email}</td>
@@ -202,7 +266,7 @@ const UsersPage = () => {
                         </td>
                     </tr>
                 ))}
-                {users.length === 0 && (
+                {filteredUsers.length === 0 && (
                     <tr>
                         <td colSpan="4" className="text-center">No users found.</td>
                     </tr>

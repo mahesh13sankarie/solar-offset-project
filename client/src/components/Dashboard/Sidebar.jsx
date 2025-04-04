@@ -40,7 +40,7 @@ return (
             </li>
             <li>
                 <Link
-                    to="/dashboard/logs"
+                    to="/dashboard/reports"
                     className={`nav-link text-white ${currentPath === '/dashboard/logs' ? 'active bg-primary' : ''}`}
                 >
                     Logs
@@ -50,6 +50,10 @@ return (
                 <Link
                     to="/logout"
                     className={`nav-link text-white ${currentPath === '/logout' ? 'active bg-primary' : ''}`}
+                    onClick={() => {
+                        localStorage.removeItem('authToken'); // Remove JWT token
+                        window.location.href = '/admin'; // Force redirect to login
+                    }}
                 >
                     Logout
                 </Link>

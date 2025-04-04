@@ -10,8 +10,6 @@ const Footer = () => {
                         <div className="col-lg-12 text-center">
                             <h4>Our Newsletter</h4>
                             <p>Subscribe to stay updated on our latest projects and impact</p>
-                        </div>
-                        <div className="col-lg-6">
                             <form>
                                 <input type="email" name="email" placeholder="Enter your email" />
                                 <input type="submit" value="Subscribe" />
@@ -36,18 +34,20 @@ const Footer = () => {
                                 <a href="#" className="linkedin"><i className="bi bi-linkedin"></i></a>
                             </div>
                         </div>
+                        <div className="col-lg-6 d-flex justify-content-end">
+                          <div className="footer-contact text-end">
+                            <h4 className="mb-1">Contact Us</h4>
+                            <address className="mb-0">
+                              Diamond Building<br />
+                              32 Leavygreave Road<br />
+                              Sheffield S3 7RD<br />
+                              United Kingdom<br /><br />
+                              <strong>Phone:</strong> 0114 222 1800<br />
+                              <strong>Email:</strong> info@solaroffset.com
+                            </address>
+                          </div>
+                      </div>
 
-                        <div className="col-lg-3 col-md-12 footer-contact text-center text-md-start">
-                            <h4>Contact Us</h4>
-                            <p>
-                                Diamond Building<br />
-                                32 Leavygreave Road<br />
-                                Sheffield S3 7RD<br />
-                                United Kingdom<br /><br />
-                                <strong>Phone:</strong> 0114 222 1800<br />
-                                <strong>Email:</strong> info@solaroffset.com<br />
-                            </p>
-                        </div>
                     </div>
                 </div>
             </div>
