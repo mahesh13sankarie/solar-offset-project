@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.stripe.exception.StripeException;
+import com.stripe.model.Charge;
 import com.stripe.model.PaymentIntent;
 import com.stripe.param.PaymentIntentCreateParams;
 
@@ -97,31 +98,33 @@ public class PaymentServiceImpl implements PaymentService {
 					.setAmount(amountInSmallestUnit)
 					.setCurrency("gbp")
 					.setPaymentMethod(request.paymentMethodId())
+					.setReceiptEmail(user.getEmail())
 					.setConfirm(true)
 					.build();
 
 			PaymentIntent paymentIntent = PaymentIntent.create(params);
 
 			if ("succeeded".equals(paymentIntent.getStatus())) {
-				String receiptUrl = "https://dashboard.stripe.com/payments/" + paymentIntent.getId();
+				Charge charge = Charge.retrieve(paymentIntent.getLatestCharge());
+				String actualReceiptUrl = charge.getReceiptUrl();
 
-				// Save payment record
+				// Save payment record using the actual receipt URL
 				Payment payment = Payment.builder()
 						.user(user)
 						.countryPanel(countryPanel)
 						.amount(request.amount())
 						.type(request.paymentType())
 						.transactionId(paymentIntent.getId())
-						.receipUrl(receiptUrl)
+						.receiptUrl(actualReceiptUrl)
 						.build();
 
 				Payment savedPayment = paymentRepository.save(payment);
 
-				// Return success response
+				// Return success response with the actual receipt URL
 				return new PaymentResponseDTO(
 						savedPayment.getId(),
 						paymentIntent.getId(),
-						receiptUrl,
+						actualReceiptUrl,
 						true,
 						null);
 			} else {
