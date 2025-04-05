@@ -2,6 +2,7 @@ import React,{ useEffect} from "react";
 import {isAuthenticated} from "../Login/HelperFunction.jsx";
 import Sidebar from "../Dashboard/Sidebar.jsx";
 import StaffNavBar from "./StaffNavBar.jsx";
+import {CountriesSelected, PanelsBought} from "./FeatureCards.jsx";
 const REPORTAPI = "dummy.link.com/report";
 
 export default function ReportDashboard() {
@@ -15,7 +16,13 @@ export default function ReportDashboard() {
     return (
         <>
             <StaffNavBar />
+            <div className="container vh-100 vw-100">
+                <d className="d-flex">
+                    <CountriesSelected />
+                    <PanelsBought />
 
+                </d>
+            </div>
         </>
     );
 }
