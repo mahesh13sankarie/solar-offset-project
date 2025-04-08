@@ -1,8 +1,15 @@
 import React from "react";
+import {PDFViewer} from "@react-pdf/renderer";
+import ReportGenerator from "../Report/ReportGenerator.jsx";
 
-export default function ReportGenerate(props) {
+export default function ReportGenerate() {
     return (<>
-        <h1 className="text-center">Report Generation</h1>
+<div className="vh-100 vw-100">
+    <PDFViewer>
+        <ReportGenerator />
+    </PDFViewer>
+
+</div>
 
     </>)
 }
