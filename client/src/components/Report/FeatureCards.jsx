@@ -48,7 +48,24 @@ export  function CountriesSelected(props) {
 export  function PanelsBought(){
     return (
        <>
+           <div className="container mt-4">
+               <div className="card shadow-lg">
+                   <div className="card-header text-center">
+                       <h3 className="card-title">Panels Bought</h3>
+                       <p className="text-muted">Total Panels: </p>
+                   </div>
 
+                   <div className="card-body">
+                       <ul className="list-group list-group-flush mt-3">
+
+                       </ul>
+                   </div>
+
+                   <div className="card-footer text-center">
+                       <p className="text-muted">Displaying total panels</p>
+                   </div>
+               </div>
+           </div>
        </>
     )
 }

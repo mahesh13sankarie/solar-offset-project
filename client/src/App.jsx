@@ -19,6 +19,7 @@ import SideNav from "./components/Dashboard/Sidebar.jsx";
 import Dashboard from "./components/Dashboard/Dashboard.jsx";
 import Userpage from "./components/Dashboard/UserSection.jsx";
 import ReportDashboard from "./components/Report/ReportDashboard.jsx";
+import ReportGenerator from "./components/Report/ReportGenerator.jsx";
 
 const router = createBrowserRouter([
   {path:"/",element:<Home />},
@@ -37,7 +38,14 @@ const router = createBrowserRouter([
     {path:"/navbar",element:<Navbar />},
     {path:"/donate",element:<Services />},
     {path:"/InstallationCost/:countryCode", element:<InstallationCost/>},
-    {path:"/reportpage", element:<ReportDashboard />}
+    {
+        path:"/staff/dashboard",element:<ReportDashboard />,
+        children:[
+            {path:"/staff/dashboard/pdf",element: <ReportGenerator />,}
+        ]
+    },
+    {path:"/pdf", element:<ReportGenerate />},
+
 ])
 
 
