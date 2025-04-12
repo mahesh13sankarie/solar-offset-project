@@ -1,5 +1,5 @@
 import React,{ useEffect} from "react";
-import {isAuthenticated} from "../Login/HelperFunction.jsx";
+import {isAuthenticated} from "../HelperComponents/HelperFunction.jsx";
 import Sidebar from "../Dashboard/Sidebar.jsx";
 import StaffNavBar from "./StaffNavBar.jsx";
 import {CountriesSelected, PanelsBought} from "./FeatureCards.jsx";
