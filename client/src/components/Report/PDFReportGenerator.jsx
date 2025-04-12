@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
     }
 });
 
-function ReportGenerator() {
+function PDFReportGenerator() {
     return (<>
             <Document>
                 <Page size="A4" style={styles.page}>
@@ -27,4 +27,4 @@ function ReportGenerator() {
         </>);
 }
 
-export default ReportGenerator;
+export default PDFReportGenerator;

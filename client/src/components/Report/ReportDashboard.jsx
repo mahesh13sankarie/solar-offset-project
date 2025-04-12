@@ -12,16 +12,15 @@ export default function ReportDashboard() {
         console.log(checkIsAuthenticated);
     }, []);
 
-
     return (
         <>
             <StaffNavBar />
             <div className="container vh-100 vw-100">
-                <d className="d-flex">
+                <div className="d-flex">
                     <CountriesSelected />
                     <PanelsBought />
 
-                </d>
+                </div>
             </div>
         </>
     );

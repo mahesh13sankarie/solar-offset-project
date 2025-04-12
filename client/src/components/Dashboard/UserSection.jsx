@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './UserSection.css'
 
-const api = 'http://localhost:8000/api/v1/dashboard';
+// const api = 'http://localhost:8000/api/v1/dashboard';
 
 const UsersPage = () => {
     const [users, setUsers] = useState([]);
