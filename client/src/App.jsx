@@ -19,7 +19,7 @@ import SideNav from "./components/Dashboard/Sidebar.jsx";
 import Dashboard from "./components/Dashboard/Dashboard.jsx";
 import Userpage from "./components/Dashboard/UserSection.jsx";
 import ReportDashboard from "./components/Report/ReportDashboard.jsx";
-import PDFReportGenerator from "./components/Report/PDFReportGenerator.jsx";
+import Invoice from "./components/Report/Invoice/Invoice.jsx";
 
 const router = createBrowserRouter([
     { path: "/", element: <Home /> },
@@ -39,11 +39,8 @@ const router = createBrowserRouter([
     { path: "/donate", element: <Services /> },
     { path: "/InstallationCost/:countryCode", element: <InstallationCost /> },
     {
-        path:"/staff/dashboard",element:<ReportDashboard />,
-        children:[
-            {path:"/staff/dashboard",element: <PDFReportGenerator />,}
+        path:"/staff/dashboard",element:<ReportDashboard />
 
-        ]
     },
     { path: "/pdf", element: <ReportGenerate /> },
     { path: "/Payment/:countryCode/:panelId", element: <Payment /> },

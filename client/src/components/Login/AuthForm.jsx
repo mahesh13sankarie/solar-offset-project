@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { login } from "../HelperComponents/HelperFunction.jsx"; // Import helper functions
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import WelcomeLoader from "../HelperComponents/WelcomeLoader.jsx";
+
 import { useAuth } from "../../context/AuthContext"; // Import useAuth hook
 
 const AuthForm = () => {
@@ -14,6 +17,7 @@ const AuthForm = () => {
     });
     const [message, setMessage] = useState("");
     const [submitted, setSubmitted] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
     const { isAuthenticated, login } = useAuth(); // Use the auth context
 
@@ -55,7 +59,8 @@ const AuthForm = () => {
                 });
 
                 setMessage("Login successful");
-                setTimeout(() => navigate("/SolarComparison"), 1000);
+                setIsLoading(true); // Show the loading animation
+                setTimeout(() => navigate("/SolarComparison"), 2000); // Increased delay to show animation
             } else {
                 const res = await axios.post("http://localhost:8000/api/v1/auth/register", {
                     email: formData.email,
@@ -72,15 +77,21 @@ const AuthForm = () => {
         } catch (err) {
             setMessage("Error: Unable to connect to server");
         } finally {
-            setSubmitted(false);
+            if (formState !== "login") {
+                setSubmitted(false);
+            }
         }
     };
 
     const switchForm = (state) => {
         setFormState(state);
-        setFormData({ email: "", password: "", confirmPassword: "", fullName: "", country: "" });
+        setFormData({ email: "", password: "", confirmPassword: "", fullName: "" });
         setMessage("");
     };
+
+    if (isLoading) {
+        return <WelcomeLoader message={message} />;
+    }
 
     return (
         <div className="container d-flex justify-content-center align-items-center vh-100">
