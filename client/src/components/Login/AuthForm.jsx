@@ -1,14 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {login} from './HelperFunction.jsx'; // Import helper functions
+import {login} from '../HelperComponents/HelperFunction.jsx'; // Import helper functions
 import {useNavigate} from 'react-router-dom';
 import axios from "axios";
+import WelcomeLoader from "../HelperComponents/WelcomeLoader.jsx";
+
 
 const AuthForm = () => {
     const [formState, setFormState] = useState('login'); // 'login' or 'register'
     const [formData, setFormData] = useState({email: '', password: '', confirmPassword: '', fullName: ''});
     const [message, setMessage] = useState('');
     const [submitted, setSubmitted] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -46,7 +49,8 @@ const AuthForm = () => {
 
                 localStorage.setItem('authToken', res.data.token);
                 setMessage('Login successful');
-                setTimeout(() => navigate('/SolarComparison'), 1000);
+                setIsLoading(true); // Show the loading animation
+                setTimeout(() => navigate('/SolarComparison'), 2000); // Increased delay to show animation
 
             } else {
                 const res = await axios.post('http://localhost:8000/api/v1/auth/register', {
@@ -64,15 +68,21 @@ const AuthForm = () => {
         } catch (err) {
             setMessage('Error: Unable to connect to server');
         } finally {
-            setSubmitted(false);
+            if (formState !== 'login') {
+                setSubmitted(false);
+            }
         }
     };
 
     const switchForm = (state) => {
         setFormState(state);
-        setFormData({email: '', password: '', confirmPassword: '', fullName: '', country: ''});
+        setFormData({email: '', password: '', confirmPassword: '', fullName: ''});
         setMessage('');
     };
+
+    if (isLoading) {
+        return <WelcomeLoader message={message} />;
+    }
 
     return (
         <div className="container d-flex justify-content-center align-items-center vh-100" >
@@ -81,7 +91,7 @@ const AuthForm = () => {
                     <div className="col-md-6 d-flex flex-column justify-content-center p-3 bg-light rounded-start">
                         <h3 className="text-center">Welcome</h3>
                         <p className="text-muted">Login or Register to continue.</p>
-                        
+
                     </div>
 
                     <div className="col-md-6 p-4">
@@ -120,18 +130,17 @@ const AuthForm = () => {
 
                                     <button type="submit" className="btn btn-primary w-100">Submit</button>
 
-                                 <div className="text-center mt-3">
-                                   {formState === 'login' ? (
-                                     <>
-                                       <a href="#" onClick={() => switchForm('register')}>Don't have an account? Register</a>
-                                       <br />
-                                       <a href="/change-password" className="text-decoration-none mt-2 d-inline-block">Forgot Password?</a>
-                                     </>
-                                   ) : (
-                                     <a href="#" onClick={() => switchForm('login')}>Already have an account? Login</a>
-                                   )}
-                                </div>
-
+                                    <div className="text-center mt-3">
+                                        {formState === 'login' ? (
+                                            <>
+                                                <a href="#" onClick={() => switchForm('register')}>Don't have an account? Register</a>
+                                                <br />
+                                                <a href="/change-password" className="text-decoration-none mt-2 d-inline-block">Forgot Password?</a>
+                                            </>
+                                        ) : (
+                                            <a href="#" onClick={() => switchForm('login')}>Already have an account? Login</a>
+                                        )}
+                                    </div>
                                 </form>
                             </>
                         ) : (
