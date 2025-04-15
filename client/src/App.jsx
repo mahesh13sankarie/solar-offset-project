@@ -11,7 +11,8 @@ import AuthForm from "./components/Login/AuthForm";
 import SolarComparison from "./components/LandingPage/SolarComparison.jsx";
 import Services from "./components/LandingPage/Services.jsx";
 import Navbar from "./components/LandingPage/Navbar.jsx";
-import InstallationCost from "./components/LandingPage/InstallationCost.jsx"
+import InstallationCost from "./components/LandingPage/InstallationCost.jsx";
+import ReportGenerate from "./components/Report/ReportGenerate.jsx";
 import ReportGenerate from "./components/Report/ReportGenerate.jsx";
 
 import AdminLogin from "./components/Login/AdminLogin.jsx";
@@ -39,8 +40,8 @@ const router = createBrowserRouter([
     { path: "/donate", element: <Services /> },
     { path: "/InstallationCost/:countryCode", element: <InstallationCost /> },
     {
-        path:"/staff/dashboard",element:<ReportDashboard />
-
+        path: "/staff/dashboard",
+        element: <ReportDashboard />,
     },
     { path: "/pdf", element: <ReportGenerate /> },
     { path: "/Payment/:countryCode/:panelId", element: <Payment /> },
