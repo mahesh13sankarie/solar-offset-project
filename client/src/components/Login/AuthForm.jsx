@@ -48,10 +48,10 @@ const AuthForm = () => {
                     email: formData.email,
                     password: formData.password,
                 });
-
+                const userData = res.data.data;
                 login({
-                    token: res.data.token,
-                    userId: res.data.userId,
+                    token: userData.token,
+                    userId: userData.id,
                 });
 
                 setMessage("Login successful");
