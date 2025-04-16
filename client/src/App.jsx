@@ -38,7 +38,7 @@ const router = createBrowserRouter([
     {path:"/navbar",element:<Navbar />},
     {path:"/donate",element:<Services />},
     {path:"/InstallationCost/:countryCode", element:<InstallationCost/>},
-    { path: "/Payment/:countryCode", element: <Payment /> },
+    { path: "/Payment/:countryCode/:panelId", element: <Payment /> },
 ])
 
 

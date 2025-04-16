@@ -89,8 +89,9 @@ const InstallationCost = () => {
 												</li>
 											</ul>
 											<div className="mt-auto">
+												{/* TODO: Add the panel id to the link (Should be backend side) */}
 												<Link
-													to={`/Payment/${countryCode}?panelIndex=${i}`}
+													to={`/Payment/${countryCode}/${panel.id || i}`}
 													className="btn btn-success w-100"
 												>
 													<i className="bi bi-heart-fill"></i> Donate
