@@ -23,21 +23,26 @@ const Payment = () => {
     const { userId } = useAuth();
 
     useEffect(() => {
-        console.log(countryCode, panelId);
+        console.log("Panel ID:", panelId, "Country Code:", countryCode);
         const fetchPanelData = async () => {
             try {
                 const response = await axios.get(`http://localhost:8000/api/v1/panels/${panelId}`);
-                const data = response;
-                console.log(data);
-                setCountry(data.country);
-                setSelectedPanel(data.panel);
+                const panelData = response.data;
+                console.log("Panel data:", panelData);
+
+                setSelectedPanel(panelData);
+
+                setCountry({
+                    country: panelData.countryCode,
+                    countryCode: panelData.countryCode,
+                });
             } catch (error) {
                 console.error("Error fetching panel data:", error);
             }
         };
 
         fetchPanelData();
-    }, [countryCode, panelId]);
+    }, [panelId]);
 
     const handleQuantityChange = (amount) => {
         const newQuantity = quantity + amount;
@@ -246,14 +251,18 @@ const Payment = () => {
                                                         <strong>Cost per Panel:</strong> £
                                                         {selectedPanel.installationCost}
                                                     </li>
-                                                    <li className="list-group-item">
-                                                        <strong>Efficiency:</strong>{" "}
-                                                        {selectedPanel.efficiency}%
-                                                    </li>
-                                                    <li className="list-group-item">
-                                                        <strong>Warranty:</strong>{" "}
-                                                        {selectedPanel.warranty} years
-                                                    </li>
+                                                    {selectedPanel.efficiency && (
+                                                        <li className="list-group-item">
+                                                            <strong>Efficiency:</strong>{" "}
+                                                            {selectedPanel.efficiency}%
+                                                        </li>
+                                                    )}
+                                                    {selectedPanel.warranty && (
+                                                        <li className="list-group-item">
+                                                            <strong>Warranty:</strong>{" "}
+                                                            {selectedPanel.warranty} years
+                                                        </li>
+                                                    )}
                                                     {selectedPanel.productionPerPanel && (
                                                         <li className="list-group-item">
                                                             <strong>Production:</strong>{" "}
