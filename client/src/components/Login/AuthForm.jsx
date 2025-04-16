@@ -4,6 +4,18 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext"; // Import useAuth hook
 
+// Simple loading component for auth transitions
+const WelcomeLoader = ({ message }) => {
+    return (
+        <div className="text-center p-5">
+            <div className="spinner-border text-primary mb-3" role="status">
+                <span className="visually-hidden">Loading...</span>
+            </div>
+            <h4>{message}</h4>
+        </div>
+    );
+};
+
 const AuthForm = () => {
     const [formState, setFormState] = useState("login"); // 'login' or 'register'
     const [formData, setFormData] = useState({
@@ -30,6 +42,18 @@ const AuthForm = () => {
             ...prevData,
             [name]: value,
         }));
+    };
+
+    const switchForm = (state) => {
+        setFormState(state);
+        setFormData({
+            email: "",
+            password: "",
+            confirmPassword: "",
+            fullName: "",
+            country: "",
+        });
+        setMessage("");
     };
 
     const handleSubmit = async (e) => {
@@ -78,136 +102,130 @@ const AuthForm = () => {
                 setSubmitted(false);
             }
         }
+    };
 
-        const switchForm = (state) => {
-            setFormState(state);
-            setFormData({
-                email: "",
-                password: "",
-                confirmPassword: "",
-                fullName: "",
-                country: "",
-            });
-            setMessage("");
-        };
+    if (isLoading) {
+        return <WelcomeLoader message={message} />;
+    }
 
-        if (isLoading) {
-            return <WelcomeLoader message={message} />;
-        }
+    return (
+        <div className="container d-flex justify-content-center align-items-center vh-100">
+            <div className="card p-4 shadow-lg" style={{ maxWidth: "800px", width: "100%" }}>
+                <div className="row g-0">
+                    <div className="col-md-6 d-flex flex-column justify-content-center p-3 bg-light rounded-start">
+                        <h3 className="text-center">Welcome</h3>
+                        <p className="text-muted">Login or Register to continue.</p>
+                    </div>
 
-        return (
-            <div className="container d-flex justify-content-center align-items-center vh-100">
-                <div className="card p-4 shadow-lg" style={{ maxWidth: "800px", width: "100%" }}>
-                    <div className="row g-0">
-                        <div className="col-md-6 d-flex flex-column justify-content-center p-3 bg-light rounded-start">
-                            <h3 className="text-center">Welcome</h3>
-                            <p className="text-muted">Login or Register to continue.</p>
-                        </div>
+                    <div className="col-md-6 p-4">
+                        {!submitted ? (
+                            <>
+                                <h3 className="text-center">
+                                    {formState === "login" ? "Login" : "Register"}
+                                </h3>
+                                <form onSubmit={handleSubmit}>
+                                    <div className="mb-3">
+                                        <label className="form-label">Email</label>
+                                        <input
+                                            type="email"
+                                            className="form-control"
+                                            name="email"
+                                            value={formData.email}
+                                            onChange={handleChange}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label">Password</label>
+                                        <input
+                                            type="password"
+                                            className="form-control"
+                                            name="password"
+                                            value={formData.password}
+                                            onChange={handleChange}
+                                            required
+                                        />
+                                    </div>
 
-                        <div className="col-md-6 p-4">
-                            {!submitted ? (
-                                <>
-                                    <h3 className="text-center">
-                                        {formState === "login" ? "Login" : "Register"}
-                                    </h3>
-                                    <h3 className="text-center">
-                                        {formState === "login" ? "Login" : "Register"}
-                                    </h3>
-                                    <form onSubmit={handleSubmit}>
-                                        <div className="mb-3">
-                                            <label className="form-label">Email</label>
-                                            <input
-                                                type="email"
-                                                className="form-control"
-                                                name="email"
-                                                value={formData.email}
-                                                onChange={handleChange}
-                                                required
-                                            />
-                                        </div>
-                                        <div className="mb-3">
-                                            <label className="form-label">Password</label>
-                                            <input
-                                                type="password"
-                                                className="form-control"
-                                                name="password"
-                                                value={formData.password}
-                                                onChange={handleChange}
-                                                required
-                                            />
-                                        </div>
+                                    {formState === "register" && (
+                                        <>
+                                            <div className="mb-3">
+                                                <label className="form-label">
+                                                    Confirm Password
+                                                </label>
+                                                <input
+                                                    type="password"
+                                                    className="form-control"
+                                                    name="confirmPassword"
+                                                    value={formData.confirmPassword}
+                                                    onChange={handleChange}
+                                                    required
+                                                />
+                                            </div>
+                                            <div className="mb-3">
+                                                <label className="form-label">Full Name</label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    name="fullName"
+                                                    value={formData.fullName}
+                                                    onChange={handleChange}
+                                                    required
+                                                />
+                                            </div>
+                                        </>
+                                    )}
 
-                                        {formState === "register" && (
+                                    {message && (
+                                        <p className="text-danger text-center">{message}</p>
+                                    )}
+
+                                    <button type="submit" className="btn btn-primary w-100">
+                                        Submit
+                                    </button>
+
+                                    <div className="text-center mt-3">
+                                        {formState === "login" ? (
                                             <>
-                                                <div className="mb-3">
-                                                    <label className="form-label">
-                                                        Confirm Password
-                                                    </label>
-                                                    <input
-                                                        type="password"
-                                                        className="form-control"
-                                                        name="confirmPassword"
-                                                        value={formData.confirmPassword}
-                                                        onChange={handleChange}
-                                                        required
-                                                    />
-                                                </div>
-                                                <div className="mb-3">
-                                                    <label className="form-label">Full Name</label>
-                                                    <input
-                                                        type="text"
-                                                        className="form-control"
-                                                        name="fullName"
-                                                        value={formData.fullName}
-                                                        onChange={handleChange}
-                                                        required
-                                                    />
-                                                </div>
-                                            </>
-                                        )}
-
-                                        {message && (
-                                            <p className="text-danger text-center">{message}</p>
-                                        )}
-
-                                        <button type="submit" className="btn btn-primary w-100">
-                                            Submit
-                                        </button>
-
-                                        <div className="text-center mt-3">
-                                            {formState === "login" ? (
-                                                <>
-                                                    <a
-                                                        href="#"
-                                                        onClick={() => switchForm("register")}
-                                                    >
-                                                        Don't have an account? Register
-                                                    </a>
-                                                    <br />
-                                                    <a
-                                                        href="/change-password"
-                                                        className="text-decoration-none mt-2 d-inline-block"
-                                                    >
-                                                        Forgot Password?
-                                                    </a>
-                                                </>
-                                            ) : (
-                                                <a href="#" onClick={() => switchForm("login")}>
-                                                    Already have an account? Login
+                                                <a
+                                                    href="#"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        switchForm("register");
+                                                    }}
+                                                >
+                                                    Don't have an account? Register
                                                 </a>
-                                            )}
-                                        </div>
-                                    </form>
-                                </>
-                            ) : (
-                                <h3 className="text-center">Submitted Successfully</h3>
-                            )}
-                        </div>
+                                                <br />
+                                                <a
+                                                    href="/change-password"
+                                                    className="text-decoration-none mt-2 d-inline-block"
+                                                >
+                                                    Forgot Password?
+                                                </a>
+                                            </>
+                                        ) : (
+                                            <a
+                                                href="#"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    switchForm("login");
+                                                }}
+                                            >
+                                                Already have an account? Login
+                                            </a>
+                                        )}
+                                    </div>
+                                </form>
+                            </>
+                        ) : (
+                            <h3 className="text-center">Submitted Successfully</h3>
+                        )}
                     </div>
                 </div>
             </div>
-        );
-    };
+        </div>
+    );
 };
 
 export default AuthForm;
