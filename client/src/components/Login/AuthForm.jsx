@@ -44,18 +44,6 @@ const AuthForm = () => {
         }));
     };
 
-    const switchForm = (state) => {
-        setFormState(state);
-        setFormData({
-            email: "",
-            password: "",
-            confirmPassword: "",
-            fullName: "",
-            country: "",
-        });
-        setMessage("");
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setMessage("");
@@ -102,6 +90,12 @@ const AuthForm = () => {
                 setSubmitted(false);
             }
         }
+    };
+
+    const switchForm = (state) => {
+        setFormState(state);
+        setFormData({ email: "", password: "", confirmPassword: "", fullName: "", country: "" });
+        setMessage("");
     };
 
     if (isLoading) {

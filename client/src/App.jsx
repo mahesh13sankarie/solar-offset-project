@@ -18,9 +18,9 @@ import AdminLogin from "./components/Login/AdminLogin.jsx";
 import SideNav from "./components/Dashboard/Sidebar.jsx";
 import Dashboard from "./components/Dashboard/Dashboard.jsx";
 import Userpage from "./components/Dashboard/UserSection.jsx";
-import Payment from "./components/LandingPage/Payment.jsx";
 import ReportDashboard from "./components/Report/ReportDashboard.jsx";
 import Invoice from "./components/Report/Invoice/Invoice.jsx";
+import Payment from "./components/LandingPage/Payment.jsx";
 
 const router = createBrowserRouter([
     { path: "/", element: <Home /> },
