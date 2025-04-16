@@ -92,6 +92,7 @@ public class ElectricityMetricsServiceImpl implements ElectricityMetricsService 
                 .map(cp -> {
                     Panel p = cp.getPanel();
                     return SolarPanelDTO.builder()
+                            .id(p.getId())
                             .panelName(p.getName())
                             .installationCost(p.getInstallationCost())
                             .productionPerPanel(p.getProductionPerPanel())
