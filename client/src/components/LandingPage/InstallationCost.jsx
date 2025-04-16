@@ -69,56 +69,50 @@ const InstallationCost = () => {
                             </div>
                         </div>
 
-                        {/* Panel Cards */}
-                        <h4 className="mb-4">Available Solar Panels</h4>
-                        <div className="row">
-                            {country.solarPanels?.map((panel) => (
-                                <div className="col-md-6 col-lg-4 mb-4" key={panel.id}>
-                                    <div className="card h-100 shadow-sm d-flex flex-column">
-                                        <div className="card-body d-flex flex-column">
-                                            <h5 className="card-title">{panel.panelName}</h5>
-                                            <p
-                                                className="text-muted"
-                                                style={{ fontSize: "0.9rem" }}
-                                            >
-                                                {panel.description}
-                                            </p>
-                                            <ul className="list-group list-group-flush mt-3 mb-4">
-                                                <li className="list-group-item">
-                                                    <strong>Installation:</strong> £
-                                                    {panel.installationCost ?? "-"}
-                                                </li>
-                                                <li className="list-group-item">
-                                                    <strong>Production:</strong>{" "}
-                                                    {panel.productionPerPanel ?? "-"} W
-                                                </li>
-                                                <li className="list-group-item">
-                                                    <strong>Efficiency:</strong>{" "}
-                                                    {panel.efficiency ?? "-"}%
-                                                </li>
-                                                <li className="list-group-item">
-                                                    <strong>Warranty:</strong>{" "}
-                                                    {panel.warranty ?? "-"} years
-                                                </li>
-                                            </ul>
-                                            <div className="mt-auto">
-                                                <Link
-                                                    to={`/Payment/${countryCode}/${panel.id}`}
-                                                    className="btn btn-success w-100"
-                                                >
-                                                    <i className="bi bi-heart-fill"></i> Donate
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </>
-                )}
-            </section>
-        </div>
-    );
+						{/* Panel Cards */}
+						<h4 className="mb-4">Available Solar Panels</h4>
+						<div className="row">
+							{country.solarPanels?.map((panel, i) => (
+								<div className="col-md-6 col-lg-4 mb-4" key={i}>
+									<div className="card h-100 shadow-sm d-flex flex-column">
+										<div className="card-body d-flex flex-column">
+											<h5 className="card-title">{panel.panelName}</h5>
+											<p className="text-muted" style={{ fontSize: "0.9rem" }}>
+												{panel.description}
+											</p>
+											<ul className="list-group list-group-flush mt-3 mb-4">
+												<li className="list-group-item">
+													<strong>Installation:</strong> £{panel.installationCost ?? "-"}
+												</li>
+												<li className="list-group-item">
+													<strong>Production:</strong> {panel.productionPerPanel ?? "-"} W
+												</li>
+												<li className="list-group-item">
+													<strong>Efficiency:</strong> {panel.efficiency ?? "-"}%
+												</li>
+												<li className="list-group-item">
+													<strong>Warranty:</strong> {panel.warranty ?? "-"} years
+												</li>
+											</ul>
+											<div className="mt-auto">
+												{/* TODO: Add the panel id to the link (Should be backend side) */}
+												<Link
+													to={`/Payment/${countryCode}/${panel.id || i}`}
+													className="btn btn-success w-100"
+												>
+													<i className="bi bi-heart-fill"></i> Donate
+												</Link>
+											</div>
+										</div>
+									</div>
+								</div>
+							))}
+						</div>
+					</>
+				)}
+			</section>
+		</div>
+	);
 };
 
 export default InstallationCost;

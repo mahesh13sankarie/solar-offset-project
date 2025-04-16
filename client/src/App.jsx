@@ -13,12 +13,12 @@ import Services from "./components/LandingPage/Services.jsx";
 import Navbar from "./components/LandingPage/Navbar.jsx";
 import InstallationCost from "./components/LandingPage/InstallationCost.jsx";
 import ReportGenerate from "./components/Report/ReportGenerate.jsx";
-import ReportGenerate from "./components/Report/ReportGenerate.jsx";
 
 import AdminLogin from "./components/Login/AdminLogin.jsx";
 import SideNav from "./components/Dashboard/Sidebar.jsx";
 import Dashboard from "./components/Dashboard/Dashboard.jsx";
 import Userpage from "./components/Dashboard/UserSection.jsx";
+import Payment from "./components/LandingPage/Payment.jsx";
 import ReportDashboard from "./components/Report/ReportDashboard.jsx";
 import Invoice from "./components/Report/Invoice/Invoice.jsx";
 
@@ -39,12 +39,12 @@ const router = createBrowserRouter([
     { path: "/navbar", element: <Navbar /> },
     { path: "/donate", element: <Services /> },
     { path: "/InstallationCost/:countryCode", element: <InstallationCost /> },
+    { path: "/Payment/:countryCode/:panelId", element: <Payment /> },
     {
         path: "/staff/dashboard",
         element: <ReportDashboard />,
     },
-    { path: "/pdf", element: <ReportGenerate /> },
-    { path: "/Payment/:countryCode/:panelId", element: <Payment /> },
+    { path: "/pdf/:panelId", element: <ReportGenerate /> },
 ]);
 
 const App = () => {
