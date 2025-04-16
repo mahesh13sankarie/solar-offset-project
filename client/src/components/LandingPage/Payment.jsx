@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
 import Navbar from "./Navbar.jsx";
+import { useAuth } from "../../context/AuthContext";
+import axios from "axios";
 
 const Payment = () => {
     const [country, setCountry] = useState(null);
@@ -20,15 +22,15 @@ const Payment = () => {
 
     const { countryCode } = useParams();
     const location = useLocation();
+    const { userId } = useAuth();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(
+                const response = await axios.get(
                     `http://localhost:8000/api/v1/countries/${countryCode}`
                 );
-                if (!response.ok) throw new Error("Failed to fetch data");
-                const jsonData = await response.json();
+                const jsonData = response.data;
                 setCountry(jsonData);
 
                 // Check if panelIndex is provided in the URL query
@@ -95,16 +97,42 @@ const Payment = () => {
         setCurrentStep((prevStep) => prevStep - 1);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
 
-        // Simulate API call
-        setTimeout(() => {
-            setIsSubmitting(false);
+        try {
+            // Extract card number without spaces
+            const cardNumber = formData.cardNumber.replace(/\s/g, "");
+            console.log(userId);
+            // Create payment request data
+            const paymentData = {
+                userId: userId,
+                countryPanelId: selectedPanel.id, // Assuming the panel has an id field
+                amount: calculateTotal(),
+                paymentType: "STRIPE",
+                paymentMethodId: `pm_card_${cardNumber.slice(-4)}`, // Just for demonstration
+            };
+            console.log(paymentData);
+            // Send payment request to API using axios
+            const response = await axios.post(
+                "http://localhost:8000/api/v1/payments",
+                paymentData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+                    },
+                }
+            );
+
+            // Payment successful
             setIsComplete(true);
             setCurrentStep(3);
-        }, 1500);
+        } catch (error) {
+            setError("Payment failed: " + (error.response?.data?.message || error.message));
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     // Progress step component
