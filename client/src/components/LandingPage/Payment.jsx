@@ -6,9 +6,8 @@ import axios from "axios";
 
 const Payment = () => {
     const [country, setCountry] = useState(null);
-    const [error, setError] = useState(null);
-    const [quantity, setQuantity] = useState(1);
     const [selectedPanel, setSelectedPanel] = useState(null);
+    const [quantity, setQuantity] = useState(1);
     const [currentStep, setCurrentStep] = useState(1);
     const [formData, setFormData] = useState({
         name: "",
@@ -20,36 +19,25 @@ const Payment = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isComplete, setIsComplete] = useState(false);
 
-    const { countryCode } = useParams();
-    const location = useLocation();
+    const { countryCode, panelId } = useParams();
     const { userId } = useAuth();
 
     useEffect(() => {
-        const fetchData = async () => {
+        console.log(countryCode, panelId);
+        const fetchPanelData = async () => {
             try {
-                const response = await axios.get(
-                    `http://localhost:8000/api/v1/countries/${countryCode}`
-                );
-                const jsonData = response.data;
-                setCountry(jsonData);
-
-                // Check if panelIndex is provided in the URL query
-                const params = new URLSearchParams(location.search);
-                const panelIndex = params.get("panelIndex");
-                if (
-                    panelIndex !== null &&
-                    jsonData.solarPanels &&
-                    jsonData.solarPanels[panelIndex]
-                ) {
-                    setSelectedPanel(jsonData.solarPanels[panelIndex]);
-                }
+                const response = await axios.get(`http://localhost:8000/api/v1/panels/${panelId}`);
+                const data = response;
+                console.log(data);
+                setCountry(data.country);
+                setSelectedPanel(data.panel);
             } catch (error) {
-                setError(error.message);
+                console.error("Error fetching panel data:", error);
             }
         };
 
-        fetchData();
-    }, [countryCode, location.search]);
+        fetchPanelData();
+    }, [countryCode, panelId]);
 
     const handleQuantityChange = (amount) => {
         const newQuantity = quantity + amount;
@@ -129,7 +117,7 @@ const Payment = () => {
             setIsComplete(true);
             setCurrentStep(3);
         } catch (error) {
-            setError("Payment failed: " + (error.response?.data?.message || error.message));
+            console.error("Payment failed:", error);
         } finally {
             setIsSubmitting(false);
         }
@@ -225,9 +213,6 @@ const Payment = () => {
                         <i className="bi bi-arrow-left-circle"></i> Back
                     </button>
                 </Link>
-
-                {/* Error Message */}
-                {error && <div className="alert alert-danger">{error}</div>}
 
                 {/* Main Content */}
                 {country && (
