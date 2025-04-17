@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './UserSection.css'
 
-const api = 'http://localhost:3000';
+const api = 'http://localhost:8000/api/v1/dashboard';
 
 const UsersPage = () => {
     const [users, setUsers] = useState([]);
@@ -64,7 +64,9 @@ const UsersPage = () => {
     const handleDelete = async (id) => {
         if (!window.confirm('Are you sure you want to delete this user?')) return;
         try {
-            await axios.delete(`${api}/users/${id}`);
+            await axios.delete(`${api}/delete-user`, {
+                data: { userId: id }
+            });
             fetchUsers();
         } catch (err) {
             console.error('Error deleting user:', err);
