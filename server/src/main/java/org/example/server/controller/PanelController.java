@@ -27,8 +27,8 @@ public class PanelController {
 
     // Get panel details by ID
     @GetMapping("/{id}")
-    public ResponseEntity<SolarPanelDTO> getPanelById(@PathVariable Long id) {
-        return null;
+    public SolarPanelDTO getPanelById(@PathVariable Long id) {
+        return panelService.getPanelById(id);
     }
 
     // Create new panel

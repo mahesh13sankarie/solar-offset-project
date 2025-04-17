@@ -20,8 +20,8 @@ const UsersPage = () => {
     const fetchUsers = async () => {
         try {
             const res = await axios.get(`${api}/users`);
-            setUsers(res.data);
-            console.log(res.data);
+            setUsers(res.data.data);
+            console.log(res.data.data);
         } catch (err) {
             console.error('Error fetching users:', err);
         }
@@ -34,10 +34,10 @@ const UsersPage = () => {
     // Compute filtered, sorted, and limited users
     const filteredUsers = users
         .filter(user =>
-            user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
             user.email.toLowerCase().includes(searchTerm.toLowerCase())
         )
-        .filter(user => (sortByRole ? user.role === sortByRole : true))
+        .filter(user => (sortByRole ? user.accountType === sortByRole : true))
         .slice(0, displayLimit);
 
     // Create or update user
@@ -73,7 +73,7 @@ const UsersPage = () => {
 
     // Start editing
     const handleEdit = (user) => {
-        setFormData({ name: user.name, email: user.email, role: user.role });
+        setFormData({ name: user.fullName, email: user.email, role: user.accountType });
         setEditingUserId(user.id);
         setShowEditModal(true);
     };
@@ -107,9 +107,9 @@ const UsersPage = () => {
                             style={{ minWidth: '140px' }}
                         >
                             <option value="">All Roles</option>
-                            <option value="user">User</option>
-                            <option value="staff">Staff</option>
-                            <option value="admin">Admin</option>
+                            <option value={0}>User</option>
+                            <option value={2}>Staff</option>
+                            <option value={1}>Admin</option>
                         </select>
 
                         <input
@@ -169,9 +169,9 @@ const UsersPage = () => {
                                             value={formData.role}
                                             onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                                         >
-                                            <option value="3">User</option>
-                                            <option value="2">Staff</option>
-                                            <option value="1">Admin</option>
+                                            <option value={0}>User</option>
+                                            <option value={2}>Staff</option>
+                                            <option value={1}>Admin</option>
                                         </select>
                                     </div>
                                 </div>
@@ -221,9 +221,9 @@ const UsersPage = () => {
                                             value={formData.role}
                                             onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                                         >
-                                            <option value="user">User</option>
-                                            <option value="staff">Staff</option>
-                                            <option value="admin">Admin</option>
+                                            <option value={0}>User</option>
+                                            <option value={2}>Staff</option>
+                                            <option value={1}>Admin</option>
                                         </select>
                                     </div>
                                 </div>
@@ -249,11 +249,11 @@ const UsersPage = () => {
                 <tbody>
                 {filteredUsers.map((user) => (
                     <tr key={user.id}>
-                        <td>{user.name}</td>
+                        <td>{user.fullName}</td>
                         <td>{user.email}</td>
                         <td>
-                <span className={`badge bg-${user.role === 'admin' ? 'danger' : user.role === 'staff' ? 'warning' : 'secondary'}`}>
-                  {user.role}
+                <span className={`badge bg-${user.accountType === 1 ? 'danger' : user.accountType === 2 ? 'warning' : 'secondary'}`}>
+                  {user.accountType === 1 ? 'Admin' : user.accountType === 2 ? 'Staff' : 'User'}
                 </span>
                         </td>
                         <td>

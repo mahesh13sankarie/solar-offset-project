@@ -42,7 +42,9 @@ public class PanelServiceImpl implements PanelService {
 
     @Override
     public SolarPanelDTO getPanelById(Long id) {
-        return null;
+        return countryPanelRepository.findById(id)
+                .map(this::mapToDTO)
+                .orElseThrow(() -> new IllegalArgumentException("Panel not found with ID: " + id));
     }
 
     @Override
@@ -86,6 +88,7 @@ public class PanelServiceImpl implements PanelService {
         Country country = countryPanel.getCountry();
 
         return SolarPanelDTO.builder()
+                .id(countryPanel.getId())
                 .panelName(panel.getName())
                 .installationCost(panel.getInstallationCost())
                 .productionPerPanel(panel.getProductionPerPanel())

@@ -3,14 +3,16 @@ import React from "react";
 import './SideNav.css'; // Optional: for custom styling
 import {Link, useLocation} from 'react-router-dom';
 
-const SideNav = () => {
+const SideNav = (props) => {
 
     const location = useLocation();
     const currentPath = location.pathname;
 return (
     <div className="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style={{ width: '250px', height: '100vh' }}>
         <Link to="/dashboard" className="d-flex align-items-center mb-3 text-white text-decoration-none">
-            <span className="fs-4">Admin Panel</span>
+            <span className="fs-4">
+                { props.userType ? props.userType : "Admin" }
+            </span>
         </Link>
         <hr />
         <ul className="nav nav-pills flex-column mb-auto">
