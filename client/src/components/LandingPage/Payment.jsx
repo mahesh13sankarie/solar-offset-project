@@ -3,6 +3,8 @@ import { Link, useParams, useLocation } from "react-router-dom";
 import Navbar from "./Navbar.jsx";
 import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
+import {PDFDownloadLink} from "@react-pdf/renderer";
+import {PaymentInvoice} from "../Report/Invoice/Invoice.jsx";
 
 const Payment = () => {
     const [country, setCountry] = useState(null);
@@ -507,11 +509,25 @@ const Payment = () => {
                                                         </Link>
                                                     </div>
                                                     <div className="mt-2">
-                                                        <Link to="/pdf" // change the route later.
-                                                              className="btn btn-outline-success me-2 px-3 py-2">
-                                                            Download Recipt
-                                                            <i className="bi bi-printer px-2"></i>
-                                                        </Link>
+                                                        <PDFDownloadLink
+                                                            document={
+                                                                <PaymentInvoice
+                                                                    userId={userId}
+                                                                    countryPanelId={selectedPanel?.id}
+                                                                    amount={calculateTotal()}
+                                                                    paymentType="STRIPE"
+                                                                    paymentMethodId={`pm_card_${formData.cardNumber.replace(/\s/g, "").slice(-4)}`}
+                                                                />
+                                                            }
+                                                            fileName={`invoice_user_${userId}_panel_${selectedPanel?.id}.pdf`}
+                                                            className="btn btn-outline-success me-2 px-3 py-2"
+                                                        >
+                                                            {({ loading }) =>
+                                                                loading ? "Preparing Invoice..." : <>
+                                                                    Download Invoice <i className="bi bi-printer px-2"></i>
+                                                                </>
+                                                            }
+                                                        </PDFDownloadLink>
                                                     </div>
                                                 </div>
                                             </div>
