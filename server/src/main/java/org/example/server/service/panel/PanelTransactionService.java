@@ -1,6 +1,7 @@
 package org.example.server.service.panel;
 
 import org.example.server.dto.PanelTransactionDTO;
+import org.example.server.dto.StaffTransactionDTO;
 import org.example.server.entity.PanelTransaction;
 import org.springframework.data.jpa.repository.Query;
 
@@ -12,8 +13,11 @@ import java.util.List;
  */
 public interface PanelTransactionService {
     PanelTransaction save(PanelTransactionDTO panelTransaction);
+
     List<PanelTransaction> fetchAll();
 
     @Query("select trx from PanelTransaction trx join trx.user usr where usr.id == :id")
     List<PanelTransaction> fetchById(Long id);
+
+    List<StaffTransactionDTO> getStaffTransactionHistory();
 }
