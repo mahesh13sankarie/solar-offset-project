@@ -1,0 +1,74 @@
+{
+  "countries": [
+    {
+      "id": 1,
+      "country": "Nigeria",
+      "carbon_emission": 250.5,
+      "electricity_consumption": 5000,
+      "population": 10000000
+    },
+    {
+      "id": 2,
+      "country": "Paris",
+      "carbon_emission": 310.7,
+      "electricity_consumption": 6000,
+      "population": 15000000
+    },
+    {
+      "id": 3,
+      "country": "Canada",
+      "carbon_emission": 180.2,
+      "electricity_consumption": 4200,
+      "population": 7500000
+    },
+
+    {
+      "id": 4,
+      "country": "China",
+      "carbon_emission": 95.3,
+      "electricity_consumption": 3200,
+      "population": 5000000
+    },
+    {
+      "id": 5,
+      "country": "Greece",
+      "carbon_emission": 200.9,
+      "electricity_consumption": 4800,
+      "population": 9000000
+    }
+  ],
+
+  "singlecountry": [
+    {
+      "id": 1,
+      "country": "Nigeria",
+      "carbon_emission": 250.5,
+      "electricity_consumption": 5000,
+      "population": 10000000,
+      "currency": "$",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis id purus vel justo elementum semper condimentum at elit. Nunc vel velit vehicula, tempor tellus ac, interdum felis. Integer sed dui quam. Vestibulum quam libero, blandit ac interdum a, viverra a ligula. Quisque in tristique turpis, eu rutrum metus. Suspendisse ullamcorper orci eu orci mollis, nec laoreet tellus molestie. Vestibulum hendrerit orci sit amet commodo maximus. Curabitur eleifend varius neque sed porttitor. Proin dignissim vitae sapien nec convallis. Aliquam ut maximus nibh. Maecenas vel mauris quis nunc sodales lobortis. Nulla congue egestas elit, id pharetra metus. Cras lobortis justo a arcu semper convallis sodales eget dui.",
+      "solar_panels": [
+        { "type": "Monocrystalline", "panel_cost": 350, "installation_cost": 6000, "efficiency": "18-22%", "lifespan": "25-30 years", "temperature_tolerance": "High", "warranty": "25 years" },
+        { "type": "Polycrystalline", "panel_cost": 280, "installation_cost": 5500, "efficiency": "15-18%", "lifespan": "20-25 years", "temperature_tolerance": "Medium", "warranty": "20 years" },
+        { "type": "Thin-Film", "panel_cost": 220, "installation_cost": 5000, "efficiency": "10-14%", "lifespan": "10-20 years", "temperature_tolerance": "Very High", "warranty": "10-15 years" },
+        { "type": "PERC", "panel_cost": 370, "installation_cost": 6500, "efficiency": "20-23%", "lifespan": "25-30 years", "temperature_tolerance": "High", "warranty": "25 years" },
+        { "type": "Bifacial", "panel_cost": 400, "installation_cost": 7000, "efficiency": "22-25%", "lifespan": "25-35 years", "temperature_tolerance": "High", "warranty": "30 years" }
+      ],
+      "id": 2,
+      "country": "Paris",
+      "carbon_emission": 360.5,
+      "electricity_consumption": 7000,
+      "population": 10000000,
+      "currency": "€",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis id purus vel justo elementum semper condimentum at elit. Nunc vel velit vehicula, tempor tellus ac, interdum felis. Integer sed dui quam. Vestibulum quam libero, blandit ac interdum a, viverra a ligula. Quisque in tristique turpis, eu rutrum metus. Suspendisse ullamcorper orci eu orci mollis, nec laoreet tellus molestie. Vestibulum hendrerit orci sit amet commodo maximus. Curabitur eleifend varius neque sed porttitor. Proin dignissim vitae sapien nec convallis. Aliquam ut maximus nibh. Maecenas vel mauris quis nunc sodales lobortis. Nulla congue egestas elit, id pharetra metus. Cras lobortis justo a arcu semper convallis sodales eget dui.",
+      "solar_panels": [
+        { "type": "Monocrystalline", "panel_cost": 350, "installation_cost": 6000, "efficiency": "18-22%", "lifespan": "25-30 years", "temperature_tolerance": "High", "warranty": "25 years" },
+        { "type": "Polycrystalline", "panel_cost": 280, "installation_cost": 5500, "efficiency": "15-18%", "lifespan": "20-25 years", "temperature_tolerance": "Medium", "warranty": "20 years" },
+        { "type": "Thin-Film", "panel_cost": 220, "installation_cost": 5000, "efficiency": "10-14%", "lifespan": "10-20 years", "temperature_tolerance": "Very High", "warranty": "10-15 years" },
+        { "type": "PERC", "panel_cost": 370, "installation_cost": 6500, "efficiency": "20-23%", "lifespan": "25-30 years", "temperature_tolerance": "High", "warranty": "25 years" },
+        { "type": "Bifacial", "panel_cost": 400, "installation_cost": 7000, "efficiency": "22-25%", "lifespan": "25-35 years", "temperature_tolerance": "High", "warranty": "30 years" }
+      ]
+    }
+  ]
+
+}

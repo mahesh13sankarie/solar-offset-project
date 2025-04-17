@@ -1,11 +1,11 @@
 package org.example.server.service.electricitymetrics;
 
-import org.example.server.dto.ElectricityResponseDto;
+import org.example.server.dto.CountryDetailDTO;
 
 import java.util.List;
 
 public interface ElectricityMetricsService {
-    List<ElectricityResponseDto> getAllElectricityData();
+    List<CountryDetailDTO> getAllElectricityData();
 
-    ElectricityResponseDto getElectricityDataByCountry(String countryCode);
+    CountryDetailDTO getElectricityDataByCountry(String countryCode);
 }

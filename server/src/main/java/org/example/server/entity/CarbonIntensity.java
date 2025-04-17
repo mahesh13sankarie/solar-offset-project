@@ -18,9 +18,7 @@ public class CarbonIntensity {
     @Id // Specifies the primary key of the entity
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-generates ID values using the database identity strategy
     private Long id;
-
     private String countryCode;
-
     private int carbonIntensity;
     private LocalDateTime updatedAt;
     private LocalDateTime datetime; // API Response time
