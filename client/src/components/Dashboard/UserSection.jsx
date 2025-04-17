@@ -113,7 +113,7 @@ const UsersPage = () => {
                             style={{ width: '120px' }}
                         >
                             <option value="">All Roles</option>
-                            <option value={0}>User</option>
+                            <option value={1}>User</option>
                             <option value={2}>Staff</option>
                         </select>
                         </div>
