@@ -1,17 +1,24 @@
 package org.example.server.service.panel;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.example.server.dto.PanelTransactionDTO;
+import org.example.server.dto.StaffTransactionDTO;
 import org.example.server.entity.Panel;
 import org.example.server.entity.PanelTransaction;
+import org.example.server.entity.Payment;
 import org.example.server.entity.User;
 import org.example.server.repository.PanelRepository;
 import org.example.server.repository.PanelTransactionRepository;
+import org.example.server.repository.PaymentRepository;
 import org.example.server.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
 
 /**
  * @author: astidhiyaa
@@ -29,6 +36,9 @@ public class PanelTransactionServiceImpl implements PanelTransactionService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PaymentRepository paymentRepository;
+
     @Override
     public PanelTransaction save(PanelTransactionDTO panelTransaction) {
         Optional<Panel> panel = panelRepository.findById(panelTransaction.panelId());
@@ -45,5 +55,48 @@ public class PanelTransactionServiceImpl implements PanelTransactionService {
     @Override
     public List<PanelTransaction> fetchById(Long id) {
         return panelTransactionRepository.findByUserId(id);
+    }
+
+    @Override
+    public List<StaffTransactionDTO> getStaffTransactionHistory() {
+        List<Payment> payments = paymentRepository.findAll();
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        return payments.stream()
+                .map(payment -> {
+                    // Get user details
+                    User user = payment.getUser();
+                    String userEmail = user.getEmail();
+
+                    // Get panel and country details through CountryPanel
+                    Panel panel = payment.getCountryPanel().getPanel();
+                    String panelType = panel.getName();
+                    String country = payment.getCountryPanel().getCountry().getName();
+
+                    // Get payment date
+                    LocalDateTime date = payment.getCreatedAt();
+
+                    // Get amount from payment
+                    BigDecimal amount = payment.getAmount();
+
+                    // Calculate quantity - assuming amount is the number of panels purchased
+                    Integer quantity = amount.intValue();
+
+                    // Calculate carbon offset based on panel efficiency and quantity
+                    // This is a simple estimation based on panel production
+                    double productionPerPanel = panel.getProductionPerPanel();
+                    double carbonOffsetValue = quantity * productionPerPanel * 0.7; // Assuming 0.7 tons CO2 offset per
+                                                                                    // kW
+
+                    return new StaffTransactionDTO(
+                            date.format(dateFormatter),
+                            userEmail,
+                            country,
+                            panelType,
+                            quantity,
+                            amount.intValue(),
+                            carbonOffsetValue);
+                })
+                .collect(Collectors.toList());
     }
 }
