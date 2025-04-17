@@ -55,7 +55,7 @@ export const styles = StyleSheet.create({
     totals: {
         display: "flex",
         alignItems: "flex-end",
-        marginTop: 120
+        marginTop: 120,
     },
 });
 
@@ -71,22 +71,23 @@ const tableData = [
         quantity: 2,
         unitPrice: 900,
         total: 1800,
-    }
+    },
 ];
 
 const totalData = [
-  { label: "Subtotal", value: "$4300.00" },
-  { label: "Tax (5%)", value: "$215.00" },
-  { label: "Total", value: "$4515.00" },
+    { label: "Subtotal", value: "$4300.00" },
+    { label: "Tax (5%)", value: "$215.00" },
+    { label: "Total", value: "$4515.00" },
 ];
 
 function Invoice() {
-    return (<>
+    return (
+        <>
             <Document>
                 <Page size="A4" style={styles.page}>
                     <View style={styles.header}>
                         <View>
-                            <Text style={[styles.title,styles.bold]}>INVOICE</Text>
+                            <Text style={[styles.title, styles.bold]}>INVOICE</Text>
                             <Text>INVOICE #123-123-123</Text>
                         </View>
                         <View style={styles.spaceY}>
@@ -145,10 +146,10 @@ function Invoice() {
                             ))}
                         </View>
                     </View>
-
                 </Page>
             </Document>
-        </>);
+        </>
+    );
 }
 
 export default Invoice;

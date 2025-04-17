@@ -1,28 +1,43 @@
-import React, {useEffect, useState} from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import {login} from '../HelperComponents/HelperFunction.jsx'; // Import helper functions
-import {useNavigate} from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import WelcomeLoader from "../HelperComponents/WelcomeLoader.jsx";
+import { useAuth } from "../../context/AuthContext"; // Import useAuth hook
 
+// Simple loading component for auth transitions
+const WelcomeLoader = ({ message }) => {
+    return (
+        <div className="text-center p-5">
+            <div className="spinner-border text-primary mb-3" role="status">
+                <span className="visually-hidden">Loading...</span>
+            </div>
+            <h4>{message}</h4>
+        </div>
+    );
+};
 
 const AuthForm = () => {
-    const [formState, setFormState] = useState('login'); // 'login' or 'register'
-    const [formData, setFormData] = useState({email: '', password: '', confirmPassword: '', fullName: ''});
-    const [message, setMessage] = useState('');
+    const [formState, setFormState] = useState("login"); // 'login' or 'register'
+    const [formData, setFormData] = useState({
+        email: "",
+        password: "",
+        confirmPassword: "",
+        fullName: "",
+    });
+    const [message, setMessage] = useState("");
     const [submitted, setSubmitted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+    const { isAuthenticated, login } = useAuth(); // Use the auth context
 
     useEffect(() => {
-        const token = localStorage.getItem('authToken');
-        if (token) {
-            navigate('/dashboard');
+        if (isAuthenticated) {
+            navigate("/dashboard");
         }
-    }, []);
+    }, [isAuthenticated, navigate]);
 
     const handleChange = (e) => {
-        const {name, value} = e.target;
+        const { name, value } = e.target;
         setFormData((prevData) => ({
             ...prevData,
             [name]: value,
@@ -31,33 +46,36 @@ const AuthForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setMessage('');
+        setMessage("");
         setSubmitted(true);
 
-        if (formState === 'register' && formData.password !== formData.confirmPassword) {
-            setMessage('Passwords do not match');
+        if (formState === "register" && formData.password !== formData.confirmPassword) {
+            setMessage("Passwords do not match");
             setSubmitted(false);
             return;
         }
 
         try {
-            if (formState === 'login') {
-                const res = await axios.post('http://localhost:8000/api/v1/auth/login', {
+            if (formState === "login") {
+                const res = await axios.post("http://localhost:8000/api/v1/auth/login", {
                     email: formData.email,
-                    password: formData.password
+                    password: formData.password,
+                });
+                const userData = res.data.data;
+                login({
+                    token: userData.token,
+                    userId: userData.id,
                 });
 
-                localStorage.setItem('authToken', res.data.token);
-                setMessage('Login successful');
+                setMessage("Login successful");
                 setIsLoading(true); // Show the loading animation
-                setTimeout(() => navigate('/SolarComparison'), 2000); // Increased delay to show animation
-
+                setTimeout(() => navigate("/SolarComparison"), 2000); // Increased delay to show animation
             } else {
-                const res = await axios.post('http://localhost:8000/api/v1/auth/register', {
+                const res = await axios.post("http://localhost:8000/api/v1/auth/register", {
                     email: formData.email,
                     password: formData.password,
                     fullName: formData.fullName,
-                    accountType: 1
+                    accountType: 1,
                 });
 
                 if (res.status === 200) {
@@ -66,9 +84,9 @@ const AuthForm = () => {
                 }
             }
         } catch (err) {
-            setMessage('Error: Unable to connect to server');
+            setMessage("Error: Unable to connect to server");
         } finally {
-            if (formState !== 'login') {
+            if (formState !== "login") {
                 setSubmitted(false);
             }
         }
@@ -76,8 +94,8 @@ const AuthForm = () => {
 
     const switchForm = (state) => {
         setFormState(state);
-        setFormData({email: '', password: '', confirmPassword: '', fullName: ''});
-        setMessage('');
+        setFormData({ email: "", password: "", confirmPassword: "", fullName: "", country: "" });
+        setMessage("");
     };
 
     if (isLoading) {
@@ -85,60 +103,111 @@ const AuthForm = () => {
     }
 
     return (
-        <div className="container d-flex justify-content-center align-items-center vh-100" >
-            <div className="card p-4 shadow-lg" style={{maxWidth: '800px', width: '100%'}}>
+        <div className="container d-flex justify-content-center align-items-center vh-100">
+            <div className="card p-4 shadow-lg" style={{ maxWidth: "800px", width: "100%" }}>
                 <div className="row g-0">
                     <div className="col-md-6 d-flex flex-column justify-content-center p-3 bg-light rounded-start">
                         <h3 className="text-center">Welcome</h3>
                         <p className="text-muted">Login or Register to continue.</p>
-
                     </div>
 
                     <div className="col-md-6 p-4">
                         {!submitted ? (
                             <>
-                                <h3 className="text-center">{formState === 'login' ? 'Login' : 'Register'}</h3>
+                                <h3 className="text-center">
+                                    {formState === "login" ? "Login" : "Register"}
+                                </h3>
                                 <form onSubmit={handleSubmit}>
                                     <div className="mb-3">
                                         <label className="form-label">Email</label>
-                                        <input type="email" className="form-control" name="email" value={formData.email}
-                                               onChange={handleChange} required/>
+                                        <input
+                                            type="email"
+                                            className="form-control"
+                                            name="email"
+                                            value={formData.email}
+                                            onChange={handleChange}
+                                            required
+                                        />
                                     </div>
                                     <div className="mb-3">
                                         <label className="form-label">Password</label>
-                                        <input type="password" className="form-control" name="password"
-                                               value={formData.password} onChange={handleChange} required/>
+                                        <input
+                                            type="password"
+                                            className="form-control"
+                                            name="password"
+                                            value={formData.password}
+                                            onChange={handleChange}
+                                            required
+                                        />
                                     </div>
 
-                                    {formState === 'register' && (
+                                    {formState === "register" && (
                                         <>
                                             <div className="mb-3">
-                                                <label className="form-label">Confirm Password</label>
-                                                <input type="password" className="form-control" name="confirmPassword"
-                                                       value={formData.confirmPassword} onChange={handleChange}
-                                                       required/>
+                                                <label className="form-label">
+                                                    Confirm Password
+                                                </label>
+                                                <input
+                                                    type="password"
+                                                    className="form-control"
+                                                    name="confirmPassword"
+                                                    value={formData.confirmPassword}
+                                                    onChange={handleChange}
+                                                    required
+                                                />
                                             </div>
                                             <div className="mb-3">
                                                 <label className="form-label">Full Name</label>
-                                                <input type="text" className="form-control" name="fullName"
-                                                       value={formData.fullName} onChange={handleChange} required/>
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    name="fullName"
+                                                    value={formData.fullName}
+                                                    onChange={handleChange}
+                                                    required
+                                                />
                                             </div>
                                         </>
                                     )}
 
-                                    {message && <p className="text-danger text-center">{message}</p>}
+                                    {message && (
+                                        <p className="text-danger text-center">{message}</p>
+                                    )}
 
-                                    <button type="submit" className="btn btn-primary w-100">Submit</button>
+                                    <button type="submit" className="btn btn-primary w-100">
+                                        Submit
+                                    </button>
 
                                     <div className="text-center mt-3">
-                                        {formState === 'login' ? (
+                                        {formState === "login" ? (
                                             <>
-                                                <a href="#" onClick={() => switchForm('register')}>Don't have an account? Register</a>
+                                                <a
+                                                    href="#"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        switchForm("register");
+                                                    }}
+                                                >
+                                                    Don't have an account? Register
+                                                </a>
                                                 <br />
-                                                <a href="/change-password" className="text-decoration-none mt-2 d-inline-block">Forgot Password?</a>
+                                                <a
+                                                    href="/change-password"
+                                                    className="text-decoration-none mt-2 d-inline-block"
+                                                >
+                                                    Forgot Password?
+                                                </a>
                                             </>
                                         ) : (
-                                            <a href="#" onClick={() => switchForm('login')}>Already have an account? Login</a>
+                                            <a
+                                                href="#"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    switchForm("login");
+                                                }}
+                                            >
+                                                Already have an account? Login
+                                            </a>
                                         )}
                                     </div>
                                 </form>

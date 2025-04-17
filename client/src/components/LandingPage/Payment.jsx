@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
 import Navbar from "./Navbar.jsx";
+import { useAuth } from "../../context/AuthContext";
+import axios from "axios";
 
 const Payment = () => {
     const [country, setCountry] = useState(null);
-    const [error, setError] = useState(null);
-    const [quantity, setQuantity] = useState(1);
     const [selectedPanel, setSelectedPanel] = useState(null);
+    const [quantity, setQuantity] = useState(1);
     const [currentStep, setCurrentStep] = useState(1);
     const [formData, setFormData] = useState({
         name: "",
@@ -18,36 +19,30 @@ const Payment = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isComplete, setIsComplete] = useState(false);
 
-    const { countryCode } = useParams();
-    const location = useLocation();
+    const { countryCode, panelId } = useParams();
+    const { userId } = useAuth();
 
     useEffect(() => {
-        const fetchData = async () => {
+        console.log("Panel ID:", panelId, "Country Code:", countryCode);
+        const fetchPanelData = async () => {
             try {
-                const response = await fetch(
-                    `http://localhost:8000/api/v1/countries/${countryCode}`
-                );
-                if (!response.ok) throw new Error("Failed to fetch data");
-                const jsonData = await response.json();
-                setCountry(jsonData);
+                const response = await axios.get(`http://localhost:8000/api/v1/panels/${panelId}`);
+                const panelData = response.data;
+                console.log("Panel data:", panelData);
 
-                // Check if panelIndex is provided in the URL query
-                const params = new URLSearchParams(location.search);
-                const panelIndex = params.get("panelIndex");
-                if (
-                    panelIndex !== null &&
-                    jsonData.solarPanels &&
-                    jsonData.solarPanels[panelIndex]
-                ) {
-                    setSelectedPanel(jsonData.solarPanels[panelIndex]);
-                }
+                setSelectedPanel(panelData);
+
+                setCountry({
+                    country: panelData.countryCode,
+                    countryCode: panelData.countryCode,
+                });
             } catch (error) {
-                setError(error.message);
+                console.error("Error fetching panel data:", error);
             }
         };
 
-        fetchData();
-    }, [countryCode, location.search]);
+        fetchPanelData();
+    }, [panelId]);
 
     const handleQuantityChange = (amount) => {
         const newQuantity = quantity + amount;
@@ -95,16 +90,42 @@ const Payment = () => {
         setCurrentStep((prevStep) => prevStep - 1);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
 
-        // Simulate API call
-        setTimeout(() => {
-            setIsSubmitting(false);
+        try {
+            // Extract card number without spaces
+            const cardNumber = formData.cardNumber.replace(/\s/g, "");
+            console.log(userId);
+            // Create payment request data
+            const paymentData = {
+                userId: userId,
+                countryPanelId: selectedPanel.id, // Assuming the panel has an id field
+                amount: calculateTotal(),
+                paymentType: "STRIPE",
+                paymentMethodId: `pm_card_${cardNumber.slice(-4)}`, // Just for demonstration
+            };
+            console.log(paymentData);
+            // Send payment request to API using axios
+            const response = await axios.post(
+                "http://localhost:8000/api/v1/payments",
+                paymentData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+                    },
+                }
+            );
+
+            // Payment successful
             setIsComplete(true);
             setCurrentStep(3);
-        }, 1500);
+        } catch (error) {
+            console.error("Payment failed:", error);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     // Progress step component
@@ -198,9 +219,6 @@ const Payment = () => {
                     </button>
                 </Link>
 
-                {/* Error Message */}
-                {error && <div className="alert alert-danger">{error}</div>}
-
                 {/* Main Content */}
                 {country && (
                     <>
@@ -233,14 +251,18 @@ const Payment = () => {
                                                         <strong>Cost per Panel:</strong> £
                                                         {selectedPanel.installationCost}
                                                     </li>
-                                                    <li className="list-group-item">
-                                                        <strong>Efficiency:</strong>{" "}
-                                                        {selectedPanel.efficiency}%
-                                                    </li>
-                                                    <li className="list-group-item">
-                                                        <strong>Warranty:</strong>{" "}
-                                                        {selectedPanel.warranty} years
-                                                    </li>
+                                                    {selectedPanel.efficiency && (
+                                                        <li className="list-group-item">
+                                                            <strong>Efficiency:</strong>{" "}
+                                                            {selectedPanel.efficiency}%
+                                                        </li>
+                                                    )}
+                                                    {selectedPanel.warranty && (
+                                                        <li className="list-group-item">
+                                                            <strong>Warranty:</strong>{" "}
+                                                            {selectedPanel.warranty} years
+                                                        </li>
+                                                    )}
                                                     {selectedPanel.productionPerPanel && (
                                                         <li className="list-group-item">
                                                             <strong>Production:</strong>{" "}

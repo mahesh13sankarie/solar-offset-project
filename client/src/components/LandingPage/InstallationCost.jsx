@@ -1,67 +1,73 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Navbar from "./Navbar.jsx";
+import axios from "axios";
 
 const InstallationCost = () => {
-	const [country, setCountry] = useState(null);
-	const [error, setError] = useState(null);
-	const { countryCode } = useParams();
+    const [country, setCountry] = useState(null);
+    const [error, setError] = useState(null);
+    const { countryCode } = useParams();
 
-	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				const response = await fetch(`http://localhost:8000/api/v1/countries/${countryCode}`);
-				if (!response.ok) throw new Error("Failed to fetch data");
-				const jsonData = await response.json();
-				setCountry(jsonData);
-			} catch (error) {
-				setError(error.message);
-			}
-		};
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                // TODO: Fix data fetching duplication issue - we should implement a caching mechanism or context
+                // to avoid fetching the same data multiple times across different components
+                const response = await axios.get(
+                    `http://localhost:8000/api/v1/countries/${countryCode}`
+                );
+                console.log(response.data);
+                setCountry(response.data);
+            } catch (error) {
+                setError(error.message || "Failed to fetch data");
+            }
+        };
 
-		fetchData();
-	}, [countryCode]);
+        fetchData();
+    }, [countryCode]);
 
-	return (
-		<div>
-			<Navbar />
-			<section className="container mt-4">
-				{/* Back Button */}
-				<Link to="/SolarComparison">
-					<button className="btn btn-link mb-3">
-						<i className="bi bi-arrow-left-circle"></i> Back
-					</button>
-				</Link>
+    return (
+        <div>
+            <Navbar />
+            <section className="container mt-4">
+                {/* Back Button */}
+                <Link to="/SolarComparison">
+                    <button className="btn btn-link mb-3">
+                        <i className="bi bi-arrow-left-circle"></i> Back
+                    </button>
+                </Link>
 
-				{/* Error Message */}
-				{error && <div className="alert alert-danger">{error}</div>}
+                {/* Error Message */}
+                {error && <div className="alert alert-danger">{error}</div>}
 
-				{/* Country Data */}
-				{country && (
-					<>
-						{/* Country Overview */}
-						<div className="card shadow-sm p-4 mb-5">
-							<h2 className="mb-3">{country.country}</h2>
-							<p className="text-muted">{country.description}</p>
-							<div className="row mt-3">
-								<div className="col-md-4">
-									<strong>Carbon Emissions:</strong> {country.carbonEmissions.toLocaleString()} tCO₂
-								</div>
-								<div className="col-md-4">
-									<strong>Electricity Availability:</strong>{" "}
-									{country.electricityAvailability.toLocaleString()} MWh
-								</div>
-								<div className="col-md-4">
-									<strong>Solar Potential:</strong> {country.solarPowerPotential}%
-								</div>
-								<div className="col-md-4 mt-3">
-									<strong>Renewable Energy:</strong> {country.renewablePercentage}%
-								</div>
-								<div className="col-md-4 mt-3">
-									<strong>Population:</strong> {country.population} million
-								</div>
-							</div>
-						</div>
+                {/* Country Data */}
+                {country && (
+                    <>
+                        {/* Country Overview */}
+                        <div className="card shadow-sm p-4 mb-5">
+                            <h2 className="mb-3">{country.country}</h2>
+                            <p className="text-muted">{country.description}</p>
+                            <div className="row mt-3">
+                                <div className="col-md-4">
+                                    <strong>Carbon Emissions:</strong>{" "}
+                                    {country.carbonEmissions.toLocaleString()} tCO₂
+                                </div>
+                                <div className="col-md-4">
+                                    <strong>Electricity Availability:</strong>{" "}
+                                    {country.electricityAvailability.toLocaleString()} MWh
+                                </div>
+                                <div className="col-md-4">
+                                    <strong>Solar Potential:</strong> {country.solarPowerPotential}%
+                                </div>
+                                <div className="col-md-4 mt-3">
+                                    <strong>Renewable Energy:</strong> {country.renewablePercentage}
+                                    %
+                                </div>
+                                <div className="col-md-4 mt-3">
+                                    <strong>Population:</strong> {country.population} million
+                                </div>
+                            </div>
+                        </div>
 
 						{/* Panel Cards */}
 						<h4 className="mb-4">Available Solar Panels</h4>
@@ -89,8 +95,9 @@ const InstallationCost = () => {
 												</li>
 											</ul>
 											<div className="mt-auto">
+												{/* TODO: Add the panel id to the link (Should be backend side) */}
 												<Link
-													to={`/Payment/${countryCode}?panelIndex=${i}`}
+													to={`/Payment/${countryCode}/${panel.id || i}`}
 													className="btn btn-success w-100"
 												>
 													<i className="bi bi-heart-fill"></i> Donate
