@@ -1,0 +1,47 @@
+.nav-tab-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-tab-item {
+    cursor: pointer;
+    padding: 10px 20px;
+    color: #bbb;
+    font-weight: 500;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.nav-tab-item:hover {
+    color: #fff;
+}
+
+.active-tab {
+    color: #fff;
+}
+
+.active-tab::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 25%;
+    width: 50%;
+    height: 3px;
+    background-color: white;
+    border-radius: 2px;
+    animation: tabSlideIn 0.3s ease forwards;
+}
+
+@keyframes tabSlideIn {
+    from {
+        width: 0%;
+        left: 50%;
+        opacity: 0;
+    }
+    to {
+        width: 50%;
+        left: 25%;
+        opacity: 1;
+    }
+}

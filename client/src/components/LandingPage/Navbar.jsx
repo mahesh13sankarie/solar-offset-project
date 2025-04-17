@@ -1,5 +1,5 @@
 import React, {useState,useEffect} from "react";
-import {logout} from "../Login/HelperFunction.jsx";
+import {logout} from "../HelperComponents/HelperFunction.jsx";
 
 const Navbar = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
