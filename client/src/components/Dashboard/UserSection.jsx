@@ -112,7 +112,6 @@ const UsersPage = () => {
                             <option value="">All Roles</option>
                             <option value={0}>User</option>
                             <option value={2}>Staff</option>
-                            <option value={1}>Admin</option>
                         </select>
                         </div>
 
@@ -256,12 +255,13 @@ const UsersPage = () => {
                 </thead>
                 <tbody>
                 {filteredUsers.map((user) => (
+                    user.accountType !== 1 && (
                     <tr key={user.id}>
                         <td>{user.fullName}</td>
                         <td>{user.email}</td>
                         <td>
-                <span className={`badge bg-${user.accountType === 1 ? 'danger' : user.accountType === 2 ? 'warning' : 'secondary'}`}>
-                  {user.accountType === 1 ? 'Admin' : user.accountType === 2 ? 'Staff' : 'User'}
+                <span className={`badge bg-${user.accountType === 2 ? 'warning' : 'secondary'}`}>
+                  {user.accountType === 2 ? 'Staff' : 'User'}
                 </span>
                         </td>
                         <td>
@@ -273,6 +273,7 @@ const UsersPage = () => {
                             </button>
                         </td>
                     </tr>
+                    )
                 ))}
                 {filteredUsers.length === 0 && (
                     <tr>
