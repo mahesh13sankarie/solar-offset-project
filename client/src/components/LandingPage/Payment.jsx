@@ -495,7 +495,7 @@ const Payment = () => {
                                                     <div className="mt-3">
                                                         <Link
                                                             to="/SolarComparison"
-                                                            className="btn btn-primary me-2"
+                                                            className="btn btn-outline-primary me-2"
                                                         >
                                                             View More Countries
                                                         </Link>
@@ -504,6 +504,13 @@ const Payment = () => {
                                                             className="btn btn-outline-secondary"
                                                         >
                                                             Return to Home
+                                                        </Link>
+                                                    </div>
+                                                    <div className="mt-2">
+                                                        <Link to="/pdf" // change the route later.
+                                                              className="btn btn-outline-success me-2 px-3 py-2">
+                                                            Download Recipt
+                                                            <i className="bi bi-printer px-2"></i>
                                                         </Link>
                                                     </div>
                                                 </div>

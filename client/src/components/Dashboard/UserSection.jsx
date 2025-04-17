@@ -6,7 +6,7 @@ const api = 'http://localhost:8000/api/v1/dashboard';
 
 const UsersPage = () => {
     const [users, setUsers] = useState([]);
-    const [formData, setFormData] = useState({ name: '', email: '', role: 'user' });
+    const [formData, setFormData] = useState({ name: '', email: '', role: '1' });
     const [editingUserId, setEditingUserId] = useState(null);
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
@@ -37,7 +37,7 @@ const UsersPage = () => {
             user.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
             user.email.toLowerCase().includes(searchTerm.toLowerCase())
         )
-        .filter(user => (sortByRole ? user.accountType === sortByRole : true))
+        .filter(user => (sortByRole !== '' ? user.accountType === sortByRole : true))
         .slice(0, displayLimit);
 
     // Create or update user
@@ -46,11 +46,14 @@ const UsersPage = () => {
         try {
             if (editingUserId) {
                 console.log(formData);
-                await axios.put(`${api}/users/${editingUserId}`, formData);
+                await axios.put(`${api}/update-role`, {
+                    userId: editingUserId,
+                    accountType: Number(formData.role)
+                });
             } else {
                 await axios.post(`${api}/users`, formData);
             }
-            setFormData({ name: '', email: '', role: 'user' });
+            setFormData({ name: '', email: '', role: '1' });
             setEditingUserId(null);
             setShowCreateModal(false);
             setShowEditModal(false);
@@ -75,7 +78,7 @@ const UsersPage = () => {
 
     // Start editing
     const handleEdit = (user) => {
-        setFormData({ name: user.fullName, email: user.email, role: user.accountType });
+        setFormData({ name: user.fullName, email: user.email, role: user.accountType.toString() });
         setEditingUserId(user.id);
         setShowEditModal(true);
     };
@@ -106,7 +109,7 @@ const UsersPage = () => {
                         <select
                             className="form-select form-select-sm"
                             value={sortByRole}
-                            onChange={(e) => setSortByRole(e.target.value)}
+                            onChange={(e) => setSortByRole(e.target.value === '' ? '' : Number(e.target.value))}
                             style={{ width: '120px' }}
                         >
                             <option value="">All Roles</option>
@@ -176,9 +179,8 @@ const UsersPage = () => {
                                             value={formData.role}
                                             onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                                         >
-                                            <option value={0}>User</option>
+                                            <option value={1}>User</option>
                                             <option value={2}>Staff</option>
-                                            <option value={1}>Admin</option>
                                         </select>
                                     </div>
                                 </div>
@@ -228,9 +230,8 @@ const UsersPage = () => {
                                             value={formData.role}
                                             onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                                         >
-                                            <option value={0}>User</option>
+                                            <option value={1}>User</option>
                                             <option value={2}>Staff</option>
-                                            <option value={1}>Admin</option>
                                         </select>
                                     </div>
                                 </div>
@@ -255,7 +256,6 @@ const UsersPage = () => {
                 </thead>
                 <tbody>
                 {filteredUsers.map((user) => (
-                    user.accountType !== 1 && (
                     <tr key={user.id}>
                         <td>{user.fullName}</td>
                         <td>{user.email}</td>
@@ -273,7 +273,6 @@ const UsersPage = () => {
                             </button>
                         </td>
                     </tr>
-                    )
                 ))}
                 {filteredUsers.length === 0 && (
                     <tr>
