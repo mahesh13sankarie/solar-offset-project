@@ -21,6 +21,7 @@ import Userpage from "./components/Dashboard/UserSection.jsx";
 import ReportDashboard from "./components/Report/ReportDashboard.jsx";
 import Invoice from "./components/Report/Invoice/Invoice.jsx";
 import Payment from "./components/LandingPage/Payment.jsx";
+import TestWidget from "./components/Report/KPI-Components/TestWidget.jsx";
 
 const router = createBrowserRouter([
     { path: "/", element: <Home /> },
@@ -45,6 +46,9 @@ const router = createBrowserRouter([
         element: <ReportDashboard />,
     },
     { path: "/pdf/:panelId", element: <ReportGenerate /> },
+    {
+        path:"/test/staff",element:<TestWidget />,
+    }
 ]);
 
 const App = () => {

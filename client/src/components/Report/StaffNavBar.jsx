@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import "./StaffNavbarStyle.css" // Make sure this path is correct
+import "./StaffNavbarStyle.css"
 
-export default function StaffNavBar() {
-    const [activeTab, setActiveTab] = useState("report");
+export default function StaffNavBar({activeTab,setActiveTab}) {
 
     return (
         <div className="side-nav">
@@ -12,17 +11,18 @@ export default function StaffNavBar() {
                 </a>
                 <div className="container-fluid">
                     <ul className="navbar-nav d-flex justify-content-evenly w-100 nav-tab-list">
-                        <li
-                            className={`nav-tab-item ${activeTab === "report" ? "active-tab" : ""}`}
-                            onClick={() => setActiveTab("report")}
-                        >
-                            Report Generate
-                        </li>
+
                         <li
                             className={`nav-tab-item ${activeTab === "stats" ? "active-tab" : ""}`}
                             onClick={() => setActiveTab("stats")}
                         >
                             Statistics
+                        </li>
+                        <li
+                            className={`nav-tab-item ${activeTab === "report" ? "active-tab" : ""}`}
+                            onClick={() => setActiveTab("report")}
+                        >
+                            Report Generate
                         </li>
                     </ul>
                 </div>
