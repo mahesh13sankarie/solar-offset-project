@@ -13,6 +13,7 @@ import Services from "./components/LandingPage/Services.jsx";
 import Navbar from "./components/LandingPage/Navbar.jsx";
 import InstallationCost from "./components/LandingPage/InstallationCost.jsx";
 import ReportGenerate from "./components/Report/ReportGenerate.jsx";
+import ChangePassword from "./components/Login/ChangePassword.jsx";
 
 import AdminLogin from "./components/Login/AdminLogin.jsx";
 import SideNav from "./components/Dashboard/Sidebar.jsx";
@@ -40,6 +41,7 @@ const router = createBrowserRouter([
     { path: "/donate", element: <Services /> },
     { path: "/InstallationCost/:countryCode", element: <InstallationCost /> },
     { path: "/Payment/:countryCode/:panelId", element: <Payment /> },
+    { path: "/change-password", element: <ChangePassword /> },
     {
         path: "/staff/dashboard",
         element: <ReportDashboard />,
