@@ -1,6 +1,7 @@
 // import React from 'react';
 import KPISection from './KPISection';
 import StatsTrends from './StatsTrends';
+import {useState} from "react";
 
 // Dummy data
 const stats = {
@@ -60,9 +61,18 @@ const chartData = [
 ];
 
 const TestWidget = () => {
+
+    const [isFormalView, setIsFormalView] = useState(true);
+
     return (
         <div className="container py-4">
             <h1 className="mb-4 fw-bold text-center">Staff Dashboard</h1>
+            {/*<button*/}
+            {/*    className="btn btn-outline-dark mb-4"*/}
+            {/*    onClick={() => setIsFormalView(!isFormalView)}*/}
+            {/*>*/}
+            {/*    {isFormalView ? 'Switch to Dashboard View' : 'Switch to Formal Report View'}*/}
+            {/*</button>*/}
             <KPISection stats={stats} />
             <div className="mt-5">
                 <StatsTrends data={chartData} />

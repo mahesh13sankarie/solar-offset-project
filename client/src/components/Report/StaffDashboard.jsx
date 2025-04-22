@@ -7,7 +7,7 @@ import StatsTrends from "./KPI-Components/StatsTrends.jsx";
 import TestWidget from "./KPI-Components/TestWidget.jsx";
 const REPORTAPI = "dummy.link.com/report";
 
-export default function ReportDashboard() {
+export default function StaffDashboard() {
     const [activeTab, setActiveTab] = useState("report");
 
     useEffect(() => {
@@ -17,18 +17,21 @@ export default function ReportDashboard() {
 
     return (
         <>
-            <StaffNavBar activeTab={activeTab} setActiveTab={setActiveTab}  />
+            <div className="d-flex">
+                <StaffNavBar activeTab={activeTab} setActiveTab={setActiveTab}  />
 
-            <div className="container vh-100 vw-100">
-                {activeTab === "stats" ? (
-                    <TestWidget />
-                ) : (
-                    <div className="d-flex">
-                        <CountriesSelected />
-                        <PanelsBought />
-                    </div>
-                )}
+                <div className="container vh-100 vw-100">
+                    {activeTab === "stats" ? (
+                        <TestWidget />
+                    ) : (
+                        <div className="d-flex">
+                            <CountriesSelected />
+                            <PanelsBought />
+                        </div>
+                    )}
+                </div>
             </div>
+
         </>
     );
 }

@@ -18,7 +18,7 @@ import AdminLogin from "./components/Login/AdminLogin.jsx";
 import SideNav from "./components/Dashboard/Sidebar.jsx";
 import Dashboard from "./components/Dashboard/Dashboard.jsx";
 import Userpage from "./components/Dashboard/UserSection.jsx";
-import ReportDashboard from "./components/Report/ReportDashboard.jsx";
+import StaffDashboard from "./components/Report/StaffDashboard.jsx";
 import Invoice from "./components/Report/Invoice/Invoice.jsx";
 import Payment from "./components/LandingPage/Payment.jsx";
 import TestWidget from "./components/Report/KPI-Components/TestWidget.jsx";
@@ -43,7 +43,7 @@ const router = createBrowserRouter([
     { path: "/Payment/:countryCode/:panelId", element: <Payment /> },
     {
         path: "/staff/dashboard",
-        element: <ReportDashboard />,
+        element: <StaffDashboard />,
     },
     { path: "/pdf/:panelId", element: <ReportGenerate /> },
     {
