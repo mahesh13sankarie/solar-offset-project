@@ -2,6 +2,7 @@ package org.example.server.service.auth;
 
 import org.example.server.dto.LoginDto;
 import org.example.server.dto.UserDto;
+import org.example.server.dto.UserRequest;
 import org.example.server.entity.User;
 import org.example.server.mapper.UserMapper;
 import org.example.server.repository.UserRepository;
@@ -50,7 +51,19 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
 
     }
 
+    public void deleteUser(Long id) {
+        //check if user exist, make a global function..!
+        userRepository.findById(id).orElseThrow(
+                () -> new UsernameNotFoundException("User not found")
+        );
+        userRepository.deleteById(id);
+    }
+
     @Override
+    public void updateRole(UserRequest userRequest) {
+        userRepository.updateRole(userRequest);
+    }
+
     public void updatePassword(LoginDto loginDto) {
         //check if user is exist!
         UserDetails user = loadUserByUsername(loginDto.email());
