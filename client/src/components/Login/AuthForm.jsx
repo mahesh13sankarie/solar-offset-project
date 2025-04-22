@@ -63,7 +63,7 @@ const AuthForm = () => {
                 });
                 const userData = res.data.data;
                 login({
-                    token: userData.token,
+                    token: res.data.token,
                     userId: userData.id,
                 });
 
