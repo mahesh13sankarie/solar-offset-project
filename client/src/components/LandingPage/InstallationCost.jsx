@@ -15,8 +15,6 @@ const InstallationCost = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // TODO: Fix data fetching duplication issue - we should implement a caching mechanism or context
-                // to avoid fetching the same data multiple times across different components
                 const response = await axios.get(
                     `http://localhost:8000/api/v1/countries/${countryCode}`,
                 );
