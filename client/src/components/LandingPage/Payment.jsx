@@ -106,7 +106,7 @@ const Payment = () => {
                 countryPanelId: selectedPanel.id, // Assuming the panel has an id field
                 amount: calculateTotal(),
                 paymentType: "STRIPE",
-                paymentMethodId: `pm_card_${cardNumber.slice(-4)}`, // Just for demonstration
+                paymentMethodId: `pm_card_visa`, // Just for demonstration
             };
             console.log(paymentData);
             // Send payment request to API using axios
