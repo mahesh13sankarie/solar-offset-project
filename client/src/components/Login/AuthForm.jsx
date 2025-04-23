@@ -3,15 +3,24 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext"; // Import useAuth hook
+import { FaSun, FaSolarPanel } from "react-icons/fa";
 
-// Simple loading component for auth transitions
-const WelcomeLoader = ({ message }) => {
+
+const SolarWelcome = ({ message }) => {
+    const fullName = localStorage.getItem("fullName") || "Guest";
+
     return (
-        <div className="text-center p-5">
-            <div className="spinner-border text-primary mb-3" role="status">
-                <span className="visually-hidden">Loading...</span>
+        <div className="d-flex flex-column justify-content-center align-items-center vh-100 text-center bg-light">
+            <div className="sun-icon mb-4">
+                <FaSun className="text-warning display-3 rotating-slow" />
             </div>
-            <h4>{message}</h4>
+            <h2 className="fw-bold">Welcome, {fullName}!</h2>
+            <p className="lead text-secondary">
+                {message || "Powering a brighter world together 🌞"}
+            </p>
+            <div className="solar-icon mt-4">
+                <FaSolarPanel className="text-primary display-3 floating-panel" />
+            </div>
         </div>
     );
 };
@@ -32,7 +41,7 @@ const AuthForm = () => {
 
     useEffect(() => {
         if (isAuthenticated) {
-            navigate("/dashboard");
+            setIsLoading(true);
         }
     }, [isAuthenticated, navigate]);
 
@@ -66,7 +75,7 @@ const AuthForm = () => {
                     token: userData.token,
                     userId: userData.id,
                 });
-
+                localStorage.setItem("fullName", userData.fullName);
                 setMessage("Login successful");
                 setIsLoading(true); // Show the loading animation
                 setTimeout(() => navigate("/SolarComparison"), 2000); // Increased delay to show animation
@@ -99,7 +108,7 @@ const AuthForm = () => {
     };
 
     if (isLoading) {
-        return <WelcomeLoader message={message} />;
+        return <SolarWelcome message={message} />;
     }
 
     return (
