@@ -1,78 +1,48 @@
 // import React from 'react';
 import KPISection from './KPISection';
 import StatsTrends from './StatsTrends';
-import {useState} from "react";
-
-// Dummy data
-const stats = {
-    totalPanels: 38,
-    totalAmount: 4870,
-    totalCarbon: 9.1,
-    activeDonors: 12,
-    newUsers: 5,
-};
-
-const chartData = [
-    {
-        date: "2024-01-10",
-        user: "alice@example.com",
-        country: "Kenya",
-        panelType: "EcoSun-450W",
-        quantity: 2,
-        amount: 780,
-        carbonOffset: "1.4",
-    },
-    {
-        date: "2024-02-15",
-        user: "bob@example.com",
-        country: "India",
-        panelType: "SolarMax-500W",
-        quantity: 3,
-        amount: 1170,
-        carbonOffset: "2.1",
-    },
-    {
-        date: "2024-02-28",
-        user: "carol@example.com",
-        country: "Kenya",
-        panelType: "EcoSun-450W",
-        quantity: 1,
-        amount: 390,
-        carbonOffset: "0.7",
-    },
-    {
-        date: "2024-03-05",
-        user: "dave@example.com",
-        country: "Nigeria",
-        panelType: "SunBright-420W",
-        quantity: 4,
-        amount: 1360,
-        carbonOffset: "2.8",
-    },
-    {
-        date: "2024-04-12",
-        user: "emma@example.com",
-        country: "Kenya",
-        panelType: "EcoSun-450W",
-        quantity: 3,
-        amount: 1170,
-        carbonOffset: "2.1",
-    }
-];
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 const TestWidget = () => {
 
+    const [stats, setStats] = useState({
+        totalPanels: 0,
+        totalAmount: 0,
+        totalCarbon:   0,
+        activeDonors: 0,
+        newUsers: 0,
+    });
     const [isFormalView, setIsFormalView] = useState(true);
+    const [chartData, setChartData] = useState([]);
+
+    useEffect(() => {
+        axios.get("http://localhost:8000/api/v1/transaction/staff")
+            .then((response) => {
+                const data = response.data;
+                setChartData(data);
+
+                const totalPanels = data.reduce((sum, item) => sum + item.quantity, 0);
+                const totalAmount = data.reduce((sum, item) => sum + item.amount, 0);
+                const totalCarbon = data.reduce((sum, item) => sum + item.carbonOffset, 0);
+                const activeDonors = new Set(data.map((item) => item.user)).size;
+
+                setStats({
+                    totalPanels,
+                    totalAmount,
+                    totalCarbon: parseFloat(totalCarbon.toFixed(2)),
+                    activeDonors,
+                    newUsers: 0 // Placeholder for now if no new user metric is available
+                });
+            })
+            .catch((error) => {
+                console.error("Failed to fetch transaction data:", error);
+            });
+    }, []);
 
     return (
         <div className="container py-4">
             <h1 className="mb-4 fw-bold text-center">Staff Dashboard</h1>
-            {/*<button*/}
-            {/*    className="btn btn-outline-dark mb-4"*/}
-            {/*    onClick={() => setIsFormalView(!isFormalView)}*/}
-            {/*>*/}
-            {/*    {isFormalView ? 'Switch to Dashboard View' : 'Switch to Formal Report View'}*/}
-            {/*</button>*/}
             <KPISection stats={stats} />
             <div className="mt-5">
                 <StatsTrends data={chartData} />

@@ -7,7 +7,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/solaroffset?serverTimezone=UTC&useLegacyDatetimeCode=false
     username: root
-    password: shreyas
+    password: Shreyas@123
   sql:
     init:
       mode: always
