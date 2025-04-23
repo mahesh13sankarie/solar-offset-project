@@ -4,23 +4,20 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext"; // Import useAuth hook
 import { FaSun, FaSolarPanel } from "react-icons/fa";
+import "./transition.css";
 
 
 const SolarWelcome = ({ message }) => {
     const fullName = localStorage.getItem("fullName") || "Guest";
 
     return (
-        <div className="d-flex flex-column justify-content-center align-items-center vh-100 text-center bg-light">
-            <div className="sun-icon mb-4">
-                <FaSun className="text-warning display-3 rotating-slow" />
-            </div>
+        <div className="fade-in-scale d-flex flex-column justify-content-center align-items-center vh-100 text-center bg-light">
+            <FaSun className="text-warning display-3 sun-rotate mb-4" />
             <h2 className="fw-bold">Welcome, {fullName}!</h2>
             <p className="lead text-secondary">
                 {message || "Powering a brighter world together 🌞"}
             </p>
-            <div className="solar-icon mt-4">
-                <FaSolarPanel className="text-primary display-3 floating-panel" />
-            </div>
+            <FaSolarPanel className="text-primary display-3 panel-float mt-4" />
         </div>
     );
 };
@@ -107,9 +104,13 @@ const AuthForm = () => {
         setMessage("");
     };
 
-    if (isLoading) {
-        return <SolarWelcome message={message} />;
-    }
+if (isLoading) {
+    return (
+        <div className="fade-in-scale">
+            <SolarWelcome message={message} />
+        </div>
+    );
+}
 
     return (
         <div className="container d-flex justify-content-center align-items-center vh-100">
