@@ -1,9 +1,8 @@
 package org.example.server.dto;
 
-import jakarta.validation.constraints.NotNull;
 import org.example.server.utils.PaymentType;
 
-import java.math.BigDecimal;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Payment Request DTO
@@ -18,7 +17,7 @@ public record PaymentRequestDTO(
 		Long countryPanelId,
 
 		@NotNull(message = "Amount must not be null")
-		BigDecimal amount,
+		Integer amount,
 
 		@NotNull(message = "Payment type must not be null")
 		PaymentType paymentType,
