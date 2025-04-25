@@ -88,8 +88,7 @@ public class PaymentServiceImpl implements PaymentService {
 		}
 
 		// Amount : installation cost * amount
-		BigDecimal totalCostInPounds = request.amount()
-				.multiply(BigDecimal.valueOf(countryPanel.getPanel().getInstallationCost()));
+		BigDecimal totalCostInPounds = BigDecimal.valueOf(request.amount() * countryPanel.getPanel().getInstallationCost());
 		long amountInSmallestUnit = totalCostInPounds.movePointRight(2).longValueExact();
 
 		try {

@@ -1,0 +1,46 @@
+{
+  "users": [
+    {
+      "name": "Beomsu 123",
+      "email": "beomsu@gmail.com",
+      "role": "admin",
+      "id": "d489"
+    },
+    {
+      "id": "44ea",
+      "name": "Shreyas",
+      "email": "123@123.com",
+      "role": "staff"
+    },
+    {
+      "id": "b5c1",
+      "name": "Shreyas Desai",
+      "email": "1234@gmail.com",
+      "role": "staff"
+    },
+    {
+      "name": "sd",
+      "email": "sd@hh",
+      "role": "user",
+      "id": "e803"
+    },
+    {
+      "name": "afdfd",
+      "email": "dadd@fff",
+      "role": "user",
+      "id": "1eb5"
+    }
+  ],
+  "admins": [
+    {
+      "id": "1",
+      "email": "admin@example.com",
+      "password": "admin123"
+    },
+    {
+      "id": "0402",
+      "email": "admin@example.com",
+      "password": "admin123"
+    }
+  ]
+}

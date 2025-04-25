@@ -76,25 +76,26 @@ public class PanelTransactionServiceImpl implements PanelTransactionService {
                     // Get payment date
                     LocalDateTime date = payment.getCreatedAt();
 
-                    // Get amount from payment
-                    BigDecimal amount = payment.getAmount();
+                    // Get number of panels purchased
+                    Integer panelQuantity = payment.getAmount();
 
-                    // Calculate quantity - assuming amount is the number of panels purchased
-                    Integer quantity = amount.intValue();
+                    // Calculate total price (quantity * installation cost)
+                    Integer totalPrice = panelQuantity * panel.getInstallationCost().intValue();
 
                     // Calculate carbon offset based on panel efficiency and quantity
                     // This is a simple estimation based on panel production
                     double productionPerPanel = panel.getProductionPerPanel();
-                    double carbonOffsetValue = quantity * productionPerPanel * 0.7; // Assuming 0.7 tons CO2 offset per
-                                                                                    // kW
+                    double carbonOffsetValue = panelQuantity * productionPerPanel * 0.7; // Assuming 0.7 tons CO2 offset
+                                                                                         // per
+                    // kW
 
                     return new StaffTransactionDTO(
                             date.format(dateFormatter),
                             userEmail,
                             country,
                             panelType,
-                            quantity,
-                            amount.intValue(),
+                            panelQuantity,
+                            totalPrice,
                             carbonOffsetValue);
                 })
                 .collect(Collectors.toList());

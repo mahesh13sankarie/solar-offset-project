@@ -3,6 +3,8 @@ import { Link, useParams, useLocation } from "react-router-dom";
 import Navbar from "./Navbar.jsx";
 import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
+import {PDFDownloadLink} from "@react-pdf/renderer";
+import {PaymentInvoice} from "../Report/Invoice/Invoice.jsx";
 
 const Payment = () => {
     const [country, setCountry] = useState(null);
@@ -102,9 +104,9 @@ const Payment = () => {
             const paymentData = {
                 userId: userId,
                 countryPanelId: selectedPanel.id, // Assuming the panel has an id field
-                amount: calculateTotal(),
+                amount: quantity,
                 paymentType: "STRIPE",
-                paymentMethodId: `pm_card_${cardNumber.slice(-4)}`, // Just for demonstration
+                paymentMethodId: `pm_card_visa`, // Just for demonstration
             };
             console.log(paymentData);
             // Send payment request to API using axios
@@ -495,7 +497,7 @@ const Payment = () => {
                                                     <div className="mt-3">
                                                         <Link
                                                             to="/SolarComparison"
-                                                            className="btn btn-primary me-2"
+                                                            className="btn btn-outline-primary me-2"
                                                         >
                                                             View More Countries
                                                         </Link>
@@ -505,6 +507,27 @@ const Payment = () => {
                                                         >
                                                             Return to Home
                                                         </Link>
+                                                    </div>
+                                                    <div className="mt-2">
+                                                        <PDFDownloadLink
+                                                            document={
+                                                                <PaymentInvoice
+                                                                    userId={userId}
+                                                                    countryPanelId={selectedPanel?.id}
+                                                                    amount={calculateTotal()}
+                                                                    paymentType="STRIPE"
+                                                                    paymentMethodId={`pm_card_${formData.cardNumber.replace(/\s/g, "").slice(-4)}`}
+                                                                />
+                                                            }
+                                                            fileName={`invoice_user_${userId}_panel_${selectedPanel?.id}.pdf`}
+                                                            className="btn btn-outline-success me-2 px-3 py-2"
+                                                        >
+                                                            {({ loading }) =>
+                                                                loading ? "Preparing Invoice..." : <>
+                                                                    Download Invoice <i className="bi bi-printer px-2"></i>
+                                                                </>
+                                                            }
+                                                        </PDFDownloadLink>
                                                     </div>
                                                 </div>
                                             </div>
