@@ -4,6 +4,9 @@ import jakarta.validation.Valid;
 import org.example.server.dto.PaymentRequestDTO;
 import org.example.server.dto.PaymentResponseDTO;
 import org.example.server.service.Payment.PaymentService;
+import org.example.server.utils.ApiResponse;
+import org.example.server.utils.ApiResponseGenerator;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,8 +22,9 @@ public class PaymentController {
 	private final PaymentService paymentService;
 
 	@PostMapping
-	public PaymentResponseDTO processPayment(@Valid @RequestBody PaymentRequestDTO request)
+	public ApiResponse<ApiResponse.CustomBody<PaymentResponseDTO>> processPayment(
+			@Valid @RequestBody PaymentRequestDTO request)
 			throws StripeException {
-		return paymentService.processPayment(request);
+		return ApiResponseGenerator.success(HttpStatus.OK, paymentService.processPayment(request));
 	}
 }

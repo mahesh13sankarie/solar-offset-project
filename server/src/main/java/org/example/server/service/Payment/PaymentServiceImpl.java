@@ -82,11 +82,8 @@ public class PaymentServiceImpl implements PaymentService {
 			return new PaymentResponseDTO(
 					null,
 					null,
-					null,
-					false,
-					"Missing or invalid payment method ID. A valid PaymentMethod ID must be provided.");
+					null);
 		}
-
 		// Amount : installation cost * quantity
 		BigDecimal totalCostInPounds = BigDecimal.valueOf(request.quantity() * countryPanel.getPanel().getInstallationCost());
 		long amountInSmallestUnit = totalCostInPounds.movePointRight(2).longValueExact();
@@ -123,28 +120,24 @@ public class PaymentServiceImpl implements PaymentService {
 				return new PaymentResponseDTO(
 						savedPayment.getId(),
 						paymentIntent.getId(),
-						actualReceiptUrl,
-						true,
-						null);
+						actualReceiptUrl
+
+				);
 			} else {
 				return new PaymentResponseDTO(
 						null,
 						paymentIntent.getId(),
-						null,
-						false,
-						"Payment failed: " + paymentIntent.getStatus());
+						null);
 			}
 		} catch (StripeException e) {
 			// Handle payment failure
 			return new PaymentResponseDTO(
 					null,
 					null,
-					null,
-					false,
-					"Error processing payment: " + e.getMessage());
+					null);
 		}
-	}
 
+	}
 	@Override
 	public List<PaymentResponseDTO> getUserPayments(Long userId) {
 		// Implementation to be added
