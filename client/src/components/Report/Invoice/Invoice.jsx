@@ -152,4 +152,55 @@ function Invoice() {
     );
 }
 
+function PaymentInvoice({ userId, countryPanelId, amount, paymentType, paymentMethodId }) {
+    return (
+        <Document>
+            <Page size="A4" style={styles.page}>
+                <View style={styles.header}>
+                    <View>
+                        <Text style={[styles.title, styles.textBold]}>INVOICE</Text>
+                        <Text>User ID: {userId}</Text>
+                        <Text>Invoice ID: INV-{userId}-{countryPanelId}</Text>
+                    </View>
+                    <View style={styles.spaceY}>
+                        <Text style={styles.textBold}>Solar Offset</Text>
+                        <Text>21 Regent Court</Text>
+                        <Text>Sheffield, UK</Text>
+                    </View>
+                </View>
+
+                <View style={styles.spaceY}>
+                    <Text style={[styles.billTo, styles.textBold]}>Payment Details:</Text>
+                </View>
+
+                <View style={styles.table}>
+                    <View style={styles.tableRow}>
+                        <Text style={[styles.tableCol, styles.tableHeader]}>Panel ID</Text>
+                        <Text style={[styles.tableCol, styles.tableHeader]}>Payment Method</Text>
+                        <Text style={[styles.tableCol, styles.tableHeader]}>Payment Type</Text>
+                        <Text style={[styles.tableCol, styles.tableHeader]}>Amount</Text>
+                    </View>
+                    <View style={styles.tableRow}>
+                        <Text style={styles.tableCol}>{countryPanelId}</Text>
+                        <Text style={styles.tableCol}>{paymentMethodId}</Text>
+                        <Text style={styles.tableCol}>{paymentType}</Text>
+                        <Text style={styles.tableCol}>${amount.toFixed(2)}</Text>
+                    </View>
+                </View>
+
+                <View style={styles.totals}>
+                    <View style={{ minWidth: "256px" }}>
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: "8px" }}>
+                            <Text style={styles.textBold}>Total</Text>
+                            <Text style={styles.textBold}>${amount.toFixed(2)}</Text>
+                        </View>
+                    </View>
+                </View>
+            </Page>
+        </Document>
+    );
+}
+
+export { PaymentInvoice };
+
 export default Invoice;
