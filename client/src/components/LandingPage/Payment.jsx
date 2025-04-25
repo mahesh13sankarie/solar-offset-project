@@ -104,7 +104,7 @@ const Payment = () => {
             const paymentData = {
                 userId: userId,
                 countryPanelId: selectedPanel.id, // Assuming the panel has an id field
-                amount: quantity,
+                quantity: quantity,
                 paymentType: "STRIPE",
                 paymentMethodId: `pm_card_visa`, // Just for demonstration
             };
