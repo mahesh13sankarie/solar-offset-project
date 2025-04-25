@@ -13,14 +13,16 @@ import Services from "./components/LandingPage/Services.jsx";
 import Navbar from "./components/LandingPage/Navbar.jsx";
 import InstallationCost from "./components/LandingPage/InstallationCost.jsx";
 import ReportGenerate from "./components/Report/ReportGenerate.jsx";
+import ChangePassword from "./components/Login/ChangePassword.jsx";
 
 import AdminLogin from "./components/Login/AdminLogin.jsx";
 import SideNav from "./components/Dashboard/Sidebar.jsx";
 import Dashboard from "./components/Dashboard/Dashboard.jsx";
 import Userpage from "./components/Dashboard/UserSection.jsx";
-import ReportDashboard from "./components/Report/ReportDashboard.jsx";
+import StaffDashboard from "./components/Report/StaffDashboard.jsx";
 import Invoice from "./components/Report/Invoice/Invoice.jsx";
 import Payment from "./components/LandingPage/Payment.jsx";
+import TestWidget from "./components/Report/KPI-Components/TestWidget.jsx";
 
 const router = createBrowserRouter([
     { path: "/", element: <Home /> },
@@ -40,11 +42,15 @@ const router = createBrowserRouter([
     { path: "/donate", element: <Services /> },
     { path: "/InstallationCost/:countryCode", element: <InstallationCost /> },
     { path: "/Payment/:countryCode/:panelId", element: <Payment /> },
+    { path: "/change-password", element: <ChangePassword /> },
     {
         path: "/staff/dashboard",
-        element: <ReportDashboard />,
+        element: <StaffDashboard />,
     },
     { path: "/pdf/:panelId", element: <ReportGenerate /> },
+    {
+        path:"/test/staff",element:<TestWidget />,
+    }
 ]);
 
 const App = () => {
