@@ -17,7 +17,7 @@ public record PaymentRequestDTO(
 		Long countryPanelId,
 
 		@NotNull(message = "Amount must not be null")
-		Integer amount,
+		Integer quantity,
 
 		@NotNull(message = "Payment type must not be null")
 		PaymentType paymentType,
