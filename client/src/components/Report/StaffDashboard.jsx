@@ -5,6 +5,7 @@ import StaffNavBar from "./StaffNavBar.jsx";
 import {CountriesSelected, PanelsBought} from "./FeatureCards.jsx";
 import StatsTrends from "./KPI-Components/StatsTrends.jsx";
 import TestWidget from "./KPI-Components/TestWidget.jsx";
+import TopDonors from "./KPI-Components/TopDonors.jsx";
 const REPORTAPI = "dummy.link.com/report";
 
 export default function StaffDashboard() {
@@ -24,9 +25,15 @@ export default function StaffDashboard() {
                     {activeTab === "stats" ? (
                         <TestWidget />
                     ) : (
-                        <div className="d-flex">
-                            <CountriesSelected />
-                            <PanelsBought />
+                        <div className="d-flex flex-column">
+                            <div className="d-flex w-100">
+                                <TopDonors />
+                            </div>
+                            <div className="d-flex">
+                                <CountriesSelected />
+                                <PanelsBought />
+                            </div>
+
                         </div>
                     )}
                 </div>
