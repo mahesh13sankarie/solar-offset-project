@@ -90,7 +90,11 @@ const AuthForm = () => {
                 }
             }
         } catch (err) {
-            setMessage("Error: Unable to connect to server");
+            if (err.response && err.response.status === 404) {
+                setMessage("User does not exist. Please try logging in again.");
+            } else {
+                setMessage("Error: Unable to connect to server");
+            }
         } finally {
             if (formState !== "login") {
                 setSubmitted(false);
@@ -118,11 +122,11 @@ if (isLoading) {
                 <div className="row g-0">
                     <div className="col-md-6 d-flex flex-column justify-content-center p-3 bg-light rounded-start">
                         <h3 className="text-center">Welcome</h3>
-                        <p className="text-muted">Login or Register to continue.</p>
+                        <p className="text-muted text-center">Login or Register to continue.</p>
                     </div>
 
                     <div className="col-md-6 p-4">
-                        {!submitted ? (
+                        {!(submitted && isAuthenticated) ? (
                             <>
                                 <h3 className="text-center">
                                     {formState === "login" ? "Login" : "Register"}
