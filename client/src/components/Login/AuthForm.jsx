@@ -3,15 +3,21 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext"; // Import useAuth hook
+import { FaSun, FaSolarPanel } from "react-icons/fa";
+import "./transition.css";
 
-// Simple loading component for auth transitions
-const WelcomeLoader = ({ message }) => {
+
+const SolarWelcome = ({ message }) => {
+    const fullName = localStorage.getItem("fullName") || "Guest";
+
     return (
-        <div className="text-center p-5">
-            <div className="spinner-border text-primary mb-3" role="status">
-                <span className="visually-hidden">Loading...</span>
-            </div>
-            <h4>{message}</h4>
+        <div className="fade-in-scale d-flex flex-column justify-content-center align-items-center vh-100 text-center bg-light">
+            <FaSun className="text-warning display-3 sun-rotate mb-4" />
+            <h2 className="fw-bold">Welcome, {fullName}!</h2>
+            <p className="lead text-secondary">
+                {message || "Powering a brighter world together 🌞"}
+            </p>
+            <FaSolarPanel className="text-primary display-3 panel-float mt-4" />
         </div>
     );
 };
@@ -32,7 +38,7 @@ const AuthForm = () => {
 
     useEffect(() => {
         if (isAuthenticated) {
-            navigate("/dashboard");
+            setIsLoading(true);
         }
     }, [isAuthenticated, navigate]);
 
@@ -63,10 +69,10 @@ const AuthForm = () => {
                 });
                 const userData = res.data.data;
                 login({
-                    token: userData.token,
+                    token: res.data.token,
                     userId: userData.id,
                 });
-
+                localStorage.setItem("fullName", userData.fullName);
                 setMessage("Login successful");
                 setIsLoading(true); // Show the loading animation
                 setTimeout(() => navigate("/SolarComparison"), 2000); // Increased delay to show animation
@@ -84,7 +90,11 @@ const AuthForm = () => {
                 }
             }
         } catch (err) {
-            setMessage("Error: Unable to connect to server");
+            if (err.response && err.response.status === 404) {
+                setMessage("User does not exist. Please try logging in again.");
+            } else {
+                setMessage("Error: Unable to connect to server");
+            }
         } finally {
             if (formState !== "login") {
                 setSubmitted(false);
@@ -98,9 +108,13 @@ const AuthForm = () => {
         setMessage("");
     };
 
-    if (isLoading) {
-        return <WelcomeLoader message={message} />;
-    }
+if (isLoading) {
+    return (
+        <div className="fade-in-scale">
+            <SolarWelcome message={message} />
+        </div>
+    );
+}
 
     return (
         <div className="container d-flex justify-content-center align-items-center vh-100">
@@ -108,11 +122,11 @@ const AuthForm = () => {
                 <div className="row g-0">
                     <div className="col-md-6 d-flex flex-column justify-content-center p-3 bg-light rounded-start">
                         <h3 className="text-center">Welcome</h3>
-                        <p className="text-muted">Login or Register to continue.</p>
+                        <p className="text-muted text-center">Login or Register to continue.</p>
                     </div>
 
                     <div className="col-md-6 p-4">
-                        {!submitted ? (
+                        {!(submitted && isAuthenticated) ? (
                             <>
                                 <h3 className="text-center">
                                     {formState === "login" ? "Login" : "Register"}

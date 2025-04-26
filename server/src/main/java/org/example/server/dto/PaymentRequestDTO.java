@@ -1,8 +1,8 @@
 package org.example.server.dto;
 
-import java.math.BigDecimal;
-
 import org.example.server.utils.PaymentType;
+
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Payment Request DTO
@@ -11,9 +11,17 @@ import org.example.server.utils.PaymentType;
  * PaymentMethod ID.
  */
 public record PaymentRequestDTO(
+		@NotNull(message = "User ID must not be null")
 		Long userId,
+		@NotNull(message = "Country Panel ID must not be null")
 		Long countryPanelId,
-		BigDecimal amount,
+
+		@NotNull(message = "Amount must not be null")
+		Integer quantity,
+
+		@NotNull(message = "Payment type must not be null")
 		PaymentType paymentType,
+
+		@NotNull(message = "Payment method ID must not be null")
 		String paymentMethodId) {
 }

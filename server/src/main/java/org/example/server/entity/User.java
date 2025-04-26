@@ -39,10 +39,11 @@ public class User implements UserDetails {
 
     }
 
-    public User(Long id, String email, String fullName) {
+    public User(Long id, String email, String fullName, int accountType) {
         this.id = id;
         this.email = email;
         this.fullName = fullName;
+        this.accountType = accountType;
     }
 
     @Override
@@ -76,6 +77,6 @@ public class User implements UserDetails {
     }
 
     public User getDetail(User user) {
-        return new User(user.id, user.email, user.fullName);
+        return new User(user.id, user.email, user.fullName, user.accountType);
     }
 }

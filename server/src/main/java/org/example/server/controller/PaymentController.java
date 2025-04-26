@@ -1,5 +1,6 @@
 package org.example.server.controller;
 
+import jakarta.validation.Valid;
 import org.example.server.dto.PaymentRequestDTO;
 import org.example.server.dto.PaymentResponseDTO;
 import org.example.server.service.Payment.PaymentService;
@@ -18,7 +19,7 @@ public class PaymentController {
 	private final PaymentService paymentService;
 
 	@PostMapping
-	public PaymentResponseDTO processPayment(@RequestBody PaymentRequestDTO request)
+	public PaymentResponseDTO processPayment(@Valid @RequestBody PaymentRequestDTO request)
 			throws StripeException {
 		return paymentService.processPayment(request);
 	}

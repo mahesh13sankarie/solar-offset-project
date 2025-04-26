@@ -60,7 +60,7 @@ public class PaymentServiceImpl implements PaymentService {
 	 * Test example:
 	 * curl -X POST http://localhost:8000/api/payments \
 	 * -H "Content-Type: application/json" \
-	 * -d '{"userId": 1, "countryPanelId": 1, "amount": 100, "type": "STRIPE",
+	 * -d '{"userId": 1, "countryPanelId": 1, "quantity": 100, "type": "STRIPE",
 	 * "paymentMethodId": "pm_card_visa"}'
 	 * 
 	 * @param request Payment request information
@@ -87,13 +87,12 @@ public class PaymentServiceImpl implements PaymentService {
 					"Missing or invalid payment method ID. A valid PaymentMethod ID must be provided.");
 		}
 
-		// Amount : installation cost * amount
-		BigDecimal totalCostInPounds = request.amount()
-				.multiply(BigDecimal.valueOf(countryPanel.getPanel().getInstallationCost()));
+		// Amount : installation cost * quantity
+		BigDecimal totalCostInPounds = BigDecimal.valueOf(request.quantity() * countryPanel.getPanel().getInstallationCost());
 		long amountInSmallestUnit = totalCostInPounds.movePointRight(2).longValueExact();
 
 		try {
-			// Create a PaymentIntent with the order amount, currency and payment method
+			// Create a PaymentIntent with the order quantity, currency and payment method
 			PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
 					.setAmount(amountInSmallestUnit)
 					.setCurrency("gbp")
@@ -112,7 +111,7 @@ public class PaymentServiceImpl implements PaymentService {
 				Payment payment = Payment.builder()
 						.user(user)
 						.countryPanel(countryPanel)
-						.amount(request.amount())
+						.amount(request.quantity())
 						.type(request.paymentType())
 						.transactionId(paymentIntent.getId())
 						.receiptUrl(actualReceiptUrl)
