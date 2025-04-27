@@ -22,9 +22,19 @@ const SolarComparison = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await fetch("http://localhost:8000/api/v1/countries");
+                const token = localStorage.getItem('token');
+                const res = await fetch("http://localhost:8000/api/v1/countries", {
+                                    method: 'GET',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'Authorization': `Bearer ${token}`, //  Attach Authorization token
+                                    },
+                                });
+                if (!res.ok) {
+                                    throw new Error(`HTTP error! status: ${res.status}`);
+                                }
                 const json = await res.json();
-                setCountries(json);
+                setCountries(json.data || []);
             } catch (err) {
                 console.error("Failed to fetch data:", err);
             }
