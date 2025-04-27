@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Navbar from "./Navbar.jsx";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
@@ -11,6 +11,8 @@ const InstallationCost = () => {
     const { countryCode } = useParams();
     const navigate = useNavigate();
     const { isAuthenticated } = useAuth();
+
+    const [sortKey, setSortKey] = useState("");
 
     useEffect(() => {
         const fetchData = async () => {
@@ -43,6 +45,15 @@ const InstallationCost = () => {
                 navigate("/");
             }, 2000);
         }
+    };
+
+    const sortPanels = (panels, key) => {
+        if (!key) return panels;
+        return [...panels].sort((a, b) => {
+            const aVal = (typeof a[key] === "string") ? parseFloat(a[key].replace("%", "")) : a[key] ?? 0;
+            const bVal = (typeof b[key] === "string") ? parseFloat(b[key].replace("%", "")) : b[key] ?? 0;
+            return aVal - bVal;
+        });
     };
 
     return (
@@ -78,10 +89,13 @@ const InstallationCost = () => {
 
             <section className="container mt-4">
                 {/* Back Button */}
-                <Link to="/SolarComparison">
-                    <button className="btn btn-link mb-3">
-                        <i className="bi bi-arrow-left-circle"></i> Back
-                    </button>
+                <Link
+                    to="/SolarComparison"
+                    className="text-decoration-none d-inline-flex align-items-center gap-2 mb-4 mt-3"
+                    style={{ color: "#6c757d", fontWeight: "500", fontSize: "1rem" }}
+                >
+                    <i className="bi bi-arrow-left-circle" style={{ fontSize: "1.2rem" }}></i>
+                    <span>Back</span>
                 </Link>
 
                 {/* Error Message */}
@@ -116,52 +130,65 @@ const InstallationCost = () => {
                             </div>
                         </div>
 
-                        {/* Panel Cards */}
-                        <h4 className="mb-4">Available Solar Panels</h4>
-                        <div className="row">
-                            {country.solarPanels?.map((panel, i) => (
-                                <div className="col-md-6 col-lg-4 mb-4" key={i}>
-                                    <div className="card h-100 shadow-sm d-flex flex-column">
-                                        <div className="card-body d-flex flex-column">
-                                            <h5 className="card-title">{panel.panelName}</h5>
-                                            <p
-                                                className="text-muted"
-                                                style={{ fontSize: "0.9rem" }}
-                                            >
-                                                {panel.description}
-                                            </p>
-                                            <ul className="list-group list-group-flush mt-3 mb-4">
-                                                <li className="list-group-item">
-                                                    <strong>Installation:</strong> £
-                                                    {panel.installationCost ?? "-"}
-                                                </li>
-                                                <li className="list-group-item">
-                                                    <strong>Production:</strong>{" "}
-                                                    {panel.productionPerPanel ?? "-"} W
-                                                </li>
-                                                <li className="list-group-item">
-                                                    <strong>Efficiency:</strong>{" "}
-                                                    {panel.efficiency ?? "-"}%
-                                                </li>
-                                                <li className="list-group-item">
-                                                    <strong>Warranty:</strong>{" "}
-                                                    {panel.warranty ?? "-"} years
-                                                </li>
-                                            </ul>
-                                            <div className="mt-auto">
-                                                {/* Changed from Link to button with onClick handler */}
-                                                <button
-                                                    onClick={() => handleDonateClick(panel.id || i)}
-                                                    className="btn btn-success w-100"
-                                                >
-                                                    <i className="bi bi-heart-fill"></i> Donate
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
+                        {/* Dropdown Filter */}
+                        {country.solarPanels?.length > 0 && (
+                            <div className="mb-4 d-flex align-items-center gap-2">
+                                <label htmlFor="sortSelect" className="form-label mb-0 fw-bold">
+                                    Sort Panels:
+                                </label>
+                                <select
+                                    id="sortSelect"
+                                    className="form-select w-auto"
+                                    value={sortKey}
+                                    onChange={(e) => setSortKey(e.target.value)}
+                                >
+
+                                    <option value="installationCost">Installation Cost</option>
+                                    <option value="efficiency">Efficiency</option>
+                                    <option value="productionPerPanel">Production</option>
+                                </select>
+                            </div>
+                        )}
+
+                        {/* Solar Panels Table */}
+                        {country.solarPanels?.length > 0 && (
+                            <div className="card shadow-sm p-4 mb-5">
+                                <h4 className="mb-4">Compare Solar Panels</h4>
+                                <div className="table-responsive">
+                                    <table className="table table-hover align-middle">
+                                        <thead className="table-light">
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Installation Cost (£)</th>
+                                            <th>Production (W)</th>
+                                            <th>Efficiency (%)</th>
+                                            <th>Warranty</th>
+                                            <th>Donate</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {sortPanels(country.solarPanels, sortKey).map((panel, index) => (
+                                            <tr key={index}>
+                                                <td>{panel.panelName}</td>
+                                                <td>£{panel.installationCost ?? "-"}</td>
+                                                <td>{panel.productionPerPanel ?? "-"}</td>
+                                                <td>{panel.efficiency ?? "-"}</td>
+                                                <td>{panel.warranty ?? "-"}</td>
+                                                <td>
+                                                    <button
+                                                        className="btn btn-outline-success btn-sm"
+                                                        onClick={() => handleDonateClick(panel.id || index)}
+                                                    >
+                                                        <i className="bi bi-heart-fill"></i> Donate
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                        </tbody>
+                                    </table>
                                 </div>
-                            ))}
-                        </div>
+                            </div>
+                        )}
                     </>
                 )}
             </section>

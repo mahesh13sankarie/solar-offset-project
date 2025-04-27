@@ -1,8 +1,8 @@
 import Navbar from "./Navbar.jsx";
-import React, {useEffect, useState} from "react";
-import {Bar} from "react-chartjs-2";
-import {Link} from "react-router-dom";
-import {BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip} from "chart.js";
+import React, { useEffect, useState } from "react";
+import { Bar } from "react-chartjs-2";
+import { Link } from "react-router-dom";
+import { BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip } from "chart.js";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -12,7 +12,7 @@ const COLORS = [
     "rgba(54, 162, 235, 0.7)",
     "rgba(255, 206, 86, 0.7)",
     "rgba(75, 192, 192, 0.7)",
-    "rgba(153, 102, 255, 0.7)"
+    "rgba(153, 102, 255, 0.7)",
 ];
 
 const SolarComparison = () => {
@@ -33,29 +33,29 @@ const SolarComparison = () => {
     }, []);
 
     const filtered = countries.filter((item) =>
-        item.country.toLowerCase().includes(search.toLowerCase())
+        item.country.toLowerCase().includes(search.toLowerCase()),
     );
 
     const chartOptions = (title) => ({
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-            legend: {display: false},
-            title: {display: true, text: title},
+            legend: { display: false },
+            title: { display: true, text: title },
             tooltip: {
                 callbacks: {
-                    label: (ctx) => `${ctx.dataset.label}: ${ctx.formattedValue}`
-                }
-            }
+                    label: (ctx) => `${ctx.dataset.label}: ${ctx.formattedValue}`,
+                },
+            },
         },
         scales: {
             y: {
                 beginAtZero: true,
                 ticks: {
-                    callback: val => val.toLocaleString()
-                }
-            }
-        }
+                    callback: val => val.toLocaleString(),
+                },
+            },
+        },
     });
 
     const carbonChart = {
@@ -63,8 +63,8 @@ const SolarComparison = () => {
         datasets: [{
             label: "Carbon Emissions (tCO₂)",
             data: filtered.map(c => c.carbonEmissions),
-            backgroundColor: filtered.map((_, i) => COLORS[i % COLORS.length])
-        }]
+            backgroundColor: filtered.map((_, i) => COLORS[i % COLORS.length]),
+        }],
     };
 
     const electricityChart = {
@@ -72,8 +72,8 @@ const SolarComparison = () => {
         datasets: [{
             label: "Electricity Availability (MWh)",
             data: filtered.map(c => c.electricityAvailability),
-            backgroundColor: filtered.map((_, i) => COLORS[i % COLORS.length])
-        }]
+            backgroundColor: filtered.map((_, i) => COLORS[i % COLORS.length]),
+        }],
     };
 
     const renewablesChart = {
@@ -81,8 +81,8 @@ const SolarComparison = () => {
         datasets: [{
             label: "Renewable Energy (%)",
             data: filtered.map(c => c.renewablePercentage),
-            backgroundColor: filtered.map((_, i) => COLORS[i % COLORS.length])
-        }]
+            backgroundColor: filtered.map((_, i) => COLORS[i % COLORS.length]),
+        }],
     };
 
     const formatValue = (key, value) => {
@@ -105,7 +105,7 @@ const SolarComparison = () => {
 
     return (
         <div>
-            <Navbar/>
+            <Navbar />
             <section className="container mt-4">
                 <h2 className="my-4">Solar Comparison</h2>
 
@@ -126,14 +126,14 @@ const SolarComparison = () => {
                         <th>Carbon Emissions</th>
                         <th>Electricity</th>
                         <th>Renewables</th>
-                        <th>Solar Power Potential</th>
+                        <th>Solar Production</th>
                         <th>Population</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
                     <tbody>
                     {filtered.map((item, index) => (
-                        <tr key={item.zone} style={{verticalAlign: "middle"}}>
+                        <tr key={item.zone} style={{ verticalAlign: "middle" }}>
                             <td>{item.country}</td>
                             <td>{formatValue("carbonEmissions", item.carbonEmissions)}</td>
                             <td>{formatValue("electricityAvailability", item.electricityAvailability)}</td>
@@ -141,16 +141,20 @@ const SolarComparison = () => {
                             <td>{formatValue("solarPowerPotential", item.solarPowerPotential)}</td>
                             <td>{formatValue("population", item.population)}</td>
                             <td>
-                                <div className="d-flex gap-1">
-                                    <Link to={`/InstallationCost/${item.zone}`}>
-                                        <button className="btn btn-outline-success btn-sm">
-                                            <i className="bi bi-info-circle"></i> Details
-                                        </button>
-                                    </Link>
-                                    <button className="btn btn-outline-primary btn-sm">
-                                        <i className="bi bi-heart-fill"></i> Donate
-                                    </button>
-                                </div>
+                                <Link
+                                    to={`/InstallationCost/${item.zone}`}
+                                    className="btn btn-outline-primary btn-sm d-flex align-items-center justify-content-center gap-1"
+                                    style={{
+                                        fontWeight: 600,
+                                        fontSize: "0.9rem",
+                                        minWidth: "120px",
+                                        borderRadius: "0.5rem",
+                                        padding: "6px 12px",
+                                    }}
+                                >
+                                    <i className="bi bi-arrow-right-circle" style={{ fontSize: "1rem" }}></i>
+                                    Details
+                                </Link>
                             </td>
                         </tr>
                     ))}
@@ -170,7 +174,7 @@ const SolarComparison = () => {
                                         borderRadius: 3,
                                     }}
                                 ></div>
-                                <span style={{fontWeight: 500}}>{item.country}</span>
+                                <span style={{ fontWeight: 500 }}>{item.country}</span>
                             </div>
                         ))}
                     </div>
@@ -178,14 +182,14 @@ const SolarComparison = () => {
 
                 {/* Charts */}
                 <div className="row mb-5">
-                    <div className="col-md-4 mb-4" style={{height: "400px"}}>
-                        <Bar data={carbonChart} options={chartOptions("Carbon Emissions")}/>
+                    <div className="col-md-4 mb-4" style={{ height: "400px" }}>
+                        <Bar data={carbonChart} options={chartOptions("Carbon Emissions (tCO₂)")} />
                     </div>
-                    <div className="col-md-4 mb-4" style={{height: "400px"}}>
-                        <Bar data={electricityChart} options={chartOptions("Electricity Availability")}/>
+                    <div className="col-md-4 mb-4" style={{ height: "400px" }}>
+                        <Bar data={electricityChart} options={chartOptions("Electricity Availability (MWh)")} />
                     </div>
-                    <div className="col-md-4 mb-4" style={{height: "400px"}}>
-                        <Bar data={renewablesChart} options={chartOptions("Renewable Energy %")}/>
+                    <div className="col-md-4 mb-4" style={{ height: "400px" }}>
+                        <Bar data={renewablesChart} options={chartOptions("Renewable Energy (%)")} />
                     </div>
                 </div>
             </section>
