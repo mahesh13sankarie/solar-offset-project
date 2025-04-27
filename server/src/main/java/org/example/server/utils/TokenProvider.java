@@ -19,10 +19,15 @@ public class TokenProvider {
     private final int expires_in = 3600 * 60;
 
     public String generateToken(String email) {
+        long nowMillis = System.currentTimeMillis();
+        Date now = new Date(nowMillis);
+
         return JWT.create()
                 .withSubject(email)
+                .withIssuer("solar-offset")
+                .withIssuedAt(now)
                 .withClaim("email", email)
-                .withExpiresAt(new Date(System.currentTimeMillis() + expires_in * 1000))
+                .withExpiresAt(new Date(nowMillis + expires_in * 1000))
                 .sign(algorithm);
     }
 }

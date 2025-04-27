@@ -20,26 +20,36 @@ const SolarComparison = () => {
     const [search, setSearch] = useState("");
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const token = localStorage.getItem('token');
-                const res = await fetch("http://localhost:8000/api/v1/countries", {
-                                    method: 'GET',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        'Authorization': `Bearer ${token}`, //  Attach Authorization token
-                                    },
-                                });
-                if (!res.ok) {
-                                    throw new Error(`HTTP error! status: ${res.status}`);
-                                }
-                const json = await res.json();
-                setCountries(json.data || []);
-            } catch (err) {
-                console.error("Failed to fetch data:", err);
-            }
-        };
-        fetchData();
+      const fetchData = async () => {
+        const token = localStorage.getItem("token");
+        console.log("Fetched token from localStorage:", token);
+
+        if (!token) {
+          console.error("No token found, please login first");
+          return;
+        }
+
+        try {
+          const res = await fetch("http://localhost:8000/api/v1/countries", {
+            method: "GET",
+            headers: {
+              "Authorization": `Bearer ${token}`,
+              "Content-Type": "application/json",
+                          },
+          });
+
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+          }
+
+          const json = await res.json();
+          setCountries(json);
+        } catch (err) {
+          console.error("Failed to fetch data:", err);
+        }
+      };
+
+      fetchData();
     }, []);
 
     const filtered = countries.filter((item) =>

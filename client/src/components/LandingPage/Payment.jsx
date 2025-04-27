@@ -27,11 +27,27 @@ const Payment = () => {
     useEffect(() => {
         console.log("Panel ID:", panelId, "Country Code:", countryCode);
         const fetchPanelData = async () => {
-            try {
-                const response = await axios.get(`http://localhost:8000/api/v1/panels/${panelId}`);
-                const panelData = response.data;
-                console.log("Panel data:", panelData);
+            const token = localStorage.getItem('token'); // <-- get the token from localStorage
+            console.log("Fetched token for panel:", token);
 
+            if (!token) {
+                console.error('No token found, please login first');
+                return;
+            }
+
+            try {
+                const response = await axios.get(
+                    `http://localhost:8000/api/v1/panels/${panelId}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            "Content-Type": "application/json",
+                        },
+                    }
+                );
+                console.log("Panel data:", response.data);
+
+                const panelData = response.data;
                 setSelectedPanel(panelData);
 
                 setCountry({

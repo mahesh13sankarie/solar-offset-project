@@ -40,7 +40,7 @@ import java.util.Map;
 @RequestMapping("/api/v1/auth")
 @CrossOrigin(origins = "http://localhost:5173")
 public class AuthController {
-    private static final String CLIENT_ID = "981770573082-avncdn59tmpu735gaofksnp9ijvhle53.apps.googleusercontent.com";
+    private static final String CLIENT_ID = "234686151907-h0egb9h34beugoudlrffovu95nkt4a10.apps.googleusercontent.com";
 
     @Autowired
     private UserRepository userRepository;

@@ -75,6 +75,7 @@ const AuthForm = () => {
                     token: res.data.token,
                     userId: userData.id,
                 });
+                localStorage.setItem("token", res.data.token);
                 localStorage.setItem("fullName", userData.fullName);
                 setMessage("Login successful");
                 setIsLoading(true); // Show the loading animation
@@ -114,12 +115,6 @@ const AuthForm = () => {
       onSuccess: async (response) => {
         console.log('Google Login Success:', response);
 
-//         const decoded = jwt_decode(response.credential);
-//         console.log("Google User Info:", decoded);
-//
-//         const userId = decoded.sub; // 'sub' is user's unique Google ID
-//         console.log("User ID:", userId);
-
         try {
           const googleUser = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo', {
                   headers: {
@@ -139,6 +134,7 @@ const AuthForm = () => {
             token: res.data.token,
             userId: userData.id,
           });
+          localStorage.setItem('token', res.data.token);
           localStorage.setItem('fullName', userData.fullName || googleUser.data.name);
           setMessage('Login successful');
           setIsLoading(true);
@@ -156,19 +152,6 @@ const AuthForm = () => {
       flow: 'implicit',
       scope: 'openid email profile',
     });
-
-    useEffect(() => {
-      /* global google */
-      if (window.google) {
-        google.accounts.id.initialize({
-          client_id: "981770573082-avncdn59tmpu735gaofksnp9ijvhle53.apps.googleusercontent.com",
-          callback: async (response) => {
-
-          },
-        });
-      }
-    }, []);
-
 
 
 if (isLoading) {
