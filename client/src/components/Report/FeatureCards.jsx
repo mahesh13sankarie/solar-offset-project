@@ -1,14 +1,28 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-export  function CountriesSelected(props) {
+export function CountriesSelected(props) {
     const [countries, setCountries] = useState([]);
+    const [error, setError] = useState("");
 
     useEffect(() => {
-        fetch("http://localhost:8000/api/v1/transaction/staff")
-            .then(response => response.json())
-            .then(data => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            console.error("No token found, please login first");
+            setError("Authentication required. Please login.");
+            return;
+        }
+        const fetchCountries = async () => {
+            try {
+                const response = await axios.get("http://localhost:8000/api/v1/transaction/staff", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                });
+                const data = response.data;
                 const countryCountMap = {};
-                data.forEach(transaction => {
+                data.forEach((transaction) => {
                     const country = transaction.country;
                     countryCountMap[country] = (countryCountMap[country] || 0) + 1;
                 });
@@ -18,10 +32,12 @@ export  function CountriesSelected(props) {
                     .map(([name, count]) => ({ name, count }));
 
                 setCountries(sortedCountries);
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error("Error fetching countries:", error);
-            });
+                setError("Failed to fetch countries");
+            }
+        };
+        fetchCountries();
     }, []);
 
     return (
@@ -32,7 +48,10 @@ export  function CountriesSelected(props) {
                     <p className="text-muted">Total Countries: {countries.length}</p>
                 </div>
 
-                <div className="card-body" style={{ height: "300px" ,overflowY: "auto", maxHeight: "300px" }}>
+                <div
+                    className="card-body"
+                    style={{ height: "300px", overflowY: "auto", maxHeight: "300px" }}
+                >
                     <table className="table table-striped table-bordered">
                         <thead>
                             <tr>
@@ -66,12 +85,25 @@ export function PanelsBought() {
     const [panels, setPanels] = useState([]);
 
     useEffect(() => {
-        fetch("http://localhost:8000/api/v1/transaction/staff")
-            .then(response => response.json())
-            .then(data => {
+        const fetchPanels = async () => {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                console.error("No token found, please login first");
+                setError("Authentication required. Please login.");
+                return;
+            }
+
+            try {
+                const response = await axios.get("http://localhost:8000/api/v1/transaction/staff", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                });
+                const data = response.data;
                 const panelCountMap = {};
 
-                data.forEach(transaction => {
+                data.forEach((transaction) => {
                     const { panelType, quantity, amount } = transaction;
                     if (panelCountMap[panelType]) {
                         panelCountMap[panelType].quantity += quantity;
@@ -86,10 +118,11 @@ export function PanelsBought() {
                     .map(([name, stats]) => ({ name, ...stats }));
 
                 setPanels(sortedPanels);
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error("Error fetching panels:", error);
-            });
+            }
+        };
+        fetchPanels();
     }, []);
 
     return (
@@ -100,7 +133,10 @@ export function PanelsBought() {
                     <p className="text-muted">Total Panels: {panels.length}</p>
                 </div>
 
-                <div className="card-body" style={{ height: "300px" ,overflowY: "auto",maxHeight: "300px" }}>
+                <div
+                    className="card-body"
+                    style={{ height: "300px", overflowY: "auto", maxHeight: "300px" }}
+                >
                     <table className="table table-striped table-bordered ">
                         <thead>
                             <tr>
