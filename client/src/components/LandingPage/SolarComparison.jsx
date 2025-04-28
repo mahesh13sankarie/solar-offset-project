@@ -146,7 +146,7 @@ const SolarComparison = () => {
                         <th>Carbon Emissions</th>
                         <th>Electricity</th>
                         <th>Renewables</th>
-                        <th>Solar Production</th>
+                        <th>Existing Solar Production</th>
                         <th>Population</th>
                         <th>Actions</th>
                     </tr>
