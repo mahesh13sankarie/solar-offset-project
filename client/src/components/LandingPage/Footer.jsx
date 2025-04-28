@@ -10,9 +10,9 @@ const Footer = () => {
                         <div className="col-lg-12 text-center">
                             <h4>Our Newsletter</h4>
                             <p>Subscribe to stay updated on our latest projects and impact</p>
-                            <form>
-                                <input type="email" name="email" placeholder="Enter your email" />
-                                <input type="submit" value="Subscribe" />
+                            <form className="form">
+                                <input type="email" name="email" placeholder="Enter your email"  />
+                                <input type="submit" value="Subscribe" className="btn btn-primary" />
                             </form>
                         </div>
                     </div>

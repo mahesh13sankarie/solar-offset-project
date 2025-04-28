@@ -28,7 +28,7 @@ public class TokenConfig {
 
     @Bean
     JwtDecoder decoder(){
-        SecretKey secretKey = new SecretKeySpec("SyntaxSquadSecretKeySheffield20242025".getBytes(), "HMAC256"); //move to constant
+        SecretKey secretKey = new SecretKeySpec("SyntaxSquadSecretKeySheffield20242025".getBytes(), "HmacSHA256"); //move to constant
         return NimbusJwtDecoder.withSecretKey(secretKey).build();
     }
 }
