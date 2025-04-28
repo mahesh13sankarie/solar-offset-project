@@ -6,7 +6,7 @@ const api = 'http://localhost:8000/api/v1/dashboard';
 
 const UsersPage = () => {
     const [users, setUsers] = useState([]);
-    const [formData, setFormData] = useState({ name: '', email: '', role: 'user' });
+    const [formData, setFormData] = useState({ name: '', email: '', role: '1' });
     const [editingUserId, setEditingUserId] = useState(null);
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
@@ -20,8 +20,8 @@ const UsersPage = () => {
     const fetchUsers = async () => {
         try {
             const res = await axios.get(`${api}/users`);
-            setUsers(res.data);
-            console.log(res.data);
+            setUsers(res.data.data);
+            console.log(res.data.data);
         } catch (err) {
             console.error('Error fetching users:', err);
         }
@@ -34,10 +34,10 @@ const UsersPage = () => {
     // Compute filtered, sorted, and limited users
     const filteredUsers = users
         .filter(user =>
-            user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
             user.email.toLowerCase().includes(searchTerm.toLowerCase())
         )
-        .filter(user => (sortByRole ? user.role === sortByRole : true))
+        .filter(user => (sortByRole !== '' ? user.accountType === sortByRole : true))
         .slice(0, displayLimit);
 
     // Create or update user
@@ -46,11 +46,14 @@ const UsersPage = () => {
         try {
             if (editingUserId) {
                 console.log(formData);
-                await axios.put(`${api}/users/${editingUserId}`, formData);
+                await axios.put(`${api}/update-role`, {
+                    userId: editingUserId,
+                    accountType: Number(formData.role)
+                });
             } else {
                 await axios.post(`${api}/users`, formData);
             }
-            setFormData({ name: '', email: '', role: 'user' });
+            setFormData({ name: '', email: '', role: '1' });
             setEditingUserId(null);
             setShowCreateModal(false);
             setShowEditModal(false);
@@ -64,7 +67,9 @@ const UsersPage = () => {
     const handleDelete = async (id) => {
         if (!window.confirm('Are you sure you want to delete this user?')) return;
         try {
-            await axios.delete(`${api}/users/${id}`);
+            await axios.delete(`${api}/delete-user`, {
+                data: { userId: id }
+            });
             fetchUsers();
         } catch (err) {
             console.error('Error deleting user:', err);
@@ -73,7 +78,7 @@ const UsersPage = () => {
 
     // Start editing
     const handleEdit = (user) => {
-        setFormData({ name: user.name, email: user.email, role: user.role });
+        setFormData({ name: user.fullName, email: user.email, role: user.accountType.toString() });
         setEditingUserId(user.id);
         setShowEditModal(true);
     };
@@ -82,48 +87,53 @@ const UsersPage = () => {
         <div >
             <h2 className="mb-4 text-center d-flex" >User Management</h2>
 
-            <nav className="navbar bg-light px-3 py-2 mb-4 rounded shadow-sm">
-                <div className="container-fluid d-flex align-items-center flex-wrap gap-3 justify-content-between">
-                    <div className="d-flex align-items-center gap-3 flex-wrap">
-                        <div className="d-flex align-items-center gap-1">
-                            <label className="mb-0">Display</label>
+            <nav className="navbar bg-light px-3 py-2 mb-4 rounded" style={{ boxShadow: '0 2px 8px rgba(0, 0, 0, 0.30)' }}>
+                <div className="container-fluid d-flex align-items-center justify-content-between flex-wrap gap-2" >
+                    <div className="d-flex align-items-center gap-5 flex-wrap">
+                        <div className="d-flex align-items-center justify-content-between gap-1">
+                            <label className="mb-0 small">Display</label>
                             <select
                                 className="form-select form-select-sm"
                                 value={displayLimit}
                                 onChange={(e) => setDisplayLimit(Number(e.target.value))}
-                                style={{ width: '80px' }}
+                                style={{ width: '70px' }}
                             >
                                 <option value={5}>5</option>
                                 <option value={10}>10</option>
                                 <option value={20}>20</option>
                             </select>
-                            <label className="mb-0">records</label>
+                            <label className="mb-0 small">records</label>
                         </div>
-
+                        <div className="d-flex align-items-center gap-1">
+                            <label htmlFor="sortByRole">Sort By:</label>
                         <select
                             className="form-select form-select-sm"
                             value={sortByRole}
-                            onChange={(e) => setSortByRole(e.target.value)}
-                            style={{ minWidth: '140px' }}
+                            onChange={(e) => setSortByRole(e.target.value === '' ? '' : Number(e.target.value))}
+                            style={{ width: '120px' }}
                         >
                             <option value="">All Roles</option>
-                            <option value="user">User</option>
-                            <option value="staff">Staff</option>
-                            <option value="admin">Admin</option>
+                            <option value={1}>User</option>
+                            <option value={2}>Staff</option>
                         </select>
+                        </div>
 
-                        <input
-                            type="text"
-                            className="form-control form-control-sm"
-                            placeholder="Search by name or email"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            style={{ minWidth: '220px' }}
-                        />
+                        <div className="d-flex align-items-center gap-1">
+                            <label htmlFor="">Search:</label>
+                            <input
+                                type="text"
+                                className="form-control form-control-sm"
+                                placeholder="Search for users"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                style={{ width: '180px' }}
+                            />
+                        </div>
+
                     </div>
 
                     <button
-                        className="btn btn-warning text-white fw-semibold px-3"
+                        className="btn btn-warning text-white fw-semibold btn-sm"
                         onClick={() => setShowCreateModal(true)}
                     >
                         + Create User
@@ -169,9 +179,8 @@ const UsersPage = () => {
                                             value={formData.role}
                                             onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                                         >
-                                            <option value="3">User</option>
-                                            <option value="2">Staff</option>
-                                            <option value="1">Admin</option>
+                                            <option value={1}>User</option>
+                                            <option value={2}>Staff</option>
                                         </select>
                                     </div>
                                 </div>
@@ -221,9 +230,8 @@ const UsersPage = () => {
                                             value={formData.role}
                                             onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                                         >
-                                            <option value="user">User</option>
-                                            <option value="staff">Staff</option>
-                                            <option value="admin">Admin</option>
+                                            <option value={1}>User</option>
+                                            <option value={2}>Staff</option>
                                         </select>
                                     </div>
                                 </div>
@@ -249,11 +257,11 @@ const UsersPage = () => {
                 <tbody>
                 {filteredUsers.map((user) => (
                     <tr key={user.id}>
-                        <td>{user.name}</td>
+                        <td>{user.fullName}</td>
                         <td>{user.email}</td>
                         <td>
-                <span className={`badge bg-${user.role === 'admin' ? 'danger' : user.role === 'staff' ? 'warning' : 'secondary'}`}>
-                  {user.role}
+                <span className={`badge bg-${user.accountType === 2 ? 'warning' : 'secondary'}`}>
+                  {user.accountType === 2 ? 'Staff' : 'User'}
                 </span>
                         </td>
                         <td>

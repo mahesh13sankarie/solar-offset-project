@@ -1,30 +1,81 @@
-import React, {useEffect, useState} from "react";
-import {Link, useParams} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import Navbar from "./Navbar.jsx";
+import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
 
 const InstallationCost = () => {
     const [country, setCountry] = useState(null);
     const [error, setError] = useState(null);
-    const {countryCode} = useParams();
+    const [showLoginModal, setShowLoginModal] = useState(false);
+    const { countryCode } = useParams();
+    const navigate = useNavigate();
+    const { isAuthenticated } = useAuth();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://localhost:8000/api/v1/countries/${countryCode}`);
-                if (!response.ok) throw new Error("Failed to fetch data");
-                const jsonData = await response.json();
-                setCountry(jsonData);
+                const response = await axios.get(
+                    `http://localhost:8000/api/v1/countries/${countryCode}`,
+                );
+                console.log(response.data);
+                setCountry(response.data);
             } catch (error) {
-                setError(error.message);
+                setError(error.message || "Failed to fetch data");
             }
         };
 
         fetchData();
     }, [countryCode]);
 
+    // Handle donate button click
+    const handleDonateClick = (panelId) => {
+        if (isAuthenticated) {
+            // If logged in, proceed to payment page
+            navigate(`/Payment/${countryCode}/${panelId}`);
+        } else {
+            // If not logged in, show login modal
+            setShowLoginModal(true);
+
+            // After 2 seconds, close modal and redirect to home
+            setTimeout(() => {
+                setShowLoginModal(false);
+                navigate("/");
+            }, 2000);
+        }
+    };
+
     return (
         <div>
-            <Navbar/>
+            <Navbar />
+
+            {/* Login Modal */}
+            {showLoginModal && (
+                <div
+                    className="modal d-block"
+                    tabIndex="-1"
+                    role="dialog"
+                    style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+                >
+                    <div className="modal-dialog modal-dialog-centered" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Login Required</h5>
+                                <button
+                                    type="button"
+                                    className="btn-close"
+                                    onClick={() => setShowLoginModal(false)}
+                                    aria-label="Close"
+                                ></button>
+                            </div>
+                            <div className="modal-body">
+                                <p>You must be logged in to donate. Redirecting to home page...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <section className="container mt-4">
                 {/* Back Button */}
                 <Link to="/SolarComparison">
@@ -45,17 +96,19 @@ const InstallationCost = () => {
                             <p className="text-muted">{country.description}</p>
                             <div className="row mt-3">
                                 <div className="col-md-4">
-                                    <strong>Carbon Emissions:</strong> {country.carbonEmissions.toLocaleString()} tCO₂
+                                    <strong>Carbon Emissions:</strong>{" "}
+                                    {country.carbonEmissions.toLocaleString()} tCO₂
                                 </div>
                                 <div className="col-md-4">
-                                    <strong>Electricity
-                                        Availability:</strong> {country.electricityAvailability.toLocaleString()} MWh
+                                    <strong>Electricity Availability:</strong>{" "}
+                                    {country.electricityAvailability.toLocaleString()} MWh
                                 </div>
                                 <div className="col-md-4">
                                     <strong>Solar Potential:</strong> {country.solarPowerPotential}%
                                 </div>
                                 <div className="col-md-4 mt-3">
-                                    <strong>Renewable Energy:</strong> {country.renewablePercentage}%
+                                    <strong>Renewable Energy:</strong> {country.renewablePercentage}
+                                    %
                                 </div>
                                 <div className="col-md-4 mt-3">
                                     <strong>Population:</strong> {country.population} million
@@ -71,27 +124,38 @@ const InstallationCost = () => {
                                     <div className="card h-100 shadow-sm d-flex flex-column">
                                         <div className="card-body d-flex flex-column">
                                             <h5 className="card-title">{panel.panelName}</h5>
-                                            <p className="text-muted" style={{fontSize: '0.9rem'}}>
+                                            <p
+                                                className="text-muted"
+                                                style={{ fontSize: "0.9rem" }}
+                                            >
                                                 {panel.description}
                                             </p>
                                             <ul className="list-group list-group-flush mt-3 mb-4">
                                                 <li className="list-group-item">
-                                                    <strong>Installation:</strong> £{panel.installationCost ?? "-"}
+                                                    <strong>Installation:</strong> £
+                                                    {panel.installationCost ?? "-"}
                                                 </li>
                                                 <li className="list-group-item">
-                                                    <strong>Production:</strong> {panel.productionPerPanel ?? "-"} W
+                                                    <strong>Production:</strong>{" "}
+                                                    {panel.productionPerPanel ?? "-"} W
                                                 </li>
                                                 <li className="list-group-item">
-                                                    <strong>Efficiency:</strong> {panel.efficiency ?? "-"}%
+                                                    <strong>Efficiency:</strong>{" "}
+                                                    {panel.efficiency ?? "-"}%
                                                 </li>
                                                 <li className="list-group-item">
-                                                    <strong>Warranty:</strong> {panel.warranty ?? "-"} years
+                                                    <strong>Warranty:</strong>{" "}
+                                                    {panel.warranty ?? "-"} years
                                                 </li>
                                             </ul>
                                             <div className="mt-auto">
-                                                <Link to="/donate" className="btn btn-success w-100">
+                                                {/* Changed from Link to button with onClick handler */}
+                                                <button
+                                                    onClick={() => handleDonateClick(panel.id || i)}
+                                                    className="btn btn-success w-100"
+                                                >
                                                     <i className="bi bi-heart-fill"></i> Donate
-                                                </Link>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>

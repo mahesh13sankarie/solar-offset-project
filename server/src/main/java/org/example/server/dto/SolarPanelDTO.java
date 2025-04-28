@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class SolarPanelDTO {
+    private Long id;
     private String panelName;
     private Double installationCost;
     private Double productionPerPanel;

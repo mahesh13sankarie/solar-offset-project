@@ -30,7 +30,7 @@ public class Payment {
 	private CountryPanel countryPanel;
 
 	@Column(nullable = false)
-	private BigDecimal amount;
+	private Integer amount;
 
 	@Column(nullable = false)
 	private String type;
@@ -48,7 +48,7 @@ public class Payment {
 	private LocalDateTime updatedAt;
 
 	@Builder
-	public Payment(User user, CountryPanel countryPanel, BigDecimal amount, PaymentType type, String transactionId,
+	public Payment(User user, CountryPanel countryPanel, Integer amount, PaymentType type, String transactionId,
 			String status, String receiptUrl) {
 		this.user = user;
 		this.countryPanel = countryPanel;
