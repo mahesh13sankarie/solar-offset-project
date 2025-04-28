@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "../../css/services.css"
 import Navbar from "./Navbar.jsx";
+import Hero from "./Hero.jsx";
 
 
 const Services = () => {
@@ -9,6 +10,7 @@ const Services = () => {
         <>
             <section>
                 <Navbar/>
+
             </section>
             <section id="services" className="services section light-background">
 

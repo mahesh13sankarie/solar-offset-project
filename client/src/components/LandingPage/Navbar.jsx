@@ -1,5 +1,5 @@
 import React, {useState,useEffect} from "react";
-import {logout} from "../Login/HelperFunction.jsx";
+
 
 const Navbar = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -35,10 +35,10 @@ const Navbar = () => {
                 {/* Navigation Menu */}
                 <nav id="navmenu" className="navmenu">
                     <ul>
-                        <li><a href="/client/public" className="active" style={{textDecoration:"none",}}>Home</a></li>
-                        <li><a href="/Users/shreyasdesai/Documents/Uni/Team Software Project/project/client/src/components/LandingPage/About" style={{textDecoration:"none",}} >About</a></li>
-                        <li><a href="/donate" style={{textDecoration:"none",}}>Donate</a></li>
-                        <li><a href="/Users/shreyasdesai/Documents/Uni/Team Software Project/project/client/src/components/LandingPage/Contact" style={{textDecoration:"none",}}>Contact</a></li>
+                        <li><a href="/" className="active" style={{textDecoration:"none",}}>Home</a></li>
+                        <li><a href="#about" style={{textDecoration:"none",}} >About</a></li>
+                        <li><a href="#donate" style={{textDecoration:"none",}}>Donate</a></li>
+                        <li><a href="#contact" style={{textDecoration:"none",}}>Contact</a></li>
                     </ul>
                     <i className="mobile-nav-toggle d-xl-none bi bi-list"></i>
                 </nav>
