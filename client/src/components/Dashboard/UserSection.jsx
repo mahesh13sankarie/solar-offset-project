@@ -18,19 +18,9 @@ const UsersPage = () => {
 
     // Fetch users
 
-    const token = localStorage.getItem("token");
-    if (!token) {
-        console.error("No token found, please login first");
-        setError("Authentication required. Please login.");
-    }
     const fetchUsers = async () => {
         try {
-            const res = await axios.get(`${api}/users`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-            });
+            const res = await axios.get(`${api}/users`);
             setUsers(res.data.data);
             console.log(res.data.data);
         } catch (err) {
