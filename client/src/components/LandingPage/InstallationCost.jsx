@@ -14,14 +14,30 @@ const InstallationCost = () => {
 
     useEffect(() => {
         const fetchData = async () => {
+            const token = localStorage.getItem("token");
+            console.log("Fetched token:", token);
+
+            if (!token) {
+                console.error("No token found, please login first");
+                setError("Authentication required. Please login.");
+                return;
+            }
+
             try {
                 const response = await axios.get(
                     `http://localhost:8000/api/v1/countries/${countryCode}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            "Content-Type": "application/json",
+                        },
+                    }
                 );
                 console.log(response.data);
                 setCountry(response.data);
             } catch (error) {
-                setError(error.message || "Failed to fetch data");
+                setError(error.response?.data?.message || "Failed to fetch data");
+                console.error("Fetch country error:", error);
             }
         };
 

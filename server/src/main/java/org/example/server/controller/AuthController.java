@@ -4,6 +4,7 @@ import org.example.server.dto.AccountType;
 import org.example.server.dto.LoginDto;
 import org.example.server.dto.MailDto;
 import org.example.server.dto.UserDto;
+import org.example.server.dto.GoogleSignInDTO;
 import org.example.server.entity.MailAttributes;
 import org.example.server.entity.User;
 import org.example.server.mapper.AuthResponseMapper;
@@ -21,17 +22,25 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
-
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.googleapis.auth.oauth2.GooglePublicKeysManager;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
+import java.util.Collections;
 import java.util.Map;
+
 
 /**
  * *
  * Google login path: <a href="http://localhost:8000/login/oauth2/code/google">...</a>
  */
-@RequestMapping("api/v1/auth")
+
 @RestController
-@CrossOrigin
+@RequestMapping("/api/v1/auth")
+@CrossOrigin(origins = "http://localhost:5173")
 public class AuthController {
+    private static final String CLIENT_ID = "234686151907-h0egb9h34beugoudlrffovu95nkt4a10.apps.googleusercontent.com";
 
     @Autowired
     private UserRepository userRepository;
@@ -115,6 +124,7 @@ public class AuthController {
         return ResponseEntity.ok().body(responseMapper.buildCustomMessage("Password updated successfully!"));
     }
 
+
     private User getUser(String email) {
         return userRepository.findByEmail(email);
     }
@@ -122,4 +132,43 @@ public class AuthController {
     private boolean isValidPassword(String password, String encryptedPassword) {
         return encoder.matches(password, encryptedPassword);
     }
+
+    @GetMapping("/test")
+    public ResponseEntity<?> test() {
+        return ResponseEntity.ok(Map.of("message", "Server is running"));
+    }
+
+    // Receive token from frontend
+    @PostMapping("/google-login")
+    public ResponseEntity<?> googleLogin(@RequestBody Map<String, String> payload) {
+        try {
+            String email = payload.get("email");
+            String name = payload.get("name");
+
+            User user = userRepository.findByEmail(email);
+            if (user == null) {
+                UserDto newUser = new UserDto(email, "", name, AccountType.Google);
+                authService.saveUser(newUser);
+                user = userRepository.findByEmail(email);
+            }
+
+            String token = tokenProvider.generateToken(email);
+
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "token", token,
+                    "data", user.getDetail(user)
+            ));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(Map.of(
+                    "success", false,
+                    "message", "Google login failed",
+                    "error", e.getMessage()
+            ));
+        }
+    }
+
+
 }
