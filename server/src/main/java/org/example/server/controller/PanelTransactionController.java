@@ -4,6 +4,7 @@ import org.example.server.dto.PanelTransactionDTO;
 import org.example.server.dto.SolarPanelDTO;
 import org.example.server.entity.PanelTransaction;
 import org.example.server.entity.response.PanelTransactionResponse;
+import org.example.server.mapper.AuthResponseMapper;
 import org.example.server.service.panel.PanelTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,9 @@ public class PanelTransactionController {
     @Autowired
     private PanelTransactionService panelTransactionService;
 
+    @Autowired
+    AuthResponseMapper responseMapper;
+
     @PostMapping("/add")
     public ResponseEntity<?> addTransaction(@RequestBody PanelTransactionDTO panelTransaction) {
         panelTransactionService.save(panelTransaction);
@@ -33,7 +37,13 @@ public class PanelTransactionController {
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllTransaction() {
-        return ResponseEntity.ok().body(filteredResponse(panelTransactionService.fetchAll()));
+        List<PanelTransaction> panelTransactions = panelTransactionService.fetchAll();
+        if (panelTransactions.isEmpty()) {
+            return ResponseEntity.ok().body(responseMapper.buildErrorMessage("Empty transaction", 400));
+
+        } else {
+            return ResponseEntity.ok().body(filteredResponse(panelTransactionService.fetchAll()));
+        }
     }
 
     @GetMapping("/{id}")
