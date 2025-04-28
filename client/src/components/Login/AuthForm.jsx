@@ -77,6 +77,8 @@ const AuthForm = () => {
                 });
                 localStorage.setItem("token", res.data.token);
                 localStorage.setItem("fullName", userData.fullName);
+                localStorage.setItem("accountType", userData.accountType); // Store accountType
+
                 setMessage("Login successful");
                 setIsLoading(true); // Show the loading animation
                 setTimeout(() => navigate("/SolarComparison"), 2000); // Increased delay to show animation
