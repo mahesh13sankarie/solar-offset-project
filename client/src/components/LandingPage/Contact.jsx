@@ -7,7 +7,7 @@ const Contact = () => {
     };
 
     return (
-        <section id="contact" className="contact section light-background">
+        <section id="contact" className="contact section">
             <div className="container section-title" data-aos="fade-up">
                 <h2>Contact</h2>
             </div>

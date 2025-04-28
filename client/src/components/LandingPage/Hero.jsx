@@ -10,7 +10,7 @@ const Hero = () => {
                         <h1>Power the Planet, Offset Carbon</h1>
                         <p>Your donation funds solar panels to reduce carbon emissions</p>
                         <div className="d-flex">
-                            <Link to="/donate" className="btn-get-started">Get Started</Link>
+                            <a href="#donate"  className="btn-get-started">Get Started</a>
                         </div>
                     </div>
                 </div>
