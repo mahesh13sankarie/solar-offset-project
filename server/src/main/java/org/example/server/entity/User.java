@@ -5,6 +5,7 @@ import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -27,6 +28,10 @@ public class User implements UserDetails {
 
     @Column
     private int accountType;
+
+    //bidirectional
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PanelTransaction> transactions = new ArrayList<>();
 
     public User(String email, String password, String fullName, int accountType) {
         this.email = email;
