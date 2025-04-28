@@ -7,7 +7,7 @@ import org.example.server.dto.UserDto;
 import org.example.server.entity.MailAttributes;
 import org.example.server.entity.User;
 import org.example.server.mapper.AuthResponseMapper;
-import org.example.server.mapper.UserMapper;
+import org.example.server.mapper.BaseResponse;
 import org.example.server.repository.UserRepository;
 import org.example.server.service.auth.AuthService;
 import org.example.server.service.mail.MailService;
@@ -27,6 +27,7 @@ import java.util.Map;
 /**
  * *
  * Google login path: <a href="http://localhost:8000/login/oauth2/code/google">...</a>
+ * Clean code; so many duplicate!
  */
 @RequestMapping("api/v1/auth")
 @RestController
@@ -71,25 +72,33 @@ public class AuthController {
 
     @PostMapping("/register")
     ResponseEntity<?> register(@RequestBody UserDto userDto) {
-        authService.saveUser(userDto);
-        return ResponseEntity.ok().body(responseMapper.buildSuccessResponse());
+        User user = getUser(userDto.email());
+        BaseResponse response;
+
+        if (user == null) {
+            authService.saveUser(userDto);
+            response = responseMapper.buildSuccessResponse();
+        } else {
+            response = responseMapper.buildErrorMessage("User is already exist!", 400);
+        }
+
+        return ResponseEntity.ok().body(response);
     }
 
     @PostMapping("/login")
     ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
         User user = getUser(loginDto.email());
-
         if (user == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok().body(responseMapper.buildErrorMessage("Account does not exist!", 400));
+        } else if (!isValidPassword(loginDto.password(), user.getPassword())) {
+            return ResponseEntity.ok().body(responseMapper.buildErrorMessage("Wrong password!", 400));
+        } else {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    loginDto.email(), loginDto.password()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String token = tokenProvider.generateToken(loginDto.email());
+            return ResponseEntity.ok().body(responseMapper.buildLoginResponse(user.getDetail(user), token));
         }
-        if (!isValidPassword(loginDto.password(), user.getPassword())) {
-            return ResponseEntity.notFound().build();
-        }
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginDto.email(), loginDto.password()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = tokenProvider.generateToken(loginDto.email());
-        return ResponseEntity.ok().body(responseMapper.buildLoginResponse(user.getDetail(user), token));
     }
 
     //remove in front end;
@@ -102,17 +111,26 @@ public class AuthController {
     @PostMapping("/forgot-password")
     ResponseEntity<?> sendEmail(@RequestBody MailDto email) {
         //TODO: send email with information and link, in link put email info so FE could retrieve!
-        //check if user exist
         String mail = email.email();
-        mailService.sendEmail(new MailAttributes(mail, "Solar Offset: Change password!", "Dear " + mail + " please change your password thru out this link!")); //construct body with link!
-        return ResponseEntity.ok().body(responseMapper.buildCustomMessage("Please check your e-mail!"));
+        User user = getUser(mail);
+        if (user == null) {
+            return ResponseEntity.ok().body(responseMapper.buildErrorMessage("Account does not exist!", 400));
+        } else {
+            mailService.sendEmail(new MailAttributes(mail, "Solar Offset: Change password!", "Dear " + mail + " please change your password thru out this link!")); //construct body with link!
+            return ResponseEntity.ok().body(responseMapper.buildCustomMessage("Please check your e-mail!"));
+        }
     }
 
     //could be use as regular change password as well!
     @PutMapping("/update-password")
     ResponseEntity<?> updatePassword(@RequestBody LoginDto loginDto) {
-        authService.updatePassword(loginDto);
-        return ResponseEntity.ok().body(responseMapper.buildCustomMessage("Password updated successfully!"));
+        User user = getUser(loginDto.email());
+        if (user == null) {
+            return ResponseEntity.ok().body(responseMapper.buildErrorMessage("Account does not exist!", 400));
+        } else {
+            authService.updatePassword(loginDto);
+            return ResponseEntity.ok().body(responseMapper.buildCustomMessage("Password updated successfully!"));
+        }
     }
 
     private User getUser(String email) {
