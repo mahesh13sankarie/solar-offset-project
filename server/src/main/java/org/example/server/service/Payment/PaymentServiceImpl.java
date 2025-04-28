@@ -8,6 +8,7 @@ import org.example.server.dto.PaymentResponseDTO;
 import org.example.server.entity.CountryPanel;
 import org.example.server.entity.Payment;
 import org.example.server.entity.User;
+import org.example.server.exception.PaymentException;
 import org.example.server.repository.CountryPanelRepository;
 import org.example.server.repository.PaymentRepository;
 import org.example.server.repository.UserRepository;
@@ -20,6 +21,7 @@ import com.stripe.model.PaymentIntent;
 import com.stripe.param.PaymentIntentCreateParams;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 /**
  * PaymentService Implementation
@@ -65,30 +67,21 @@ public class PaymentServiceImpl implements PaymentService {
 	 * 
 	 * @param request Payment request information
 	 * @return Payment response
-	 * @throws StripeException Stripe API exception
+	 * @throws PaymentException
 	 */
 	@Override
 	@Transactional
-	public PaymentResponseDTO processPayment(PaymentRequestDTO request) throws StripeException {
+	public PaymentResponseDTO processPayment(PaymentRequestDTO request) throws PaymentException {
 		// Find the user and countryPanel
 		User user = userRepository.findById(request.userId())
-				.orElseThrow(() -> new IllegalArgumentException("User not found"));
+				.orElseThrow(() -> PaymentException.userNotFound(request.userId()));
 
 		CountryPanel countryPanel = countryPanelRepository.findById(request.countryPanelId())
-				.orElseThrow(() -> new IllegalArgumentException("Country Panel not found"));
-
-		// Validate payment method ID
-		if (request.paymentMethodId() == null || request.paymentMethodId().isEmpty()) {
-			return new PaymentResponseDTO(
-					null,
-					null,
-					null,
-					false,
-					"Missing or invalid payment method ID. A valid PaymentMethod ID must be provided.");
-		}
+				.orElseThrow(() -> PaymentException.countryPanelNotFound(request.countryPanelId()));
 
 		// Amount : installation cost * quantity
-		BigDecimal totalCostInPounds = BigDecimal.valueOf(request.quantity() * countryPanel.getPanel().getInstallationCost());
+		BigDecimal totalCostInPounds = BigDecimal
+				.valueOf(request.quantity() * countryPanel.getPanel().getInstallationCost());
 		long amountInSmallestUnit = totalCostInPounds.movePointRight(2).longValueExact();
 
 		try {
@@ -123,32 +116,32 @@ public class PaymentServiceImpl implements PaymentService {
 				return new PaymentResponseDTO(
 						savedPayment.getId(),
 						paymentIntent.getId(),
-						actualReceiptUrl,
-						true,
-						null);
+						actualReceiptUrl
+
+				);
 			} else {
-				return new PaymentResponseDTO(
-						null,
-						paymentIntent.getId(),
-						null,
-						false,
-						"Payment failed: " + paymentIntent.getStatus());
+				throw new PaymentException(
+						PaymentException.PAYMENT_PROCESSING_ERROR,
+						"Payment processing failed with status: " + paymentIntent.getStatus(),
+						HttpStatus.BAD_REQUEST);
 			}
 		} catch (StripeException e) {
 			// Handle payment failure
-			return new PaymentResponseDTO(
-					null,
-					null,
-					null,
-					false,
-					"Error processing payment: " + e.getMessage());
+			throw PaymentException.fromStripeException(e);
 		}
 	}
 
 	@Override
-	public List<PaymentResponseDTO> getUserPayments(Long userId) {
-		// Implementation to be added
-		throw new UnsupportedOperationException("Unimplemented method 'getUserPayments'");
-	}
+	public List<PaymentResponseDTO> getUserPayments(Long userId) throws PaymentException {
+		// Check if user exists
+		if (!userRepository.existsById(userId)) {
+			throw PaymentException.userNotFound(userId);
+		}
 
+		// Implementation to be added
+		throw new PaymentException(
+				"SERVER-ERROR",
+				"Unimplemented method 'getUserPayments'",
+				HttpStatus.NOT_IMPLEMENTED);
+	}
 }
