@@ -19,16 +19,6 @@ const Services = () => {
 
                 <div className="container">
                     <div className="row gy-4">
-                        <div className="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="100">
-                            <div className="service-item position-relative">
-                                <div className="icon">
-                                    <i className="bi bi-person-square icon"></i>
-                                </div>
-                                <h4><Link to="/login" className="stretched-link">Create an Account</Link></h4>
-                                <p>Before making a donation, create your account first</p>
-                            </div>
-                        </div>
-
                         <div className="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="200">
                             <div className="service-item position-relative">
                                 <div className="icon">
@@ -37,6 +27,16 @@ const Services = () => {
                                 <h4><Link to="/countries" className="stretched-link">Choose a Country</Link></h4>
                                 <p>Choose your preferred country to donate. You can also compare options before making
                                     your decision.</p>
+                            </div>
+                        </div>
+
+                        <div className="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="100">
+                            <div className="service-item position-relative">
+                                <div className="icon">
+                                    <i className="bi bi-person-square icon"></i>
+                                </div>
+                                <h4><Link to="/login" className="stretched-link">Create an Account</Link></h4>
+                                <p>Before making a donation, create your account first</p>
                             </div>
                         </div>
 
