@@ -127,7 +127,7 @@ const SolarComparison = () => {
         <div>
             <Navbar />
             <section className="container mt-4">
-                <h2 className="my-4">Solar Comparison</h2>
+                <h2 className="my-4">Existing Solar Production</h2>
 
                 {/* Search */}
                 <input
