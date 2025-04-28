@@ -15,7 +15,9 @@ CREATE TABLE IF NOT EXISTS panel
     name                 VARCHAR(255) NOT NULL,
     installation_cost    DOUBLE       NOT NULL,
     production_per_panel DOUBLE       NOT NULL,
-    description          TEXT
+    description          TEXT,
+    efficiency           VARCHAR(50),
+    warranty             VARCHAR(50)
 );
 
 CREATE TABLE IF NOT EXISTS country_panel

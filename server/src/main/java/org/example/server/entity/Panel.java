@@ -27,9 +27,11 @@ public class Panel {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "efficiency")
     private String efficiency;
     private String lifespan;
     private String temperatureTolerance;
+    @Column(name = "warranty")
     private String warranty;
 
     @OneToMany(mappedBy = "panel", cascade = CascadeType.ALL)

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams, useLocation } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Navbar from "./Navbar.jsx";
 import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
-import {PDFDownloadLink} from "@react-pdf/renderer";
-import {PaymentInvoice} from "../Report/Invoice/Invoice.jsx";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import { PaymentInvoice } from "../Report/Invoice/Invoice.jsx";
 
 const Payment = () => {
     const [country, setCountry] = useState(null);
@@ -117,7 +117,7 @@ const Payment = () => {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("authToken")}`,
                     },
-                }
+                },
             );
 
             // Payment successful
@@ -215,10 +215,12 @@ const Payment = () => {
             <Navbar />
             <section className="container mt-4">
                 {/* Back Button */}
-                <Link to={`/InstallationCost/${countryCode}`}>
-                    <button className="btn btn-link mb-3">
-                        <i className="bi bi-arrow-left-circle"></i> Back
-                    </button>
+                <Link to={`/InstallationCost/${countryCode}`}
+                      className="text-decoration-none d-inline-flex align-items-center gap-2 mb-4 mt-3"
+                      style={{ color: "#6c757d", fontWeight: "500", fontSize: "1rem" }}
+                >
+                    <i className="bi bi-arrow-left-circle" style={{ fontSize: "1.2rem" }}></i>
+                    <span>Back</span>
                 </Link>
 
                 {/* Main Content */}
@@ -524,7 +526,8 @@ const Payment = () => {
                                                         >
                                                             {({ loading }) =>
                                                                 loading ? "Preparing Invoice..." : <>
-                                                                    Download Invoice <i className="bi bi-printer px-2"></i>
+                                                                    Download Invoice <i
+                                                                    className="bi bi-printer px-2"></i>
                                                                 </>
                                                             }
                                                         </PDFDownloadLink>
