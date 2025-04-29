@@ -1,3 +1,11 @@
+INSERT INTO users (email, password, full_name, account_type)
+SELECT t.email, t.password, t.full_name, t.account_type
+FROM (SELECT 'admin@example.com' as email,
+             'admin' as password,
+             'Administrator' as full_name,
+             2 as account_type) t
+WHERE NOT EXISTS (SELECT 1 FROM users LIMIT 1);
+
 -- Insert into country table only if it's empty
 INSERT INTO country (code, name, population, updated_at, created_at)
 SELECT t.code, t.name, t.population, NOW(), NOW()
