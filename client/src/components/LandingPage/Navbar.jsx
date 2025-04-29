@@ -17,12 +17,12 @@ const Navbar = () => {
         if (userRole == 2) {
             setIsStaff(true);
         }
-    }, []);
+    }, [isStaff]);
 
     const handleLogout = () => {
         // Remove token from localStorage
         localStorage.removeItem("authToken");
-        localStorage.removeItem("userRole");
+        localStorage.removeItem("accountType");
         setIsLoggedIn(false); // Update state to reflect that user is logged out
         console.log("Logged out successfully");
 
