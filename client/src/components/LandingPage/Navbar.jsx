@@ -3,17 +3,26 @@ import {logout} from "../HelperComponents/HelperFunction.jsx";
 
 const Navbar = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isStaff, setIsStaff] = useState(false);  // Assuming you have a way to determine if the user is staff
+
+
+
     // Check if there's a token in localStorage to determine if the user is logged in
     useEffect(() => {
         const token = localStorage.getItem("authToken");
         if (token) {
             setIsLoggedIn(true);
         }
+        const userRole = localStorage.getItem("accountType"); // This is just an example
+        if (userRole == 2) {
+            setIsStaff(true);
+        }
     }, []);
 
     const handleLogout = () => {
         // Remove token from localStorage
         localStorage.removeItem("authToken");
+        localStorage.removeItem("userRole");
         setIsLoggedIn(false); // Update state to reflect that user is logged out
         console.log("Logged out successfully");
 
@@ -38,7 +47,14 @@ const Navbar = () => {
                         <li><a href="/" className="active" style={{textDecoration:"none",}}>Home</a></li>
                         <li><a href="/#about" style={{textDecoration:"none",}} >About</a></li>
                         <li><a href="/#donate" style={{textDecoration:"none",}}>Donate</a></li>
-                        <li><a href="/#contact" style={{textDecoration:"none",}}>Contact</a></li>
+                        {
+                            isStaff ? (
+                                <li><a href="/staff/dashboard" style={{textDecoration:"none",}}>Staff Dashboard</a></li>
+
+                            ):(
+                                <li><a href="/#contact" style={{textDecoration:"none",}}>Contact</a></li>
+                            )
+                        }
                     </ul>
                     <i className="mobile-nav-toggle d-xl-none bi bi-list"></i>
                 </nav>
@@ -47,7 +63,9 @@ const Navbar = () => {
                 <div>
                     {
                         isLoggedIn ? (
-                            <a href="/" className="btn-getstarted" style={{textDecoration:"none",}} onClick={handleLogout}>Logout</a>
+                            <a href="/" className="btn-getstarted" style={{textDecoration:"none",}} onClick={handleLogout}>
+                                Logout
+                            </a>
                         ): (
                             <a href="/login" className="btn-getstarted" style={{textDecoration:"none",}} >Login/Register</a>
 
@@ -56,10 +74,7 @@ const Navbar = () => {
 
                 </div>
 
-                {/* Profile Section */}
-                {/* <div className="profile" id="profile">
-                    <img id="profileImg" src="" alt="User Profile" />
-                </div> */}
+
             </div>
         </header>
     );
