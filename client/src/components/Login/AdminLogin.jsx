@@ -49,7 +49,7 @@ const AdminLogin = () => {
                 navigate("/dashboard");
             }, 1000);
         } catch (error) {
-            setMessage(`Error: ${error.response?.data?.message || "Unable to connect to server"}`);
+            setMessage(`Error: ${error.message || "Unable to connect to server"}`);
             console.error("Error:", error);
         }
 
