@@ -45,8 +45,18 @@ const Navbar = () => {
                 <nav id="navmenu" className="navmenu">
                     <ul>
                         <li><a href="/" className="active" style={{textDecoration:"none",}}>Home</a></li>
-                        <li><a href="/#about" style={{textDecoration:"none",}} >About</a></li>
                         <li><a href="/#donate" style={{textDecoration:"none",}}>Donate</a></li>
+
+                        {
+                            isLoggedIn ? (
+                                <li>
+                                    <li><a href="/transaction-history" style={{textDecoration:"none",}} >Transaction History</a></li>
+                                </li>
+                            ):(
+                                <li><a href="/#about" style={{textDecoration:"none",}} >About</a></li>
+
+                            )
+                        }
                         {
                             isStaff ? (
                                 <li><a href="/staff/dashboard" style={{textDecoration:"none",}}>Staff Dashboard</a></li>
@@ -55,6 +65,7 @@ const Navbar = () => {
                                 <li><a href="/#contact" style={{textDecoration:"none",}}>Contact</a></li>
                             )
                         }
+
                     </ul>
                     <i className="mobile-nav-toggle d-xl-none bi bi-list"></i>
                 </nav>

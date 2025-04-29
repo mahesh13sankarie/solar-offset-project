@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { Link } from "react-router-dom";
 import { BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip } from "chart.js";
+import TransactionHistory from "../HelperComponents/TransactionHistory.jsx";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -213,6 +214,7 @@ const SolarComparison = () => {
                     </div>
                 </div>
             </section>
+
         </div>
     );
 };
