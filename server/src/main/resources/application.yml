@@ -5,7 +5,7 @@ spring:
     active: dev
 
   datasource:
-    url: jdbc:mysql://localhost:3306/solaroffset?serverTimezone=UTC&useLegacyDatetimeCode=false
+    url: jdbc:mysql://localhost:3306/solaroffset?serverTimezone=UTC&useLegacyDatetimeCode=false&createDatabaseIfNotExist=true
     username: root
     password: Shreyas@123
   sql:
@@ -16,6 +16,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+    defer-datasource-initialization: true
 
   security:
     oauth2:
