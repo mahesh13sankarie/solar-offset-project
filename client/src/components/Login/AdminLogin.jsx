@@ -1,21 +1,16 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-
-
-const superAdmin = {
-    id: "1",
-    email: "admin@example.com",
-    password: "admin"
-};
-
-// const REGISTER_URL = 'http://localhost:3000/admins';
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const AdminLogin = () => {
     const [formData, setFormData] = useState({
-        email: '',
-        password: '',
+        email: "",
+        password: "",
     });
-    const [message, setMessage] = useState('');
+    const [message, setMessage] = useState("");
+    const navigate = useNavigate();
+    const { login } = useAuth();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -27,18 +22,37 @@ const AdminLogin = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setMessage('');
-        if (superAdmin.email === "admin@example.com" && superAdmin.password === "admin") {
-            console.log("✅ Super admin verified and registered (simulated)");
-                setMessage('Success: Logged in successfully');
-                    setTimeout(() => {
-                        window.location.href = 'http://localhost:5173/dashboard';
-                    }, 1000);
-        } else {
-            setMessage(`Error: 'Unable to connect to server'}`);
-            console.error("❌ Registration failed: Invalid credentials");
+        setMessage("");
+
+        try {
+            const response = await axios.post("http://localhost:8000/api/v1/auth/login", {
+                email: formData.email,
+                password: formData.password,
+            });
+
+            const userData = response.data.data;
+
+            // Verify if the user is an admin (accountType === 0)
+            if (userData.accountType !== 0) {
+                setMessage("Error: Access denied. Admin privileges required.");
+                return;
+            }
+
+            // If user is admin, proceed with login
+            login({
+                token: response.data.token,
+                userId: userData.id,
+            });
+
+            setMessage("Success: Logged in successfully");
+            setTimeout(() => {
+                navigate("/dashboard");
+            }, 1000);
+        } catch (error) {
+            setMessage(`Error: ${error.message || "Unable to connect to server"}`);
+            console.error("Error:", error);
         }
-        
+
         // try {
         //     const response = await axios.post(REGISTER_URL, {
         //
@@ -63,12 +77,22 @@ const AdminLogin = () => {
 
     return (
         <div className="container d-flex justify-content-center align-items-center vh-100">
-            <div className="card p-4 shadow" style={{ maxWidth: '400px', width: '100%' }}>
+            <div className="card p-4 shadow" style={{ maxWidth: "400px", width: "100%" }}>
                 <h2 className="text-center mb-4">Admin Login</h2>
-                {message && <div className={`alert ${message.includes('Success') ? 'alert-success' : 'alert-danger'}`}>{message}</div>}
+                {message && (
+                    <div
+                        className={`alert ${
+                            message.includes("Success") ? "alert-success" : "alert-danger"
+                        }`}
+                    >
+                        {message}
+                    </div>
+                )}
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
-                        <label htmlFor="email" className="form-label">Email:</label>
+                        <label htmlFor="email" className="form-label">
+                            Email:
+                        </label>
                         <input
                             type="email"
                             className="form-control"
@@ -80,7 +104,9 @@ const AdminLogin = () => {
                         />
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="password" className="form-label">Password:</label>
+                        <label htmlFor="password" className="form-label">
+                            Password:
+                        </label>
                         <input
                             type="password"
                             className="form-control"
@@ -91,7 +117,9 @@ const AdminLogin = () => {
                             required
                         />
                     </div>
-                    <button type="submit" className="btn btn-primary w-100">Login</button>
+                    <button type="submit" className="btn btn-primary w-100">
+                        Login
+                    </button>
                 </form>
             </div>
         </div>
