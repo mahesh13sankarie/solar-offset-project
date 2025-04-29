@@ -5,7 +5,7 @@ const Navbar = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     // Check if there's a token in localStorage to determine if the user is logged in
     useEffect(() => {
-        const token = localStorage.getItem("authToken"); // Replace with your actual token key
+        const token = localStorage.getItem("authToken");
         if (token) {
             setIsLoggedIn(true);
         }
@@ -13,7 +13,7 @@ const Navbar = () => {
 
     const handleLogout = () => {
         // Remove token from localStorage
-        localStorage.removeItem("authToken"); // Replace with your actual token key
+        localStorage.removeItem("authToken");
         setIsLoggedIn(false); // Update state to reflect that user is logged out
         console.log("Logged out successfully");
 
@@ -28,7 +28,7 @@ const Navbar = () => {
         >
             <div className="container-fluid container-xl position-relative d-flex align-items-center">
                 {/* Logo */}
-                <a href="/client/public" className="logo d-flex align-items-center me-auto" style={{textDecoration:"none",}}>
+                <a href="/" className="logo d-flex align-items-center me-auto" style={{textDecoration:"none",}}>
                     <h1 className="sitename">Solar Offset</h1>
                 </a>
 
@@ -36,9 +36,9 @@ const Navbar = () => {
                 <nav id="navmenu" className="navmenu">
                     <ul>
                         <li><a href="/" className="active" style={{textDecoration:"none",}}>Home</a></li>
-                        <li><a href="#about" style={{textDecoration:"none",}} >About</a></li>
-                        <li><a href="#donate" style={{textDecoration:"none",}}>Donate</a></li>
-                        <li><a href="#contact" style={{textDecoration:"none",}}>Contact</a></li>
+                        <li><a href="/#about" style={{textDecoration:"none",}} >About</a></li>
+                        <li><a href="/#donate" style={{textDecoration:"none",}}>Donate</a></li>
+                        <li><a href="/#contact" style={{textDecoration:"none",}}>Contact</a></li>
                     </ul>
                     <i className="mobile-nav-toggle d-xl-none bi bi-list"></i>
                 </nav>

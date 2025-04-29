@@ -14,6 +14,7 @@ import Navbar from "./components/LandingPage/Navbar.jsx";
 import InstallationCost from "./components/LandingPage/InstallationCost.jsx";
 import ReportGenerate from "./components/Report/ReportGenerate.jsx";
 import ChangePassword from "./components/Login/ChangePassword.jsx";
+import NewPassword from "./components/Login/NewPassword.jsx";
 
 
 import AdminLogin from "./components/Login/AdminLogin.jsx";
@@ -44,6 +45,8 @@ const router = createBrowserRouter([
     { path: "/InstallationCost/:countryCode", element: <InstallationCost /> },
     { path: "/Payment/:countryCode/:panelId", element: <Payment /> },
     { path: "/change-password", element: <ChangePassword /> },
+    { path: "/new-password" , element: <NewPassword /> },
+
 
     {
         path: "/staff/dashboard",
