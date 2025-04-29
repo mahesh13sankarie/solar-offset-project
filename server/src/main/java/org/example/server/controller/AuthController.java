@@ -1,5 +1,6 @@
 package org.example.server.controller;
 
+import jakarta.mail.MessagingException;
 import org.example.server.dto.AccountType;
 import org.example.server.dto.LoginDto;
 import org.example.server.dto.MailDto;
@@ -109,14 +110,21 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
-    ResponseEntity<?> sendEmail(@RequestBody MailDto email) {
-        //TODO: send email with information and link, in link put email info so FE could retrieve!
+    ResponseEntity<?> sendEmail(@RequestBody MailDto email) throws MessagingException {
         String mail = email.email();
         User user = getUser(mail);
         if (user == null) {
             return ResponseEntity.ok().body(responseMapper.buildErrorMessage("Account does not exist!", 400));
         } else {
-            mailService.sendEmail(new MailAttributes(mail, "Solar Offset: Change password!", "Dear " + mail + " please change your password thru out this link!")); //construct body with link!
+            String link = "https://localhost:5173/new-password?" + email.email(); //should be dynamic link
+            String content = "<html><body>" +
+                    "<p>Please click the following link: " +
+                    "<a href=\"" + link + "\">Reset password</a></p>" +
+                    "<p>Best regards,<br/>Syntax Squad</p>" +
+                    "</body></html>";
+
+            mailService.sendEmail(new MailAttributes(mail, "Solar Offset: Change password!",
+                    "Dear " + mail, content)); //construct body with link!
             return ResponseEntity.ok().body(responseMapper.buildCustomMessage("Please check your e-mail!"));
         }
     }
