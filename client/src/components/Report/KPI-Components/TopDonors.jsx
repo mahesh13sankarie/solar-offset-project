@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { api } from "../../../api";
 
 export default function TopDonors() {
     const [topUsers, setTopUsers] = useState([]);
@@ -15,12 +15,8 @@ export default function TopDonors() {
                     setError("Authentication required. Please login.");
                     return;
                 }
-                const res = await axios.get("http://localhost:8000/api/v1/transaction/staff", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    },
-                });
+
+                const res = await api.transaction.getStaff();
                 const data = res.data;
 
                 const userDonations = {};

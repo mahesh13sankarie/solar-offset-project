@@ -1,10 +1,10 @@
+import { PDFDownloadLink } from "@react-pdf/renderer";
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import Navbar from "./Navbar.jsx";
+import { api } from "../../api";
 import { useAuth } from "../../context/AuthContext";
-import axios from "axios";
-import { PDFDownloadLink } from "@react-pdf/renderer";
 import { PaymentInvoice } from "../Report/Invoice/Invoice.jsx";
+import Navbar from "./Navbar.jsx";
 
 const Payment = () => {
     const [country, setCountry] = useState(null);
@@ -36,12 +36,7 @@ const Payment = () => {
             }
 
             try {
-                const response = await axios.get(`http://localhost:8000/api/v1/panels/${panelId}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    },
-                });
+                const response = await api.panels.getById(panelId);
                 console.log("Panel data:", response.data);
 
                 const panelData = response.data;
@@ -122,16 +117,9 @@ const Payment = () => {
                 paymentMethodId: `pm_card_visa`, // Just for demonstration
             };
             console.log(paymentData);
-            // Send payment request to API using axios
-            const response = await axios.post(
-                "http://localhost:8000/api/v1/payments",
-                paymentData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-                },
-            );
+
+            // Send payment request to API
+            const response = await api.payments.create(paymentData);
 
             // Payment successful
             setIsComplete(true);

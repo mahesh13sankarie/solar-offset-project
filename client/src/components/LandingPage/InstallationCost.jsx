@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import Navbar from "./Navbar.jsx";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
+import { api } from "../../api";
 
 const InstallationCost = () => {
     const [country, setCountry] = useState(null);
@@ -26,15 +27,7 @@ const InstallationCost = () => {
             }
 
             try {
-                const response = await axios.get(
-                    `http://localhost:8000/api/v1/countries/${countryCode}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                            "Content-Type": "application/json",
-                        },
-                    },
-                );
+                const response = await api.countries.getByCode(countryCode);
                 console.log(response.data);
                 setCountry(response.data);
             } catch (error) {
