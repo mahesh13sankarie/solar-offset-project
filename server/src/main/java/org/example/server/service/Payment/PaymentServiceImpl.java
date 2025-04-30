@@ -1,8 +1,11 @@
 package org.example.server.service.Payment;
 
-import java.math.BigDecimal;
-import java.util.List;
-
+import com.stripe.exception.StripeException;
+import com.stripe.model.Charge;
+import com.stripe.model.PaymentIntent;
+import com.stripe.param.PaymentIntentCreateParams;
+import lombok.RequiredArgsConstructor;
+import org.example.server.dto.PanelTransactionDTO;
 import org.example.server.dto.PaymentRequestDTO;
 import org.example.server.dto.PaymentResponseDTO;
 import org.example.server.entity.CountryPanel;
@@ -12,16 +15,13 @@ import org.example.server.exception.PaymentException;
 import org.example.server.repository.CountryPanelRepository;
 import org.example.server.repository.PaymentRepository;
 import org.example.server.repository.UserRepository;
+import org.example.server.service.panel.PanelTransactionServiceImpl;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.stripe.exception.StripeException;
-import com.stripe.model.Charge;
-import com.stripe.model.PaymentIntent;
-import com.stripe.param.PaymentIntentCreateParams;
-
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * PaymentService Implementation
@@ -45,6 +45,7 @@ public class PaymentServiceImpl implements PaymentService {
 	private final CountryPanelRepository countryPanelRepository;
 
 	private final PaymentRepository paymentRepository;
+	private final PanelTransactionServiceImpl transactionService;
 
 	/**
 	 * Process a payment.
@@ -109,10 +110,13 @@ public class PaymentServiceImpl implements PaymentService {
 						.transactionId(paymentIntent.getId())
 						.receiptUrl(actualReceiptUrl)
 						.build();
-
 				Payment savedPayment = paymentRepository.save(payment);
 
-				// Return success response with the actual receipt URL
+				PanelTransactionDTO panelTransactionDTO = new PanelTransactionDTO(
+						countryPanel.getPanel().getId(),
+						user.getId());
+				transactionService.save(panelTransactionDTO);
+
 				return new PaymentResponseDTO(
 						savedPayment.getId(),
 						paymentIntent.getId(),
