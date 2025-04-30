@@ -21,7 +21,7 @@ public class TokenProvider {
         return JWT.create()
                 .withSubject(email)
                 .withClaim("email", email)
-//                .withClaim("roles", role)
+                .withClaim("roles", role)
                 .withExpiresAt(new Date(System.currentTimeMillis() + expires_in * 1000))
                 .sign(algorithm);
     }

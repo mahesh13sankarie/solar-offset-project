@@ -99,7 +99,7 @@ public class AuthController {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     loginDto.email(), loginDto.password()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            String token = tokenProvider.generateToken(loginDto.email(), AccountType.Standard.ordinal());
+            String token = tokenProvider.generateToken(loginDto.email(), user.getAccountType());
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             return ResponseEntity.ok().body(responseMapper.buildLoginResponse(auth, token));
 
