@@ -2,10 +2,14 @@ package org.example.server.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import org.example.server.dto.AccountType;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -28,6 +32,10 @@ public class User implements UserDetails {
     @Column
     private int accountType;
 
+    //bidirectional
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PanelTransaction> transactions = new ArrayList<>();
+
     public User(String email, String password, String fullName, int accountType) {
         this.email = email;
         this.password = password;
@@ -48,7 +56,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(); //TODO: this could be use as admin, staff to distinguish role!
+        return getRoles();
     }
 
     @Override
@@ -78,5 +86,12 @@ public class User implements UserDetails {
 
     public User getDetail(User user) {
         return new User(user.id, user.email, user.fullName, user.accountType);
+    }
+
+    private List<Roles> getRoles() {
+        return List.of(Roles
+                .builder()
+                .type(AccountType.find(this.accountType))
+                .build());
     }
 }
