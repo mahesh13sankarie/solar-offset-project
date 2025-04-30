@@ -9,7 +9,7 @@ export const login = async (email, password) => {
 
         if (response.status === 200) {
             const token = response.data.token;
-            localStorage.setItem("authToken", token);
+            localStorage.setItem("token", token);
             return { success: true, token };
         }
     } catch (error) {
@@ -20,13 +20,13 @@ export const login = async (email, password) => {
 
 // Function to check if user is authenticated
 export const isAuthenticated = () => {
-    const token = localStorage.getItem("authToken");
+    const token = localStorage.getItem("token");
     return !!token;
 };
 
 // Function to validate token
 export const validateToken = async () => {
-    const token = localStorage.getItem("authToken");
+    const token = localStorage.getItem("token");
     if (!token) return false;
 
     try {
@@ -34,13 +34,13 @@ export const validateToken = async () => {
         return response.status === 200;
     } catch (error) {
         console.error("Token validation failed:", error);
-        localStorage.removeItem("authToken");
+        localStorage.removeItem("token");
         return false;
     }
 };
 
 // Function to log out
 export const logout = () => {
-    localStorage.removeItem("authToken");
+    localStorage.removeItem("token");
     // window.location.href = '/login'; // Redirect to login page
 };

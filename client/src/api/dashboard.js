@@ -6,7 +6,7 @@ export const dashboardEndpoints = {
     getUsers: () => {
         return apiClient.get("/dashboard/users", {
             headers: {
-                Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "application/json",
             },
         });
@@ -16,7 +16,7 @@ export const dashboardEndpoints = {
     updateRole: (userData) => {
         return apiClient.put("/dashboard/update-role", userData, {
             headers: {
-                Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "application/json",
             },
         });
@@ -26,7 +26,7 @@ export const dashboardEndpoints = {
     deleteUser: (userId) => {
         return apiClient.delete("/dashboard/delete-user", {
             headers: {
-                Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "application/json",
             },
             data: { userId },

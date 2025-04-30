@@ -6,7 +6,7 @@ export const paymentsEndpoints = {
     create: (paymentData) => {
         return apiClient.post("/payments", paymentData, {
             headers: {
-                Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "application/json",
             },
         });

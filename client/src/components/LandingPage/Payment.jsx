@@ -27,24 +27,21 @@ const Payment = () => {
     useEffect(() => {
         console.log("Panel ID:", panelId, "Country Code:", countryCode);
         const fetchPanelData = async () => {
-            const token = localStorage.getItem('token'); // <-- get the token from localStorage
+            const token = localStorage.getItem("token"); // <-- get the token from localStorage
             console.log("Fetched token for panel:", token);
 
             if (!token) {
-                console.error('No token found, please login first');
+                console.error("No token found, please login first");
                 return;
             }
 
             try {
-                const response = await axios.get(
-                    `http://localhost:8000/api/v1/panels/${panelId}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                            "Content-Type": "application/json",
-                        },
-                    }
-                );
+                const response = await axios.get(`http://localhost:8000/api/v1/panels/${panelId}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                });
                 console.log("Panel data:", response.data);
 
                 const panelData = response.data;
@@ -131,7 +128,7 @@ const Payment = () => {
                 paymentData,
                 {
                     headers: {
-                        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
                     },
                 },
             );
@@ -231,9 +228,10 @@ const Payment = () => {
             <Navbar />
             <section className="container mt-4">
                 {/* Back Button */}
-                <Link to={`/InstallationCost/${countryCode}`}
-                      className="text-decoration-none d-inline-flex align-items-center gap-2 mb-4 mt-3"
-                      style={{ color: "#6c757d", fontWeight: "500", fontSize: "1rem" }}
+                <Link
+                    to={`/InstallationCost/${countryCode}`}
+                    className="text-decoration-none d-inline-flex align-items-center gap-2 mb-4 mt-3"
+                    style={{ color: "#6c757d", fontWeight: "500", fontSize: "1rem" }}
                 >
                     <i className="bi bi-arrow-left-circle" style={{ fontSize: "1.2rem" }}></i>
                     <span>Back</span>
@@ -531,20 +529,28 @@ const Payment = () => {
                                                             document={
                                                                 <PaymentInvoice
                                                                     userId={userId}
-                                                                    countryPanelId={selectedPanel?.id}
+                                                                    countryPanelId={
+                                                                        selectedPanel?.id
+                                                                    }
                                                                     amount={calculateTotal()}
                                                                     paymentType="STRIPE"
-                                                                    paymentMethodId={`pm_card_${formData.cardNumber.replace(/\s/g, "").slice(-4)}`}
+                                                                    paymentMethodId={`pm_card_${formData.cardNumber
+                                                                        .replace(/\s/g, "")
+                                                                        .slice(-4)}`}
                                                                 />
                                                             }
                                                             fileName={`invoice_user_${userId}_panel_${selectedPanel?.id}.pdf`}
                                                             className="btn btn-outline-success me-2 px-3 py-2"
                                                         >
                                                             {({ loading }) =>
-                                                                loading ? "Preparing Invoice..." : <>
-                                                                    Download Invoice <i
-                                                                    className="bi bi-printer px-2"></i>
-                                                                </>
+                                                                loading ? (
+                                                                    "Preparing Invoice..."
+                                                                ) : (
+                                                                    <>
+                                                                        Download Invoice{" "}
+                                                                        <i className="bi bi-printer px-2"></i>
+                                                                    </>
+                                                                )
                                                             }
                                                         </PDFDownloadLink>
                                                     </div>
