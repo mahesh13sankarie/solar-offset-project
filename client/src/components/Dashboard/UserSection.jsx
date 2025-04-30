@@ -6,7 +6,7 @@ const api = "http://localhost:8000/api/v1/dashboard";
 
 const UsersPage = () => {
     const [users, setUsers] = useState([]);
-    const [formData, setFormData] = useState({ name: "", email: "", role: "1" });
+const [formData, setFormData] = useState({ name: "", email: "", role: "1", password: "" });
     const [editingUserId, setEditingUserId] = useState(null);
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
@@ -47,21 +47,29 @@ const UsersPage = () => {
         e.preventDefault();
         try {
             if (editingUserId) {
-                console.log(formData);
+                // Update user role
                 await axios.put(`${api}/update-role`, {
                     userId: editingUserId,
                     accountType: Number(formData.role),
                 });
+                setEditingUserId(null);
+                setShowEditModal(false);
             } else {
-                await axios.post(`${api}/users`, formData);
+                // Create user via external API
+                const payload = {
+                    email: formData.email,
+                    password: formData.password,  // Add password to the payload
+                    fullName: formData.name,
+                    accountType: Number(formData.role),
+                };
+                await axios.post("http://localhost:8000/api/v1/auth/register", payload);
+                setShowCreateModal(false);
             }
-            setFormData({ name: "", email: "", role: "1" });
-            setEditingUserId(null);
-            setShowCreateModal(false);
-            setShowEditModal(false);
+            setFormData({ name: "", email: "", role: "1", password: "" }); // Reset form data including password
             fetchUsers();
         } catch (err) {
-            console.error("Error saving user:", err);
+            console.error("Error creating user:", err);
+            // You can add a user-facing error display here if desired
         }
     };
 
@@ -188,6 +196,18 @@ const UsersPage = () => {
                                             required
                                             onChange={(e) =>
                                                 setFormData({ ...formData, email: e.target.value })
+                                            }
+                                        />
+                                    </div>
+                                    <div className="mb-2">
+                                        <input
+                                            type="password"
+                                            className="form-control"
+                                            placeholder="Password"
+                                            value={formData.password}
+                                            required
+                                            onChange={(e) =>
+                                                setFormData({ ...formData, password: e.target.value })
                                             }
                                         />
                                     </div>

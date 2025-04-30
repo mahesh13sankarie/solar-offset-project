@@ -25,6 +25,7 @@ import StaffDashboard from "./components/Report/StaffDashboard.jsx";
 import Invoice from "./components/Report/Invoice/Invoice.jsx";
 import Payment from "./components/LandingPage/Payment.jsx";
 import TestWidget from "./components/Report/KPI-Components/TestWidget.jsx";
+import TransactionHistory from "./components/HelperComponents/TransactionHistory.jsx";
 
 const router = createBrowserRouter([
     { path: "/", element: <Home /> },
@@ -55,6 +56,9 @@ const router = createBrowserRouter([
     { path: "/pdf/:panelId", element: <ReportGenerate /> },
     {
         path:"/test/staff",element:<TestWidget />,
+    },
+    {
+        path:"/transaction-history",element:<TransactionHistory />
     }
 ]);
 

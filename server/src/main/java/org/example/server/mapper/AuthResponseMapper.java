@@ -21,5 +21,9 @@ public class AuthResponseMapper {
     public BaseResponse buildCustomMessage(String message) {
         return new BaseResponse(200, message, "", null);
     }
+
+    public BaseResponse buildErrorMessage(String message, int code) {
+        return new BaseResponse(code, message, "", null);
+    }
 }
 
