@@ -2,7 +2,6 @@ package org.example.server.utils;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import org.example.server.entity.User;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -18,10 +17,11 @@ public class TokenProvider {
     private final Algorithm algorithm = Algorithm.HMAC256(secret_key);
     private final int expires_in = 3600 * 60;
 
-    public String generateToken(String email) {
+    public String generateToken(String email, int role) {
         return JWT.create()
                 .withSubject(email)
                 .withClaim("email", email)
+//                .withClaim("roles", role)
                 .withExpiresAt(new Date(System.currentTimeMillis() + expires_in * 1000))
                 .sign(algorithm);
     }
