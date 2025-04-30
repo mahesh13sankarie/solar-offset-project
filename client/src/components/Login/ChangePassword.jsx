@@ -1,7 +1,11 @@
 import React from 'react';
+import Navbar from "/src/components/LandingPage/Navbar.jsx";
+import Footer from "/src/components/LandingPage/Footer.jsx";
 
 const ChangePassword = () => {
   return (
+  <>
+    <Navbar />
     <div className="container d-flex justify-content-center align-items-center vh-100">
       <div className="card p-4 shadow-lg" style={{ maxWidth: '500px', width: '100%' }}>
         <h3 className="text-center mb-4">Reset Your Password</h3>
@@ -14,6 +18,8 @@ const ChangePassword = () => {
         </form>
       </div>
     </div>
+    <Footer />
+  </>
   );
 };
 

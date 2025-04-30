@@ -6,11 +6,20 @@ public enum AccountType {
         int getIdentifier() {
             return 0;
         }
+
+        @Override
+        String getRole() {
+            return "ROLE_ADMIN";
+        }
     },
     Standard {
         @Override
         int getIdentifier() {
             return 1;
+        }
+        @Override
+        String getRole() {
+            return "ROLE_REGULAR";
         }
     },
     Google {
@@ -18,7 +27,21 @@ public enum AccountType {
         int getIdentifier() {
             return 2;
         }
+        @Override
+        String getRole() {
+            return "ROLE_REGULAR";
+        }
     };
 
     abstract int getIdentifier();
+    abstract String getRole();
+
+    public static String find(int identifier) {
+        for (AccountType type : values()) {
+            if (type.getIdentifier() == identifier) {
+                return type.getRole();
+            }
+        }
+        throw new IllegalArgumentException("No AccountType with identifier " + identifier);
+    }
 }

@@ -53,6 +53,12 @@ const StatsTrends = ({ data }) => {
     const totalCarbonOffset = monthlyCarbonOffsets.reduce((a, b) => a + b, 0);
     const totalPanels = monthlyPanels.reduce((a, b) => a + b, 0);
 
+    const previousDonations = monthlyDonations.length > 1 ? monthlyDonations[monthlyDonations.length - 2] : 0;
+    const donationGrowth = previousDonations > 0 ? ((totalDonations - previousDonations) / previousDonations) * 100 : 0;
+
+    const previousPanels = monthlyPanels.length > 1 ? monthlyPanels[monthlyPanels.length - 2] : 0;
+    const panelsGrowth = previousPanels > 0 ? ((totalPanels - previousPanels) / previousPanels) * 100 : 0;
+
     // Bar chart for Monthly Donations (simplified)
     const barChartData = {
         labels,
@@ -126,11 +132,21 @@ const StatsTrends = ({ data }) => {
             <div className="mb-4">
                 <h4 className="mb-4 fw-semibold">Trends Overview</h4>
                 <div className="row g-4">
-                    <div className="col-md-4">
-                        <div className="card rounded-3 shadow-sm p-3" style={{minHeight: '360px'}}>
-                            <div className="d-flex align-items-center mb-3">
-                                <Icon color="#4bc0c0" />
-                                <h6 className="mb-0 fw-semibold">Monthly Donations</h6>
+                    <div className="col-md-4" style={{ width: "400px" }}>
+                        <div className="card rounded-3 shadow-sm p-3" style={{minHeight: '400px'}}>
+                            <div className="mb-3">
+                                <h6 className="fw-semibold">Gross Volume</h6>
+                                <div className="d-flex align-items-center">
+                                    <h4 className="mb-0 fw-bold">£{totalDonations.toLocaleString()}</h4>
+                                   <span
+                                        className={`badge ms-2 ${donationGrowth >= 0 ? 'bg-success' : 'bg-danger'}`}
+                                        title="Cumulative growth compared to previous month"
+                                        style={{ cursor: 'pointer' }}
+                                    >
+                                        {donationGrowth >= 0 ? "+" : ""}{donationGrowth.toFixed(2)}%
+                                    </span>
+                                </div>
+                                <small className="text-muted">£{previousDonations.toLocaleString()} previous period</small>
                             </div>
                             <Bar data={barChartData} options={{
                                 responsive: true,
@@ -151,11 +167,15 @@ const StatsTrends = ({ data }) => {
                                         beginAtZero: true,
                                     },
                                 },
-                            }} />
+                            }} height={150} />
+                            <div className="d-flex justify-content-between align-items-center mt-2">
+                                <a href="#" className="text-primary small">View more</a>
+                                <small className="text-muted">Updated {new Date().toLocaleTimeString()}</small>
+                            </div>
                         </div>
                     </div>
-                    <div className="col-md-4">
-                        <div className="card rounded-3 shadow-sm p-3 d-flex flex-column align-items-center" style={{minHeight: '360px'}}>
+                    <div className="col-md-4" style={{ width: "400px" }}>
+                        <div className="card rounded-3 shadow-sm p-3 d-flex flex-column align-items-center" style={{minHeight: '400px'}}>
                             <div className="d-flex align-items-center mb-3 w-100">
                                 <Icon color="#9966ff" />
                                 <h6 className="mb-0 fw-semibold">Carbon Offset Distribution</h6>
@@ -172,10 +192,16 @@ const StatsTrends = ({ data }) => {
                         </div>
                     </div>
                     <div className="col-md-4">
-                        <div className="card rounded-3 shadow-sm p-3" style={{minHeight: '360px'}}>
-                            <div className="d-flex align-items-center mb-3">
-                                <Icon color="#ff9f40" />
-                                <h6 className="mb-0 fw-semibold">Panels Deployed Over Time</h6>
+                        <div className="card rounded-3 shadow-sm p-3" style={{minHeight: '400px'}}>
+                            <div className="mb-3">
+                                <h6 className="fw-semibold">Panels Deployed Over Time</h6>
+                                <div className="d-flex align-items-center">
+                                    <h4 className="mb-0 fw-bold">{totalPanels.toLocaleString()}</h4>
+                                    <span className={`badge ms-2 ${panelsGrowth >= 0 ? 'bg-success' : 'bg-danger'}`}>
+                                        {panelsGrowth >= 0 ? "+" : ""}{panelsGrowth.toFixed(2)}%
+                                    </span>
+                                </div>
+                                <small className="text-muted">{previousPanels.toLocaleString()} previous period</small>
                             </div>
                             <Line data={linePanelsData} options={{
                                 responsive: true,
@@ -196,7 +222,11 @@ const StatsTrends = ({ data }) => {
                                         beginAtZero: true,
                                     },
                                 },
-                            }} />
+                            }} height={150} />
+                            <div className="d-flex justify-content-between align-items-center mt-2">
+                                <a href="#" className="text-primary small">View more</a>
+                                <small className="text-muted">Updated {new Date().toLocaleTimeString()}</small>
+                            </div>
                         </div>
                     </div>
                 </div>

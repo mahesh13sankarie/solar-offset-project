@@ -14,6 +14,8 @@ import Navbar from "./components/LandingPage/Navbar.jsx";
 import InstallationCost from "./components/LandingPage/InstallationCost.jsx";
 import ReportGenerate from "./components/Report/ReportGenerate.jsx";
 import ChangePassword from "./components/Login/ChangePassword.jsx";
+import NewPassword from "./components/Login/NewPassword.jsx";
+
 
 import AdminLogin from "./components/Login/AdminLogin.jsx";
 import SideNav from "./components/Dashboard/Sidebar.jsx";
@@ -23,6 +25,7 @@ import StaffDashboard from "./components/Report/StaffDashboard.jsx";
 import Invoice from "./components/Report/Invoice/Invoice.jsx";
 import Payment from "./components/LandingPage/Payment.jsx";
 import TestWidget from "./components/Report/KPI-Components/TestWidget.jsx";
+import TransactionHistory from "./components/HelperComponents/TransactionHistory.jsx";
 
 const router = createBrowserRouter([
     { path: "/", element: <Home /> },
@@ -43,6 +46,9 @@ const router = createBrowserRouter([
     { path: "/InstallationCost/:countryCode", element: <InstallationCost /> },
     { path: "/Payment/:countryCode/:panelId", element: <Payment /> },
     { path: "/change-password", element: <ChangePassword /> },
+    { path: "/new-password" , element: <NewPassword /> },
+
+
     {
         path: "/staff/dashboard",
         element: <StaffDashboard />,
@@ -50,6 +56,9 @@ const router = createBrowserRouter([
     { path: "/pdf/:panelId", element: <ReportGenerate /> },
     {
         path:"/test/staff",element:<TestWidget />,
+    },
+    {
+        path:"/transaction-history",element:<TransactionHistory />
     }
 ]);
 
