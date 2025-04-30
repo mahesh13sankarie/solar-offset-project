@@ -23,19 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
-/**
- * PaymentService Implementation
- * 
- * Stripe recommended payment processing flow:
- * 1. Client-side: Collect card information using Stripe.js and generate a
- * PaymentMethod ID
- * 2. Server-side: Process only the PaymentMethod ID received from the client
- * 3. Card information is processed only on the client-side and never sent to
- * the server
- * 
- * Reference documentation:
- * - https://docs.stripe.com/payments/accept-a-payment-synchronously
- */
+
 @Service
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
@@ -47,29 +35,6 @@ public class PaymentServiceImpl implements PaymentService {
 	private final PaymentRepository paymentRepository;
 	private final PanelTransactionServiceImpl transactionService;
 
-	/**
-	 * Process a payment.
-	 * 
-	 * Following Stripe's recommended approach, this method uses the PaymentMethod
-	 * ID directly
-	 * without a separate authentication process.
-	 * 
-	 * How to test in the backend:
-	 * 1. You can use Stripe's test PaymentMethod IDs:
-	 * - pm_card_visa: Test successful Visa card payment
-	 * - pm_card_visa_chargeDeclined: Test payment decline
-	 * - pm_card_authenticationRequired: Test authentication required
-	 * 
-	 * Test example:
-	 * curl -X POST http://localhost:8000/api/payments \
-	 * -H "Content-Type: application/json" \
-	 * -d '{"userId": 1, "countryPanelId": 1, "quantity": 100, "type": "STRIPE",
-	 * "paymentMethodId": "pm_card_visa"}'
-	 * 
-	 * @param request Payment request information
-	 * @return Payment response
-	 * @throws PaymentException
-	 */
 	@Override
 	@Transactional
 	public PaymentResponseDTO processPayment(PaymentRequestDTO request) throws PaymentException {
@@ -113,8 +78,8 @@ public class PaymentServiceImpl implements PaymentService {
 				Payment savedPayment = paymentRepository.save(payment);
 
 				PanelTransactionDTO panelTransactionDTO = new PanelTransactionDTO(
-						countryPanel.getPanel().getId(),
-						user.getId());
+						user.getId(),
+						countryPanel.getPanel().getId());
 				transactionService.save(panelTransactionDTO);
 
 				return new PaymentResponseDTO(
