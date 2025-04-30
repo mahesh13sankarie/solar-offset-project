@@ -83,12 +83,17 @@ public class SecurityConfig {
     private Converter<Jwt, ? extends AbstractAuthenticationToken> jwtAuthenticationConverter() {
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
         converter.setJwtGrantedAuthoritiesConverter(jwt -> {
-//            int roles = jwt.getClaim("roles");
-            return Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"));
-//            return List.of(Roles
-//                    .builder()
-//                    .type(AccountType.find(roles))
-//                    .build());
+            try {
+                Long roles = jwt.getClaim("roles");
+                return List.of(Roles
+                        .builder()
+                        .type(AccountType.find(Math.toIntExact(roles)))
+                        .build());
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                return Collections.emptyList();
+            }
+
         });
         return converter;
     }

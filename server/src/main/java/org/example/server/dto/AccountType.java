@@ -9,7 +9,7 @@ public enum AccountType {
 
         @Override
         String getRole() {
-            return "ADMIN";
+            return "ROLE_ADMIN";
         }
     },
     Standard {
@@ -19,7 +19,7 @@ public enum AccountType {
         }
         @Override
         String getRole() {
-            return "REGULAR";
+            return "ROLE_REGULAR";
         }
     },
     Google {
@@ -29,7 +29,7 @@ public enum AccountType {
         }
         @Override
         String getRole() {
-            return "REGULAR";
+            return "ROLE_REGULAR";
         }
     };
 

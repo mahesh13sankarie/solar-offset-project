@@ -25,7 +25,7 @@ public class TokenProvider {
                 .withIssuer("solar-offset")
                 .withIssuedAt(now)
                 .withClaim("email", email)
-//                .withClaim("roles", role)
+                .withClaim("roles", role)
                 .withExpiresAt(new Date(System.currentTimeMillis() + expires_in * 1000))
                 .sign(algorithm);
     }
