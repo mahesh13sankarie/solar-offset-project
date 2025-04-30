@@ -8,22 +8,19 @@ const SideNav = (props) => {
     const location = useLocation();
     const currentPath = location.pathname;
 return (
-    <div className="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style={{ width: '250px', height: '100vh' }}>
-        <Link to="/dashboard" className="d-flex align-items-center mb-3 text-white text-decoration-none">
-            <span className="fs-4">
-                { props.userType ? props.userType : "Admin" }
-            </span>
-        </Link>
+    <div className="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark text-center" style={{ width: '250px', height: '100vh' }}>
+        <i className="bi bi-person-circle" style={{ fontSize: "2rem" }}></i>
+        <p className="m-2">Admin</p>
         <hr />
         <ul className="nav nav-pills flex-column mb-auto">
-            <li className="nav-item">
-                <Link
-                    to="/dashboard"
-                    className={`nav-link text-white ${currentPath === '/dashboard' ? 'active bg-primary' : ''}`}
-                >
-                    Dashboard
-                </Link>
-            </li>
+            {/*<li className="nav-item">*/}
+            {/*    <Link*/}
+            {/*        to="/dashboard"*/}
+            {/*        className={`nav-link text-white ${currentPath === '/dashboard' ? 'active bg-primary' : ''}`}*/}
+            {/*    >*/}
+            {/*        Dashboard*/}
+            {/*    </Link>*/}
+            {/*</li>*/}
             <li>
                 <Link
                     to="/dashboard/users"
@@ -33,20 +30,20 @@ return (
                 </Link>
             </li>
             <li>
-                <Link
-                    to="/dashboard/settings"
-                    className={`nav-link text-white ${currentPath === '/dashboard/settings' ? 'active bg-primary' : ''}`}
-                >
-                    Settings
-                </Link>
+                {/*<Link*/}
+                {/*    to="/dashboard/settings"*/}
+                {/*    className={`nav-link text-white ${currentPath === '/dashboard/settings' ? 'active bg-primary' : ''}`}*/}
+                {/*>*/}
+                {/*    Settings*/}
+                {/*</Link>*/}
             </li>
             <li>
-                <Link
-                    to="/dashboard/reports"
-                    className={`nav-link text-white ${currentPath === '/dashboard/logs' ? 'active bg-primary' : ''}`}
-                >
-                    Logs
-                </Link>
+                {/*<Link*/}
+                {/*    to="/dashboard/reports"*/}
+                {/*    className={`nav-link text-white ${currentPath === '/dashboard/logs' ? 'active bg-primary' : ''}`}*/}
+                {/*>*/}
+                {/*    Logs*/}
+                {/*</Link>*/}
             </li>
             <li>
                 <Link
