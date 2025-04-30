@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from "react";
+import { useGoogleLogin } from "@react-oauth/google";
 import "bootstrap/dist/css/bootstrap.min.css";
+import React, { useEffect, useState } from "react";
+import { FaSolarPanel, FaSun } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useAuth } from "../../context/AuthContext"; // Import useAuth hook
-import { FaSun, FaSolarPanel } from "react-icons/fa";
-import "./transition.css";
-import { useGoogleLogin, googleLogout } from "@react-oauth/google";
-import { jwtDecode } from "jwt-decode";
-import Navbar from "/src/components/LandingPage/Navbar.jsx";
-import Footer from "/src/components/LandingPage/Footer.jsx";
 import { api } from "../../api";
+import { useAuth } from "../../context/AuthContext"; // Import useAuth hook
+import "./transition.css";
+import Footer from "/src/components/LandingPage/Footer.jsx";
+import Navbar from "/src/components/LandingPage/Navbar.jsx";
 
 const SolarWelcome = ({ message }) => {
     const fullName = localStorage.getItem("fullName") || "Guest";
@@ -85,12 +83,14 @@ const AuthForm = () => {
                 setIsLoading(true); // Show the loading animation
                 setTimeout(() => navigate("/SolarComparison"), 2000); // Increased delay to show animation
             } else {
-                const res = await axios.post("http://localhost:8000/api/v1/auth/register", {
+                const userData = {
                     email: formData.email,
                     password: formData.password,
                     fullName: formData.fullName,
                     accountType: 1,
-                });
+                };
+
+                const res = await api.auth.register(userData);
 
                 if (res.status === 200) {
                     setMessage("Registered successfully, please login");
