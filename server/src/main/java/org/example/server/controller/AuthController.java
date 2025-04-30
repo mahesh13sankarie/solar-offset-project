@@ -17,11 +17,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.Map;
 
 
@@ -66,7 +68,7 @@ public class AuthController {
         //Logout is via /logout
         String email = authentication.getPrincipal().getAttribute("email");
         String name = authentication.getPrincipal().getAttribute("name");
-        String token = tokenProvider.generateToken(email);
+        String token = tokenProvider.generateToken(email, AccountType.Google.ordinal());
         UserDto user = new UserDto(email, "", name, AccountType.Google);
         authService.saveUser(user);
         return ResponseEntity.ok().body(responseMapper.buildLoginResponse(user, token));
@@ -83,16 +85,17 @@ public class AuthController {
         User user = getUser(loginDto.email());
 
         if (user == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok().body(responseMapper.buildErrorMessage("Account does not exist!", 400));
+        } else if (!isValidPassword(loginDto.password(), user.getPassword())) {
+            return ResponseEntity.ok().body(responseMapper.buildErrorMessage("Wrong password!", 400));
+        } else {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    loginDto.email(), loginDto.password()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String token = tokenProvider.generateToken(loginDto.email(), AccountType.Standard.ordinal());
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            return ResponseEntity.ok().body(responseMapper.buildLoginResponse(auth, token));
         }
-        if (!isValidPassword(loginDto.password(), user.getPassword())) {
-            return ResponseEntity.notFound().build();
-        }
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginDto.email(), loginDto.password()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = tokenProvider.generateToken(loginDto.email());
-        return ResponseEntity.ok().body(responseMapper.buildLoginResponse(user.getDetail(user), token));
     }
 
     //remove in front end;
@@ -157,7 +160,7 @@ public class AuthController {
                 user = userRepository.findByEmail(email);
             }
 
-            String token = tokenProvider.generateToken(email);
+            String token = tokenProvider.generateToken(email, AccountType.Google.ordinal());
 
             return ResponseEntity.ok(Map.of(
                     "success", true,
