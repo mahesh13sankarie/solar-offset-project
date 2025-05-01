@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
+import { api } from "../../api";
 export function CountriesSelected(props) {
     const [countries, setCountries] = useState([]);
     const [error, setError] = useState("");
@@ -14,12 +14,7 @@ export function CountriesSelected(props) {
         }
         const fetchCountries = async () => {
             try {
-                const response = await axios.get("http://localhost:8000/api/v1/transaction/staff", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    },
-                });
+                const response = await api.transaction.getStaff();
                 const data = response.data;
                 const countryCountMap = {};
                 data.forEach((transaction) => {
@@ -94,12 +89,7 @@ export function PanelsBought() {
             }
 
             try {
-                const response = await axios.get("http://localhost:8000/api/v1/transaction/staff", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    },
-                });
+                const response = await api.transaction.getStaff();
                 const data = response.data;
                 const panelCountMap = {};
 

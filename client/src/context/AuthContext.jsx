@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
 
     // Initialize auth state from localStorage on mount
     useEffect(() => {
-        const token = localStorage.getItem("authToken");
+        const token = localStorage.getItem("token");
         const userId = localStorage.getItem("userId");
 
         if (token && userId) {
@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
     const login = (userData) => {
         const { token, userId } = userData;
 
-        localStorage.setItem("authToken", token);
+        localStorage.setItem("token", token);
         localStorage.setItem("userId", userId);
 
         setAuthState({
@@ -49,7 +49,7 @@ export const AuthProvider = ({ children }) => {
 
     // Logout function
     const logout = () => {
-        localStorage.removeItem("authToken");
+        localStorage.removeItem("token");
         localStorage.removeItem("userId");
 
         setAuthState({

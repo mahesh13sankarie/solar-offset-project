@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import Navbar from "./Navbar.jsx";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
+import { api } from "../../api";
 
 const InstallationCost = () => {
     const [country, setCountry] = useState(null);
@@ -26,15 +27,7 @@ const InstallationCost = () => {
             }
 
             try {
-                const response = await axios.get(
-                    `http://localhost:8000/api/v1/countries/${countryCode}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                            "Content-Type": "application/json",
-                        },
-                    }
-                );
+                const response = await api.countries.getByCode(countryCode);
                 console.log(response.data);
                 setCountry(response.data);
             } catch (error) {
@@ -66,8 +59,10 @@ const InstallationCost = () => {
     const sortPanels = (panels, key) => {
         if (!key) return panels;
         return [...panels].sort((a, b) => {
-            const aVal = (typeof a[key] === "string") ? parseFloat(a[key].replace("%", "")) : a[key] ?? 0;
-            const bVal = (typeof b[key] === "string") ? parseFloat(b[key].replace("%", "")) : b[key] ?? 0;
+            const aVal =
+                typeof a[key] === "string" ? parseFloat(a[key].replace("%", "")) : a[key] ?? 0;
+            const bVal =
+                typeof b[key] === "string" ? parseFloat(b[key].replace("%", "")) : b[key] ?? 0;
             return aVal - bVal;
         });
     };
@@ -158,7 +153,6 @@ const InstallationCost = () => {
                                     value={sortKey}
                                     onChange={(e) => setSortKey(e.target.value)}
                                 >
-
                                     <option value="installationCost">Installation Cost</option>
                                     <option value="efficiency">Efficiency</option>
                                     <option value="productionPerPanel">Production</option>
@@ -173,33 +167,40 @@ const InstallationCost = () => {
                                 <div className="table-responsive">
                                     <table className="table table-hover align-middle">
                                         <thead className="table-light">
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Installation Cost (£)</th>
-                                            <th>Production (W)</th>
-                                            <th>Efficiency (%)</th>
-                                            <th>Warranty</th>
-                                            <th>Donate</th>
-                                        </tr>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Installation Cost (£)</th>
+                                                <th>Production (W)</th>
+                                                <th>Efficiency (%)</th>
+                                                <th>Warranty</th>
+                                                <th>Donate</th>
+                                            </tr>
                                         </thead>
                                         <tbody>
-                                        {sortPanels(country.solarPanels, sortKey).map((panel, index) => (
-                                            <tr key={index}>
-                                                <td>{panel.panelName}</td>
-                                                <td>£{panel.installationCost ?? "-"}</td>
-                                                <td>{panel.productionPerPanel ?? "-"}</td>
-                                                <td>{panel.efficiency ?? "-"}</td>
-                                                <td>{panel.warranty ?? "-"}</td>
-                                                <td>
-                                                    <button
-                                                        className="btn btn-outline-success btn-sm"
-                                                        onClick={() => handleDonateClick(panel.id || index)}
-                                                    >
-                                                        <i className="bi bi-heart-fill"></i> Donate
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))}
+                                            {sortPanels(country.solarPanels, sortKey).map(
+                                                (panel, index) => (
+                                                    <tr key={index}>
+                                                        <td>{panel.panelName}</td>
+                                                        <td>£{panel.installationCost ?? "-"}</td>
+                                                        <td>{panel.productionPerPanel ?? "-"}</td>
+                                                        <td>{panel.efficiency ?? "-"}</td>
+                                                        <td>{panel.warranty ?? "-"}</td>
+                                                        <td>
+                                                            <button
+                                                                className="btn btn-outline-success btn-sm"
+                                                                onClick={() =>
+                                                                    handleDonateClick(
+                                                                        panel.id || index,
+                                                                    )
+                                                                }
+                                                            >
+                                                                <i className="bi bi-heart-fill"></i>{" "}
+                                                                Donate
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                ),
+                                            )}
                                         </tbody>
                                     </table>
                                 </div>
