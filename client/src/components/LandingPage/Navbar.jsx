@@ -21,6 +21,9 @@ const Navbar = () => {
         // Remove token from localStorage
         localStorage.removeItem("token");
         localStorage.removeItem("accountType");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("fullName");
+
         setIsLoggedIn(false); // Update state to reflect that user is logged out
         console.log("Logged out successfully");
     };

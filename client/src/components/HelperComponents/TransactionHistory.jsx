@@ -10,7 +10,7 @@ const TransactionHistory = () => {
 
     useEffect(() => {
         const userId = localStorage.getItem('userId');
-        const authToken = localStorage.getItem('authToken'); // Get the token from localStorage
+        const authToken = localStorage.getItem('token'); // Get the token from localStorage
         if (userId && authToken) {
             fetch(`http://localhost:8000/api/v1/transaction/${userId}`, {
                 method: 'GET',

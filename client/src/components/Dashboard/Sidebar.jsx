@@ -51,6 +51,9 @@ return (
                     className={`nav-link text-white ${currentPath === '/logout' ? 'active bg-primary' : ''}`}
                     onClick={() => {
                         localStorage.removeItem('authToken'); // Remove JWT token
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("userId");
+
                         window.location.href = '/admin'; // Force redirect to login
                     }}
                 >
