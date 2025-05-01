@@ -10,8 +10,15 @@ const TransactionHistory = () => {
 
     useEffect(() => {
         const userId = localStorage.getItem('userId');
-        if (userId) {
-            fetch(`http://localhost:8000/api/v1/transaction/${userId}`)
+        const authToken = localStorage.getItem('authToken'); // Get the token from localStorage
+        if (userId && authToken) {
+            fetch(`http://localhost:8000/api/v1/transaction/${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${authToken}`, // Add the Bearer token
+                    'Content-Type': 'application/json', // Optional: if your API expects this
+                }
+            })
                 .then((response) => response.json())
                 .then((data) => {
                     setTransactionData(data);
@@ -50,10 +57,10 @@ const TransactionHistory = () => {
                     <table className="table table-bordered table-striped table-hover">
                         <thead className="table-light">
                             <tr>
-                                <th>Date</th>
+                                <th>Id</th>
+                                <th>Panel Name</th>
                                 <th>Country</th>
-                                <th>Panel Type</th>
-                                <th>Quantity</th>
+                                <th>Production Per Panel</th>
                                 <th>Amount</th>
                                 <th>Carbon Offset</th>
                             </tr>
@@ -61,15 +68,17 @@ const TransactionHistory = () => {
                         <tbody>
                             {transactionData.map((transaction, index) => (
                                 <tr key={index}>
-                                    <td>{transaction.solarPanel.panelName}</td>
-                                    <td>{transaction.user.email}</td>
+                                    <td>{transaction.id}</td>
+
                                     <td>
                                         <div className="d-flex align-items-center">
                                             <FaSolarPanel style={{ fontSize: "1.2rem", color: "#37517E", marginRight: "10px" }} />
                                             {transaction.solarPanel.panelName}
                                         </div>
+                                        <p style={{paddingTop:"5px", fontSize:"13px",fontFamily:"verdana"}}>{transaction.solarPanel.description}</p>
                                     </td>
-                                    <td>{transaction.solarPanel.productionPerPanel}</td>
+                                    <td>{transaction.country}</td>
+                                    <td>{transaction.solarPanel.productionPerPanel}W</td>
                                     <td>${transaction.solarPanel.installationCost}</td>
                                     <td>{transaction.solarPanel.productionPerPanel * transaction.solarPanel.installationCost} kg</td>
                                 </tr>
