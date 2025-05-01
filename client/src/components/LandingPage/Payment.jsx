@@ -9,6 +9,7 @@ import Navbar from "./Navbar.jsx";
 const Payment = () => {
     const [country, setCountry] = useState(null);
     const [selectedPanel, setSelectedPanel] = useState(null);
+    const [selectedCountryData, setSelectedCountryData] = useState(null);
     const [quantity, setQuantity] = useState(1);
     const [currentStep, setCurrentStep] = useState(1);
     const [formData, setFormData] = useState({
@@ -46,6 +47,12 @@ const Payment = () => {
                     country: panelData.countryCode,
                     countryCode: panelData.countryCode,
                 });
+
+                const responseCountry = await api.countries.getByCode(countryCode);
+
+                console.log("Country data:", responseCountry.data);
+                setSelectedCountryData(responseCountry.data)
+
             } catch (error) {
                 console.error("Error fetching panel data:", error);
             }
@@ -130,6 +137,27 @@ const Payment = () => {
             setIsSubmitting(false);
         }
     };
+
+    const calculateCarbonSavings = (panel, quantity) =>{
+
+        if (selectedCountryData && selectedCountryData.carbonEmissions) {
+            const carbonEmission = Math.abs(selectedCountryData.carbonEmissions);
+            const electricity = selectedCountryData.electricityAvailability;
+            const panelEnergy = ((panel * quantity * 5)/1000); // 470 Watt * quantity of panel * average sunlight in hours and divided to kWatt
+            const carbonIntensity = (carbonEmission * 1000) / (electricity * 1000) ;
+            const carbonSavings = (panelEnergy * carbonIntensity);
+            const carbonSavingsinPercentage = (carbonSavings / (carbonEmission * 1000)) * 100;
+
+            console.log('calculation', carbonSavingsinPercentage)
+            return parseFloat(carbonSavingsinPercentage.toFixed(5));;
+
+        } else {
+            console.error("Carbon emissions data is not available yet.");
+            return 0; // Return a default value if data is not available
+        }
+
+
+    }
 
     // Progress step component
     const ProgressSteps = () => {
@@ -276,6 +304,12 @@ const Payment = () => {
                                                         </li>
                                                     )}
                                                 </ul>
+
+                                                {/*total savings*/}
+                                                <div className="mt-4 p-3 bg-success-subtle rounded">
+                                                    <p> Amazing! You are saving around <b>{calculateCarbonSavings(selectedPanel.productionPerPanel,quantity)}%  </b>
+                                                        of carbon emissions per day by donating {quantity} solar panel. Thank you!</p>
+                                                </div>
 
                                                 {/* Order Summary */}
                                                 <div className="mt-4 p-3 bg-light rounded">
