@@ -1,49 +1,43 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FaSolarPanel } from "react-icons/fa";
-import Navbar from "../LandingPage/Navbar.jsx";  // Importing solar panel icon from react-icons
-import { Link } from "react-router-dom";  // Import Link from react-router-dom
-
-const transactionData = [
-    {
-        date: "2025-04-28",
-        country: "France",
-        panelType: "AIKO ABC Neostar 3N54 495W",
-        quantity: 4,
-        amount: 1560,
-        carbonOffset: 1386.0
-    },
-    {
-        date: "2025-04-29",
-        country: "United Kingdom",
-        panelType: "Project Solar Evo Max Super Series 480W",
-        quantity: 3,
-        amount: 1125,
-        carbonOffset: 1008.0
-    },
-    {
-        date: "2025-04-29",
-        country: "United Kingdom",
-        panelType: "Project Solar Evo Max Super Series 480W",
-        quantity: 3,
-        amount: 1125,
-        carbonOffset: 1008.0
-    },
-    {
-        date: "2025-04-29",
-        country: "United Kingdom",
-        panelType: "Project Solar Evo Max Super Series 480W",
-        quantity: 3,
-        amount: 1125,
-        carbonOffset: 1008.0
-    }
-];
+import Navbar from "../LandingPage/Navbar.jsx";
+import { Link } from "react-router-dom";
 
 const TransactionHistory = () => {
+    const [transactionData, setTransactionData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const userId = localStorage.getItem('userId');
+        const authToken = localStorage.getItem('authToken'); // Get the token from localStorage
+        if (userId && authToken) {
+            fetch(`http://localhost:8000/api/v1/transaction/${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${authToken}`, // Add the Bearer token
+                    'Content-Type': 'application/json', // Optional: if your API expects this
+                }
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    setTransactionData(data);
+                    setLoading(false);
+                })
+                .catch((error) => {
+                    setError(error);
+                    setLoading(false);
+                });
+        }
+    }, []);
+    //
+    // if (loading) return <div>Loading...</div>;
+
+
     return (
         <>
             <Navbar />
-            {/* Back Button */}
-            <div className="container" style={{marginTop:"100px", marginLeft:"100px"}}>
+            <div className="container" style={{ marginTop: "100px", marginLeft: "100px" }}>
                 <Link
                     to="/SolarComparison"
                     className="text-decoration-none d-inline-flex align-items-center gap-2 mb-4 mt-3"
@@ -54,9 +48,7 @@ const TransactionHistory = () => {
                 </Link>
             </div>
 
-
-            {/* Transaction History Table */}
-            <div className="container ">
+            <div className="container">
                 <h2 className="text-left mb-4" style={{ fontSize: "2rem", fontWeight: "600" }}>
                     Transaction History
                 </h2>
@@ -64,35 +56,45 @@ const TransactionHistory = () => {
                 <div className="table-responsive">
                     <table className="table table-bordered table-striped table-hover">
                         <thead className="table-light">
-                        <tr>
-                            <th>Date</th>
-                            <th>Country</th>
-                            <th>Panel Type</th>
-                            <th>Quantity</th>
-                            <th>Amount</th>
-                            <th>Carbon Offset</th>
-                        </tr>
+                            <tr>
+                                <th>Id</th>
+                                <th>Panel Name</th>
+                                <th>Country</th>
+                                <th>Production Per Panel</th>
+                                <th>Amount</th>
+                                <th>Carbon Offset</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        {transactionData.map((transaction, index) => (
-                            <tr key={index}>
-                                <td>{transaction.date}</td>
-                                <td>{transaction.country}</td>
-                                <td>
-                                    <div className="d-flex align-items-center">
-                                        <FaSolarPanel style={{ fontSize: "1.2rem", color: "#37517E", marginRight: "10px" }} />
-                                        {transaction.panelType}
-                                    </div>
-                                </td>
-                                <td>{transaction.quantity}</td>
-                                <td>${transaction.amount}</td>
-                                <td>{transaction.carbonOffset} kg</td>
-                            </tr>
-                        ))}
+                            {transactionData.map((transaction, index) => (
+                                <tr key={index}>
+                                    <td>{transaction.id}</td>
+
+                                    <td>
+                                        <div className="d-flex align-items-center">
+                                            <FaSolarPanel style={{ fontSize: "1.2rem", color: "#37517E", marginRight: "10px" }} />
+                                            {transaction.solarPanel.panelName}
+                                        </div>
+                                        <p style={{paddingTop:"5px", fontSize:"13px",fontFamily:"verdana"}}>{transaction.solarPanel.description}</p>
+                                    </td>
+                                    <td>{transaction.country}</td>
+                                    <td>{transaction.solarPanel.productionPerPanel}W</td>
+                                    <td>${transaction.solarPanel.installationCost}</td>
+                                    <td>{transaction.solarPanel.productionPerPanel * transaction.solarPanel.installationCost} kg</td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 </div>
             </div>
+
+            {
+                error ? (
+                    <div className="container text-center">No data found.</div>
+                ):(
+                    <></>
+                )
+            }
         </>
     );
 };

@@ -1,8 +1,8 @@
 // import React from 'react';
+import { useEffect, useState } from "react";
+import { api } from "../../../api";
 import KPISection from "./KPISection";
 import StatsTrends from "./StatsTrends";
-import { useState, useEffect } from "react";
-import axios from "axios";
 
 const TestWidget = () => {
     const [stats, setStats] = useState({
@@ -21,13 +21,9 @@ const TestWidget = () => {
             console.error("No token found, please login first");
             setError("Authentication required. Please login.");
         }
-        axios
-            .get("http://localhost:8000/api/v1/transaction/staff", {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-            })
+
+        api.transaction
+            .getStaff()
             .then((response) => {
                 const data = response.data;
                 setChartData(data);

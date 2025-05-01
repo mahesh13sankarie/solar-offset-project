@@ -7,6 +7,7 @@ import org.example.server.repository.CountryPanelRepository;
 import org.example.server.repository.PanelTransactionRepository;
 import org.example.server.repository.PaymentRepository;
 import org.example.server.repository.UserRepository;
+import org.example.server.exception.PanelTransactionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,10 +38,14 @@ public class PanelTransactionServiceImpl implements PanelTransactionService {
 
     @Override
     public PanelTransaction save(PanelTransactionDTO panelTransaction) {
-        Optional<CountryPanel> panel = panelRepository.findById(panelTransaction.panelId());
-        Optional<User> user = userRepository.findById(panelTransaction.userId());
-        PanelTransaction newPanel = new PanelTransaction(user.get(), panel.get());
-        return panelTransactionRepository.save(newPanel);
+        CountryPanel panel = panelRepository.findById(panelTransaction.panelId())
+                .orElseThrow(() -> PanelTransactionException.panelNotFound(panelTransaction.panelId()));
+
+        User user = userRepository.findById(panelTransaction.userId())
+                .orElseThrow(() -> PanelTransactionException.userNotFound(panelTransaction.userId()));
+
+        PanelTransaction newTransaction = new PanelTransaction(user, panel);
+        return panelTransactionRepository.save(newTransaction);
     }
 
     @Override
