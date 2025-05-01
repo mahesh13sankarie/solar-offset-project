@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -44,7 +44,15 @@ public class PanelTransactionServiceImpl implements PanelTransactionService {
         User user = userRepository.findById(panelTransaction.userId())
                 .orElseThrow(() -> PanelTransactionException.userNotFound(panelTransaction.userId()));
 
-        PanelTransaction newTransaction = new PanelTransaction(user, panel);
+        List<Payment> payments = paymentRepository.findByUserId(panelTransaction.userId());
+        Payment payment = payments.stream()
+                .filter(p -> Objects.equals(p.getUser().getId(), user.getId()))
+                .filter(p -> Objects.equals(p.getId(), panelTransaction.paymentId()))
+                .findFirst()
+                .orElseThrow(
+                        () -> PanelTransactionException.panelNotFound(panelTransaction.panelId())
+                );
+        PanelTransaction newTransaction = new PanelTransaction(user, panel, payment);
         return panelTransactionRepository.save(newTransaction);
     }
 

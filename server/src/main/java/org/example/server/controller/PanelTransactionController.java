@@ -4,8 +4,10 @@ import org.example.server.dto.PanelTransactionDTO;
 import org.example.server.dto.SolarPanelDTO;
 import org.example.server.dto.StaffTransactionDTO;
 import org.example.server.entity.PanelTransaction;
+import org.example.server.entity.Payment;
 import org.example.server.entity.response.PanelTransactionResponse;
 import org.example.server.service.panel.PanelTransactionService;
+import org.example.server.utils.PaymentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -64,6 +66,11 @@ public class PanelTransactionController {
                                         .warranty(panelTransaction.getPanel().getPanel().getWarranty())
                                         .countryCode(panelTransaction.getPanel().getCountry().getCode())
                                         .id(panelTransaction.getPanel().getId())
+                                        .build(),
+                                Payment.builder()
+                                        .transactionId(String.valueOf(panelTransaction.getId()))
+                                        .amount(panelTransaction.getPayment().getAmount())
+                                        .type(PaymentType.valueOf(panelTransaction.getPayment().getType()))
                                         .build()
                         )
 

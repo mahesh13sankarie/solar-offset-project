@@ -23,11 +23,16 @@ public class PanelTransaction {
     @JoinColumn(name = "panel_id")
     private CountryPanel panel;
 
+    @ManyToOne
+    @JoinColumn(name = "payment_id")
+    private Payment payment;
+
     public PanelTransaction(
-            User user, CountryPanel panel
+            User user, CountryPanel panel, Payment payment
     ) {
         this.user = user;
         this.panel = panel;
+        this.payment = payment;
     }
 
     public PanelTransaction() {

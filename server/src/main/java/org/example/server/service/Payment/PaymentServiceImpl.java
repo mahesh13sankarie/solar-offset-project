@@ -79,7 +79,9 @@ public class PaymentServiceImpl implements PaymentService {
 
 				PanelTransactionDTO panelTransactionDTO = new PanelTransactionDTO(
 						user.getId(),
-						countryPanel.getPanel().getId());
+						countryPanel.getPanel().getId(),
+						payment.getId()
+						);
 				transactionService.save(panelTransactionDTO);
 
 				return new PaymentResponseDTO(
