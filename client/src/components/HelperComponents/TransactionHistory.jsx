@@ -58,6 +58,8 @@ const TransactionHistory = () => {
                         <thead className="table-light">
                             <tr>
                                 <th>Id</th>
+                                <th>Date</th>
+
                                 <th>Panel Name</th>
                                 <th>Country</th>
                                 <th>Production Per Panel</th>
@@ -68,8 +70,9 @@ const TransactionHistory = () => {
                         <tbody>
                             {transactionData.map((transaction, index) => (
                                 <tr key={index}>
-                                    <td>{transaction.id}</td>
 
+                                    <td>{transaction.id}</td>
+                                    <td>{new Date(transaction.payment.createdAt).toISOString().split('T')[0]}</td>
                                     <td>
                                         <div className="d-flex align-items-center">
                                             <FaSolarPanel style={{ fontSize: "1.2rem", color: "#37517E", marginRight: "10px" }} />
@@ -77,7 +80,7 @@ const TransactionHistory = () => {
                                         </div>
                                         <p style={{paddingTop:"5px", fontSize:"13px",fontFamily:"verdana"}}>{transaction.solarPanel.description}</p>
                                     </td>
-                                    <td>{transaction.country}</td>
+                                    <td>{transaction.solarPanel.countryCode}</td>
                                     <td>{transaction.solarPanel.productionPerPanel}W</td>
                                     <td>${transaction.solarPanel.installationCost}</td>
                                     <td>{transaction.solarPanel.productionPerPanel * transaction.solarPanel.installationCost} kg</td>
