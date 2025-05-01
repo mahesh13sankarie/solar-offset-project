@@ -51,18 +51,23 @@ public class PanelTransactionController {
     private List<PanelTransactionResponse> filteredResponse(List<PanelTransaction> panelTransactions) {
         return panelTransactions.stream()
                 .map(panelTransaction -> new PanelTransactionResponse(
-                        panelTransaction.getId(),
-                        panelTransaction.getUser().getDetail(panelTransaction.getUser()),
-                        SolarPanelDTO.builder()
-                                .panelName(panelTransaction.getPanel().getName())
-                                .installationCost(panelTransaction.getPanel().getInstallationCost())
-                                .productionPerPanel(panelTransaction.getPanel().getProductionPerPanel())
-                                .description(panelTransaction.getPanel().getDescription())
-                                .efficiency(panelTransaction.getPanel().getEfficiency())
-                                .lifespan(panelTransaction.getPanel().getLifespan())
-                                .temperatureTolerance(panelTransaction.getPanel().getTemperatureTolerance())
-                                .warranty(panelTransaction.getPanel().getWarranty())
-                                .build()))
+                                panelTransaction.getId(),
+                                panelTransaction.getUser().getDetail(panelTransaction.getUser()),
+                                SolarPanelDTO.builder()
+                                        .panelName(panelTransaction.getPanel().getPanel().getName())
+                                        .installationCost(panelTransaction.getPanel().getPanel().getInstallationCost())
+                                        .productionPerPanel(panelTransaction.getPanel().getPanel().getProductionPerPanel())
+                                        .description(panelTransaction.getPanel().getPanel().getDescription())
+                                        .efficiency(panelTransaction.getPanel().getPanel().getEfficiency())
+                                        .lifespan(panelTransaction.getPanel().getPanel().getLifespan())
+                                        .temperatureTolerance(panelTransaction.getPanel().getPanel().getTemperatureTolerance())
+                                        .warranty(panelTransaction.getPanel().getPanel().getWarranty())
+                                        .countryCode(panelTransaction.getPanel().getCountry().getCode())
+                                        .id(panelTransaction.getPanel().getId())
+                                        .build()
+                        )
+
+                )
                 .collect(Collectors.toList());
     }
 }

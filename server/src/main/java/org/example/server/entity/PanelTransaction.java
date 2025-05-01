@@ -21,10 +21,10 @@ public class PanelTransaction {
 
     @ManyToOne
     @JoinColumn(name = "panel_id")
-    private Panel panel;
+    private CountryPanel panel;
 
     public PanelTransaction(
-            User user, Panel panel
+            User user, CountryPanel panel
     ) {
         this.user = user;
         this.panel = panel;

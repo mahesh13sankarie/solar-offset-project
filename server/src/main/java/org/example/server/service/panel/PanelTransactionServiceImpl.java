@@ -1,24 +1,20 @@
 package org.example.server.service.panel;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import org.example.server.dto.PanelTransactionDTO;
 import org.example.server.dto.StaffTransactionDTO;
-import org.example.server.entity.Panel;
-import org.example.server.entity.PanelTransaction;
-import org.example.server.entity.Payment;
-import org.example.server.entity.User;
-import org.example.server.repository.PanelRepository;
+import org.example.server.entity.*;
+import org.example.server.repository.CountryPanelRepository;
 import org.example.server.repository.PanelTransactionRepository;
 import org.example.server.repository.PaymentRepository;
 import org.example.server.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author: astidhiyaa
@@ -31,7 +27,7 @@ public class PanelTransactionServiceImpl implements PanelTransactionService {
     private PanelTransactionRepository panelTransactionRepository;
 
     @Autowired
-    private PanelRepository panelRepository;
+    private CountryPanelRepository panelRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -41,7 +37,7 @@ public class PanelTransactionServiceImpl implements PanelTransactionService {
 
     @Override
     public PanelTransaction save(PanelTransactionDTO panelTransaction) {
-        Optional<Panel> panel = panelRepository.findById(panelTransaction.panelId());
+        Optional<CountryPanel> panel = panelRepository.findById(panelTransaction.panelId());
         Optional<User> user = userRepository.findById(panelTransaction.userId());
         PanelTransaction newPanel = new PanelTransaction(user.get(), panel.get());
         return panelTransactionRepository.save(newPanel);
