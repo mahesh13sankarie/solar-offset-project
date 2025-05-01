@@ -4,8 +4,10 @@ import org.example.server.dto.PanelTransactionDTO;
 import org.example.server.dto.SolarPanelDTO;
 import org.example.server.dto.StaffTransactionDTO;
 import org.example.server.entity.PanelTransaction;
+import org.example.server.entity.Payment;
 import org.example.server.entity.response.PanelTransactionResponse;
 import org.example.server.service.panel.PanelTransactionService;
+import org.example.server.utils.PaymentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -51,18 +53,28 @@ public class PanelTransactionController {
     private List<PanelTransactionResponse> filteredResponse(List<PanelTransaction> panelTransactions) {
         return panelTransactions.stream()
                 .map(panelTransaction -> new PanelTransactionResponse(
-                        panelTransaction.getId(),
-                        panelTransaction.getUser().getDetail(panelTransaction.getUser()),
-                        SolarPanelDTO.builder()
-                                .panelName(panelTransaction.getPanel().getName())
-                                .installationCost(panelTransaction.getPanel().getInstallationCost())
-                                .productionPerPanel(panelTransaction.getPanel().getProductionPerPanel())
-                                .description(panelTransaction.getPanel().getDescription())
-                                .efficiency(panelTransaction.getPanel().getEfficiency())
-                                .lifespan(panelTransaction.getPanel().getLifespan())
-                                .temperatureTolerance(panelTransaction.getPanel().getTemperatureTolerance())
-                                .warranty(panelTransaction.getPanel().getWarranty())
-                                .build()))
+                                panelTransaction.getId(),
+                                panelTransaction.getUser().getDetail(panelTransaction.getUser()),
+                                SolarPanelDTO.builder()
+                                        .panelName(panelTransaction.getPanel().getPanel().getName())
+                                        .installationCost(panelTransaction.getPanel().getPanel().getInstallationCost())
+                                        .productionPerPanel(panelTransaction.getPanel().getPanel().getProductionPerPanel())
+                                        .description(panelTransaction.getPanel().getPanel().getDescription())
+                                        .efficiency(panelTransaction.getPanel().getPanel().getEfficiency())
+                                        .lifespan(panelTransaction.getPanel().getPanel().getLifespan())
+                                        .temperatureTolerance(panelTransaction.getPanel().getPanel().getTemperatureTolerance())
+                                        .warranty(panelTransaction.getPanel().getPanel().getWarranty())
+                                        .countryCode(panelTransaction.getPanel().getCountry().getCode())
+                                        .id(panelTransaction.getPanel().getId())
+                                        .build(),
+                                Payment.builder()
+                                        .transactionId(String.valueOf(panelTransaction.getId()))
+                                        .amount(panelTransaction.getPayment().getAmount())
+                                        .type(PaymentType.valueOf(panelTransaction.getPayment().getType()))
+                                        .build()
+                        )
+
+                )
                 .collect(Collectors.toList());
     }
 }
