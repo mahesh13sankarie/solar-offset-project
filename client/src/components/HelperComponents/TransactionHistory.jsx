@@ -83,7 +83,7 @@ const TransactionHistory = () => {
                                     <td>{transaction.solarPanel.countryCode}</td>
                                     <td>{transaction.solarPanel.productionPerPanel}W</td>
                                     <td>${transaction.solarPanel.installationCost}</td>
-                                    <td>{transaction.solarPanel.productionPerPanel * transaction.solarPanel.installationCost} kg</td>
+                                    <td>{transaction.solarPanel.productionPerPanel * transaction.payment.amount * 0.7} kg</td>
                                 </tr>
                             ))}
                         </tbody>
