@@ -1,15 +1,14 @@
 // import React from 'react';
-import KPISection from './KPISection';
-import StatsTrends from './StatsTrends';
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
+import { api } from "../../../api";
+import KPISection from "./KPISection";
+import StatsTrends from "./StatsTrends";
 
 const TestWidget = () => {
-
     const [stats, setStats] = useState({
         totalPanels: 0,
         totalAmount: 0,
-        totalCarbon:   0,
+        totalCarbon: 0,
         activeDonors: 0,
         newUsers: 0,
     });
@@ -17,7 +16,14 @@ const TestWidget = () => {
     const [chartData, setChartData] = useState([]);
 
     useEffect(() => {
-        axios.get("http://localhost:8000/api/v1/transaction/staff")
+        const token = localStorage.getItem("token");
+        if (!token) {
+            console.error("No token found, please login first");
+            setError("Authentication required. Please login.");
+        }
+
+        api.transaction
+            .getStaff()
             .then((response) => {
                 const data = response.data;
                 setChartData(data);
@@ -32,7 +38,7 @@ const TestWidget = () => {
                     totalAmount,
                     totalCarbon: parseFloat(totalCarbon.toFixed(2)),
                     activeDonors,
-                    newUsers: 0 // Placeholder for now if no new user metric is available
+                    newUsers: 0, // Placeholder for now if no new user metric is available
                 });
             })
             .catch((error) => {

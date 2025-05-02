@@ -5,40 +5,42 @@
  * - POST /api/users/reset-password -> Sends a password reset link
  */
 
-const toggleForm = document.getElementById('toggle-form');
-const formTitle = document.getElementById('form-title');
-const extraFields = document.getElementById('extra-fields');
-const authForm = document.getElementById('auth-form');
-const forgotPasswordContainer = document.getElementById('forgot-password-container'); 
-const resetForm = document.getElementById('reset-form');
-const backToLogin = document.getElementById('back-to-login');
+import { authEndpoints } from "../src/api/auth.js";
 
-toggleForm.addEventListener('click', (e) => {
+const toggleForm = document.getElementById("toggle-form");
+const formTitle = document.getElementById("form-title");
+const extraFields = document.getElementById("extra-fields");
+const authForm = document.getElementById("auth-form");
+const forgotPasswordContainer = document.getElementById("forgot-password-container");
+const resetForm = document.getElementById("reset-form");
+const backToLogin = document.getElementById("back-to-login");
+
+toggleForm.addEventListener("click", (e) => {
     e.preventDefault();
-    if (formTitle.innerText === 'Login') {
-        formTitle.innerText = 'Register';
-        extraFields.classList.remove('hidden');
-        extraFields.style.display = 'block';
-        toggleForm.innerText = 'Already have an account? Login';
-        forgotPasswordContainer.style.display = 'none';
+    if (formTitle.innerText === "Login") {
+        formTitle.innerText = "Register";
+        extraFields.classList.remove("hidden");
+        extraFields.style.display = "block";
+        toggleForm.innerText = "Already have an account? Login";
+        forgotPasswordContainer.style.display = "none";
     } else {
-        formTitle.innerText = 'Login';
-        extraFields.classList.remove('hidden');
+        formTitle.innerText = "Login";
+        extraFields.classList.remove("hidden");
         toggleForm.innerText = "Don't have an account? Register";
-        forgotPasswordContainer.classList.remove('hidden');
-        forgotPasswordContainer.style.display = 'block';
+        forgotPasswordContainer.classList.remove("hidden");
+        forgotPasswordContainer.style.display = "block";
     }
 });
-forgotPasswordContainer.addEventListener('click', (e) => {
+forgotPasswordContainer.addEventListener("click", (e) => {
     e.preventDefault();
-    authForm.classList.add('hidden');
-    resetForm.classList.remove('hidden');
+    authForm.classList.add("hidden");
+    resetForm.classList.remove("hidden");
 });
 
-backToLogin.addEventListener('click', (e) => {
+backToLogin.addEventListener("click", (e) => {
     e.preventDefault();
-    resetForm.classList.add('hidden');
-    authForm.classList.remove('hidden');
+    resetForm.classList.add("hidden");
+    authForm.classList.remove("hidden");
 });
 
 // Handle form submission for login and registration
@@ -52,24 +54,19 @@ authForm.addEventListener("submit", async (event) => {
 
     // Determine if it's a login or registration based on form title
     const isRegistering = formTitle.innerText === "Register";
-    const endpoint = isRegistering ? "/api/users/register" : "/api/users/login";
 
     const userData = isRegistering
         ? { name, email, password, country } // For registration
         : { email, password }; // For login
 
     try {
-        const response = await fetch(`http://localhost:8080${endpoint}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(userData),
-        });
+        // Use the auth endpoints from auth.js instead of direct fetch
+        const response = isRegistering
+            ? await authEndpoints.register(userData)
+            : await authEndpoints.login(userData);
 
-        if (!response.ok) {
-            throw new Error("Failed to submit form");
-        }
-
-        const data = await response.json();
+        // Axios doesn't have response.ok; status 2xx is success
+        const data = response.data;
         alert(isRegistering ? "Registration successful!" : "Login successful!");
         console.log("Server Response:", data);
 
@@ -90,15 +87,7 @@ resetForm.addEventListener("submit", async (event) => {
     const resetEmail = document.getElementById("reset-email").value;
 
     try {
-        const response = await fetch("http://localhost:8080/api/users/reset-password", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: resetEmail }),
-        });
-
-        if (!response.ok) {
-            throw new Error("Failed to send reset link");
-        }
+        const response = await authEndpoints.resetPassword(resetEmail);
 
         alert("Password reset link sent to your email.");
         resetForm.classList.add("hidden");
