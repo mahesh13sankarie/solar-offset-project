@@ -11,6 +11,9 @@ export const countriesEndpoints = {
             },
         });
     },
+    getAllCountries: () => {
+        return apiClient.get("/countries");
+    },
 };
 
 export default countriesEndpoints;

@@ -40,7 +40,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/api/v1/dashboard/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/payment/**").authenticated()
-                        .requestMatchers("/api/v1/countries/**").authenticated()
+                        .requestMatchers("/api/v1/countries/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
