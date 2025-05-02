@@ -13,37 +13,13 @@ return (
         <p className="m-2">Admin</p>
         <hr />
         <ul className="nav nav-pills flex-column mb-auto">
-            {/*<li className="nav-item">*/}
-            {/*    <Link*/}
-            {/*        to="/dashboard"*/}
-            {/*        className={`nav-link text-white ${currentPath === '/dashboard' ? 'active bg-primary' : ''}`}*/}
-            {/*    >*/}
-            {/*        Dashboard*/}
-            {/*    </Link>*/}
-            {/*</li>*/}
             <li>
                 <Link
-                    to="/dashboard/users"
-                    className={`nav-link text-white ${currentPath === '/dashboard/users' ? 'active bg-primary' : ''}`}
+                    to="/dashboard"
+                    className={`nav-link text-white ${currentPath === '/dashboard' ? 'active bg-primary' : ''}`}
                 >
                     Users
                 </Link>
-            </li>
-            <li>
-                {/*<Link*/}
-                {/*    to="/dashboard/settings"*/}
-                {/*    className={`nav-link text-white ${currentPath === '/dashboard/settings' ? 'active bg-primary' : ''}`}*/}
-                {/*>*/}
-                {/*    Settings*/}
-                {/*</Link>*/}
-            </li>
-            <li>
-                {/*<Link*/}
-                {/*    to="/dashboard/reports"*/}
-                {/*    className={`nav-link text-white ${currentPath === '/dashboard/logs' ? 'active bg-primary' : ''}`}*/}
-                {/*>*/}
-                {/*    Logs*/}
-                {/*</Link>*/}
             </li>
             <li>
                 <Link
