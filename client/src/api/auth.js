@@ -15,6 +15,10 @@ export const authEndpoints = {
         return apiClient.post("/auth/google-login", googleData);
     },
 
+    resetPassword: (resetEmail) => {
+        return apiClient.post("/auth/reset-password", { email: resetEmail });
+    },
+
     validate: () => {
         return apiClient.get("/auth/validate", {
             headers: {
