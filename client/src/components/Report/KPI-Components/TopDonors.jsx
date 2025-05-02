@@ -71,7 +71,7 @@ export default function TopDonors() {
                         <tr>
                             <th>#</th>
                             <th>Email</th>
-                            <th>Amount Donated ($)</th>
+                            <th>Amount Donated (£)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -79,7 +79,7 @@ export default function TopDonors() {
                             <tr key={index}>
                                 <td>{index + 1}</td>
                                 <td>{user.user}</td>
-                                <td>${user.amount.toFixed(2)}</td>
+                                <td>{user.amount.toFixed(2)}</td>
                             </tr>
                         ))}
                     </tbody>
