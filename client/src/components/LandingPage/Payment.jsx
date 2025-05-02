@@ -1,14 +1,15 @@
+import { PDFDownloadLink } from "@react-pdf/renderer";
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import Navbar from "./Navbar.jsx";
+import { api } from "../../api";
 import { useAuth } from "../../context/AuthContext";
-import axios from "axios";
-import { PDFDownloadLink } from "@react-pdf/renderer";
 import { PaymentInvoice } from "../Report/Invoice/Invoice.jsx";
+import Navbar from "./Navbar.jsx";
 
 const Payment = () => {
     const [country, setCountry] = useState(null);
     const [selectedPanel, setSelectedPanel] = useState(null);
+    const [selectedCountryData, setSelectedCountryData] = useState(null);
     const [quantity, setQuantity] = useState(1);
     const [currentStep, setCurrentStep] = useState(1);
     const [formData, setFormData] = useState({
@@ -27,24 +28,16 @@ const Payment = () => {
     useEffect(() => {
         console.log("Panel ID:", panelId, "Country Code:", countryCode);
         const fetchPanelData = async () => {
-            const token = localStorage.getItem('token'); // <-- get the token from localStorage
+            const token = localStorage.getItem("token"); // <-- get the token from localStorage
             console.log("Fetched token for panel:", token);
 
             if (!token) {
-                console.error('No token found, please login first');
+                console.error("No token found, please login first");
                 return;
             }
 
             try {
-                const response = await axios.get(
-                    `http://localhost:8000/api/v1/panels/${panelId}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                            "Content-Type": "application/json",
-                        },
-                    }
-                );
+                const response = await api.panels.getById(panelId);
                 console.log("Panel data:", response.data);
 
                 const panelData = response.data;
@@ -54,6 +47,12 @@ const Payment = () => {
                     country: panelData.countryCode,
                     countryCode: panelData.countryCode,
                 });
+
+                const responseCountry = await api.countries.getByCode(countryCode);
+
+                console.log("Country data:", responseCountry.data);
+                setSelectedCountryData(responseCountry.data)
+
             } catch (error) {
                 console.error("Error fetching panel data:", error);
             }
@@ -125,16 +124,9 @@ const Payment = () => {
                 paymentMethodId: `pm_card_visa`, // Just for demonstration
             };
             console.log(paymentData);
-            // Send payment request to API using axios
-            const response = await axios.post(
-                "http://localhost:8000/api/v1/payments",
-                paymentData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-                    },
-                },
-            );
+
+            // Send payment request to API
+            const response = await api.payments.create(paymentData);
 
             // Payment successful
             setIsComplete(true);
@@ -145,6 +137,27 @@ const Payment = () => {
             setIsSubmitting(false);
         }
     };
+
+    const calculateCarbonSavings = (panel, quantity) =>{
+
+        if (selectedCountryData && selectedCountryData.carbonEmissions) {
+            const carbonEmission = Math.abs(selectedCountryData.carbonEmissions);
+            const electricity = selectedCountryData.electricityAvailability;
+            const panelEnergy = ((panel * quantity * 5)/1000); // 470 Watt * quantity of panel * average sunlight in hours and divided to kWatt
+            const carbonIntensity = (carbonEmission * 1000) / (electricity * 1000) ;
+            const carbonSavings = (panelEnergy * carbonIntensity);
+            const carbonSavingsinPercentage = (carbonSavings / (carbonEmission * 1000)) * 100;
+
+            console.log('calculation', carbonSavingsinPercentage)
+            return parseFloat(carbonSavingsinPercentage.toFixed(5));;
+
+        } else {
+            console.error("Carbon emissions data is not available yet.");
+            return 0; // Return a default value if data is not available
+        }
+
+
+    }
 
     // Progress step component
     const ProgressSteps = () => {
@@ -231,9 +244,10 @@ const Payment = () => {
             <Navbar />
             <section className="container mt-4">
                 {/* Back Button */}
-                <Link to={`/InstallationCost/${countryCode}`}
-                      className="text-decoration-none d-inline-flex align-items-center gap-2 mb-4 mt-3"
-                      style={{ color: "#6c757d", fontWeight: "500", fontSize: "1rem" }}
+                <Link
+                    to={`/InstallationCost/${countryCode}`}
+                    className="text-decoration-none d-inline-flex align-items-center gap-2 mb-4 mt-3"
+                    style={{ color: "#6c757d", fontWeight: "500", fontSize: "1rem" }}
                 >
                     <i className="bi bi-arrow-left-circle" style={{ fontSize: "1.2rem" }}></i>
                     <span>Back</span>
@@ -290,6 +304,12 @@ const Payment = () => {
                                                         </li>
                                                     )}
                                                 </ul>
+
+                                                {/*total savings*/}
+                                                <div className="mt-4 p-3 bg-success-subtle rounded">
+                                                    <p> Amazing! You are saving around <b>{calculateCarbonSavings(selectedPanel.productionPerPanel,quantity)}%  </b>
+                                                        of carbon emissions per day by donating {quantity} solar panel. Thank you!</p>
+                                                </div>
 
                                                 {/* Order Summary */}
                                                 <div className="mt-4 p-3 bg-light rounded">
@@ -531,20 +551,28 @@ const Payment = () => {
                                                             document={
                                                                 <PaymentInvoice
                                                                     userId={userId}
-                                                                    countryPanelId={selectedPanel?.id}
+                                                                    countryPanelId={
+                                                                        selectedPanel?.id
+                                                                    }
                                                                     amount={calculateTotal()}
                                                                     paymentType="STRIPE"
-                                                                    paymentMethodId={`pm_card_${formData.cardNumber.replace(/\s/g, "").slice(-4)}`}
+                                                                    paymentMethodId={`pm_card_${formData.cardNumber
+                                                                        .replace(/\s/g, "")
+                                                                        .slice(-4)}`}
                                                                 />
                                                             }
                                                             fileName={`invoice_user_${userId}_panel_${selectedPanel?.id}.pdf`}
                                                             className="btn btn-outline-success me-2 px-3 py-2"
                                                         >
                                                             {({ loading }) =>
-                                                                loading ? "Preparing Invoice..." : <>
-                                                                    Download Invoice <i
-                                                                    className="bi bi-printer px-2"></i>
-                                                                </>
+                                                                loading ? (
+                                                                    "Preparing Invoice..."
+                                                                ) : (
+                                                                    <>
+                                                                        Download Invoice{" "}
+                                                                        <i className="bi bi-printer px-2"></i>
+                                                                    </>
+                                                                )
                                                             }
                                                         </PDFDownloadLink>
                                                     </div>

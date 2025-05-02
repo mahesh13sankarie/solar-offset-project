@@ -1,48 +1,46 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:8000/api/v1/auth/login';
+import axios from "axios";
+import { api } from "../../api";
 
 // Function to log in and store token
 export const login = async (email, password) => {
     try {
-        const response = await axios.post(API_URL, { email, password });
+        const credentials = { email, password };
+        const response = await api.auth.login(credentials);
+
         if (response.status === 200) {
             const token = response.data.token;
-            localStorage.setItem('authToken', token);
+            localStorage.setItem("token", token);
             return { success: true, token };
         }
     } catch (error) {
-        console.error('Login failed:', error);
-        return { success: false, error: error.response?.data?.message || 'Login failed' };
+        console.error("Login failed:", error);
+        return { success: false, error: error.response?.data?.message || "Login failed" };
     }
 };
 
 // Function to check if user is authenticated
 export const isAuthenticated = () => {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem("token");
     return !!token;
 };
 
 // Function to validate token
 export const validateToken = async () => {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem("token");
     if (!token) return false;
 
     try {
-        const response = await axios.get('http://localhost:8000/api/v1/auth/validate', {
-            headers: { Authorization: `Bearer ${token}` }
-        });
+        const response = await api.auth.validate();
         return response.status === 200;
     } catch (error) {
-        console.error('Token validation failed:', error);
-        localStorage.removeItem('authToken');
+        console.error("Token validation failed:", error);
+        localStorage.removeItem("token");
         return false;
     }
 };
 
 // Function to log out
 export const logout = () => {
-    localStorage.removeItem('authToken');
+    localStorage.removeItem("token");
     // window.location.href = '/login'; // Redirect to login page
-
 };

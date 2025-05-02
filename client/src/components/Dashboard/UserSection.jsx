@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { api } from "../../api";
 import "./UserSection.css";
-
-const api = "http://localhost:8000/api/v1/dashboard";
 
 const UsersPage = () => {
     const [users, setUsers] = useState([]);
-const [formData, setFormData] = useState({ name: "", email: "", role: "1", password: "" });
+    const [formData, setFormData] = useState({ name: "", email: "", role: "1", password: "" });
     const [editingUserId, setEditingUserId] = useState(null);
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
@@ -17,10 +15,9 @@ const [formData, setFormData] = useState({ name: "", email: "", role: "1", passw
     const [displayLimit, setDisplayLimit] = useState(10);
 
     // Fetch users
-
     const fetchUsers = async () => {
         try {
-            const res = await axios.get(`${api}/users`);
+            const res = await api.dashboard.getUsers();
             setUsers(res.data.data);
             console.log(res.data.data);
         } catch (err) {
@@ -48,7 +45,7 @@ const [formData, setFormData] = useState({ name: "", email: "", role: "1", passw
         try {
             if (editingUserId) {
                 // Update user role
-                await axios.put(`${api}/update-role`, {
+                await api.dashboard.updateRole({
                     userId: editingUserId,
                     accountType: Number(formData.role),
                 });
@@ -58,11 +55,11 @@ const [formData, setFormData] = useState({ name: "", email: "", role: "1", passw
                 // Create user via external API
                 const payload = {
                     email: formData.email,
-                    password: formData.password,  // Add password to the payload
+                    password: formData.password, // Add password to the payload
                     fullName: formData.name,
                     accountType: Number(formData.role),
                 };
-                await axios.post("http://localhost:8000/api/v1/auth/register", payload);
+                await api.auth.register(payload);
                 setShowCreateModal(false);
             }
             setFormData({ name: "", email: "", role: "1", password: "" }); // Reset form data including password
@@ -77,9 +74,7 @@ const [formData, setFormData] = useState({ name: "", email: "", role: "1", passw
     const handleDelete = async (id) => {
         if (!window.confirm("Are you sure you want to delete this user?")) return;
         try {
-            await axios.delete(`${api}/delete-user`, {
-                data: { userId: id },
-            });
+            await api.dashboard.deleteUser(id);
             fetchUsers();
         } catch (err) {
             console.error("Error deleting user:", err);
@@ -207,7 +202,10 @@ const [formData, setFormData] = useState({ name: "", email: "", role: "1", passw
                                             value={formData.password}
                                             required
                                             onChange={(e) =>
-                                                setFormData({ ...formData, password: e.target.value })
+                                                setFormData({
+                                                    ...formData,
+                                                    password: e.target.value,
+                                                })
                                             }
                                         />
                                     </div>

@@ -1,24 +1,19 @@
-import React, { useEffect, useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useAuth } from "../../context/AuthContext"; // Import useAuth hook
-import { FaSolarPanel, FaSun } from "react-icons/fa";
-import "./transition.css";
-import { useGoogleLogin, googleLogout} from '@react-oauth/google';
-import { jwtDecode } from "jwt-decode";
-import Navbar from "/src/components/LandingPage/Navbar.jsx";
-import Footer from "/src/components/LandingPage/Footer.jsx";
-
 import { useGoogleLogin } from "@react-oauth/google";
-
+import "bootstrap/dist/css/bootstrap.min.css";
+import React, { useEffect, useState } from "react";
+import { FaSolarPanel, FaSun } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { api } from "../../api";
+import { useAuth } from "../../context/AuthContext"; // Import useAuth hook
+import "./transition.css";
+import Footer from "/src/components/LandingPage/Footer.jsx";
+import Navbar from "/src/components/LandingPage/Navbar.jsx";
 
 const SolarWelcome = ({ message }) => {
     const fullName = localStorage.getItem("fullName") || "Guest";
 
     return (
-        <div
-            className="fade-in-scale d-flex flex-column justify-content-center align-items-center vh-100 text-center bg-light">
+        <div className="fade-in-scale d-flex flex-column justify-content-center align-items-center vh-100 text-center bg-light">
             <FaSun className="text-warning display-3 sun-rotate mb-4" />
             <h2 className="fw-bold">Welcome, {fullName}!</h2>
             <p className="lead text-secondary">
@@ -70,10 +65,11 @@ const AuthForm = () => {
 
         try {
             if (formState === "login") {
-                const res = await axios.post("http://localhost:8000/api/v1/auth/login", {
+                const credentials = {
                     email: formData.email,
                     password: formData.password,
-                });
+                };
+                const res = await api.auth.login(credentials);
                 const userData = res.data.data;
                 login({
                     token: res.data.token,
@@ -87,12 +83,14 @@ const AuthForm = () => {
                 setIsLoading(true); // Show the loading animation
                 setTimeout(() => navigate("/SolarComparison"), 2000); // Increased delay to show animation
             } else {
-                const res = await axios.post("http://localhost:8000/api/v1/auth/register", {
+                const userData = {
                     email: formData.email,
                     password: formData.password,
                     fullName: formData.fullName,
                     accountType: 1,
-                });
+                };
+
+                const res = await api.auth.register(userData);
 
                 if (res.status === 200) {
                     setMessage("Registered successfully, please login");
@@ -122,14 +120,10 @@ const AuthForm = () => {
             console.log("Google Login Success:", response);
 
             try {
-                const googleUser = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {
-                    headers: {
-                        Authorization: `Bearer ${response.access_token}`,
-                    },
-                });
+                const googleUser = await api.auth.googleUserInfo(response.access_token);
                 console.log("Google User Info:", googleUser.data);
 
-                const res = await axios.post("http://localhost:8000/api/v1/auth/google-login", {
+                const res = await api.auth.googleLogin({
                     email: googleUser.data.email,
                     name: googleUser.data.name,
                 });
@@ -159,7 +153,6 @@ const AuthForm = () => {
         scope: "openid email profile",
     });
 
-
     if (isLoading) {
         return (
             <div className="fade-in-scale">
@@ -169,15 +162,26 @@ const AuthForm = () => {
     }
 
     return (
-          <>
-             <Navbar />
-               <div style={{ paddingTop: "120px", paddingBottom: "40px", minHeight: "calc(100vh - 160px)" }}>
-                 <div className="container d-flex justify-content-center">
-                    <div className="card p-4 shadow-lg w-100" style={{ maxWidth: "800px", minHeight: "450px" }}>
+        <>
+            <Navbar />
+            <div
+                style={{
+                    paddingTop: "120px",
+                    paddingBottom: "40px",
+                    minHeight: "calc(100vh - 160px)",
+                }}
+            >
+                <div className="container d-flex justify-content-center">
+                    <div
+                        className="card p-4 shadow-lg w-100"
+                        style={{ maxWidth: "800px", minHeight: "450px" }}
+                    >
                         <div className="row g-0">
                             <div className="col-md-6 d-flex flex-column justify-content-center p-3 bg-light rounded-start">
                                 <h3 className="text-center">Welcome</h3>
-                                <p className="text-muted text-center">Login or Register to continue.</p>
+                                <p className="text-muted text-center">
+                                    Login or Register to continue.
+                                </p>
                             </div>
 
                             <div className="col-md-6 p-4">
@@ -213,7 +217,9 @@ const AuthForm = () => {
                                             {formState === "register" && (
                                                 <>
                                                     <div className="mb-3">
-                                                        <label className="form-label">Confirm Password</label>
+                                                        <label className="form-label">
+                                                            Confirm Password
+                                                        </label>
                                                         <input
                                                             type="password"
                                                             className="form-control"
@@ -224,7 +230,9 @@ const AuthForm = () => {
                                                         />
                                                     </div>
                                                     <div className="mb-3">
-                                                        <label className="form-label">Full Name</label>
+                                                        <label className="form-label">
+                                                            Full Name
+                                                        </label>
                                                         <input
                                                             type="text"
                                                             className="form-control"
@@ -237,15 +245,6 @@ const AuthForm = () => {
                                                 </>
                                             )}
 
-                                    {message && (
-                                        <p
-                                            className={`text-center ${
-                                                message.toLowerCase().includes("success") ? "text-success" : "text-danger"
-                                            }`}
-                                        >
-                                            {message}
-                                        </p>
-                                    )}
                                             {message && (
                                                 <p className="text-danger text-center">{message}</p>
                                             )}
@@ -258,71 +257,73 @@ const AuthForm = () => {
                                         <div className="text-center mt-3">
                                             {formState === "login" ? (
                                                 <>
-                                                    <a href="#" onClick={(e) => { e.preventDefault(); switchForm("register"); }}>
+                                                    <a
+                                                        href="#"
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            switchForm("register");
+                                                        }}
+                                                    >
                                                         Don't have an account? Register
                                                     </a>
                                                     <br />
-                                                    <a href="/change-password" className="text-decoration-none mt-2 d-inline-block">
+                                                    <a
+                                                        href="/change-password"
+                                                        className="text-decoration-none mt-2 d-inline-block"
+                                                    >
                                                         Forgot Password?
                                                     </a>
                                                     <br />
                                                     <p className="mt-2">Or</p>
                                                 </>
                                             ) : (
-                                                <a href="#" onClick={(e) => { e.preventDefault(); switchForm("login"); }}>
+                                                <a
+                                                    href="#"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        switchForm("login");
+                                                    }}
+                                                >
                                                     Already have an account? Login
                                                 </a>
                                             )}
                                         </div>
-                                <div className="text-center mt-3">
-                                    {formState === "login" ? (
-                                        <>
-                                            <a
-                                                href="#"
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    switchForm("register");
-                                                }}
-                                            >
-                                                Don't have an account? Register
-                                            </a>
-                                            <br />
-
-                                            <a
-                                                href="/change-password"
-                                                className="text-decoration-none mt-2 d-inline-block"
-                                            >
-                                                Forgot Password?
-                                            </a>
-                                            <br />
-                                            <p className="mt-2">Or</p>
-                                        </>
-                                    ) : (
-                                        <a
-                                            href="#"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                switchForm("login");
-                                            }}
-                                        >
-                                            Already have an account? Login
-                                        </a>
-                                    )}
-
-                                </div>
 
                                         {/* Google Login Button */}
                                         <div className="text-center mt-3">
-                                            <button className="gsi-material-button" type="button" onClick={() => googleLogin()}>
+                                            <button
+                                                className="gsi-material-button"
+                                                type="button"
+                                                onClick={() => googleLogin()}
+                                            >
                                                 <div className="gsi-material-button-content-wrapper">
                                                     <div className="gsi-material-button-icon">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" style={{ height: 20, width: 20 }}>
-                                                            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
-                                                            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
-                                                            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
-                                                            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
+                                                        <svg
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            viewBox="0 0 48 48"
+                                                            style={{ height: 20, width: 20 }}
+                                                        >
+                                                            <path
+                                                                fill="#EA4335"
+                                                                d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
+                                                            ></path>
+                                                            <path
+                                                                fill="#4285F4"
+                                                                d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
+                                                            ></path>
+                                                            <path
+                                                                fill="#FBBC05"
+                                                                d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
+                                                            ></path>
+                                                            <path
+                                                                fill="#34A853"
+                                                                d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
+                                                            ></path>
                                                         </svg>
-                                                        <span className="gsi-material-button-contents"> Sign in with Google</span>
+                                                        <span className="gsi-material-button-contents">
+                                                            {" "}
+                                                            Sign in with Google
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </button>
@@ -334,49 +335,11 @@ const AuthForm = () => {
                             </div>
                         </div>
                     </div>
-                 </div>
-               </div>
-             <Footer />
-          </>
-        );
-    };
-                                {/* Google Login Button */}
-                                <div className="text-center mt-3">
-                                    <button
-                                        className="gsi-material-button"
-                                        type="button"
-                                        onClick={() => googleLogin()} // <-- trigger Google OAuth flow!
-                                    >
-                                        <div className="gsi-material-button-state"></div>
-                                        <div className="gsi-material-button-content-wrapper">
-                                            <div className="gsi-material-button-icon">
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"
-                                                     style={{ height: 20, width: 20 }}>
-                                                    <path fill="#EA4335"
-                                                          d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
-                                                    <path fill="#4285F4"
-                                                          d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
-                                                    <path fill="#FBBC05"
-                                                          d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
-                                                    <path fill="#34A853"
-                                                          d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
-                                                    <path fill="none" d="M0 0h48v48H0z"></path>
-                                                </svg>
-                                                <span
-                                                    className="gsi-material-button-contents">  Sign in with Google</span>
-                                            </div>
-                                        </div>
-                                    </button>
-                                </div>
-                            </>
-                        ) : (
-                            <h3 className="text-center">Submitted Successfully</h3>
-                        )}
-                    </div>
                 </div>
             </div>
-        </div>
+            <Footer />
+        </>
     );
 };
 
-    export default AuthForm;
+export default AuthForm;
