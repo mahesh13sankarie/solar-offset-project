@@ -76,7 +76,7 @@ const tableData = [
 
 const totalData = [
     { label: "Subtotal", value: "$4300.00" },
-    { label: "Tax (5%)", value: "$215.00" },
+    { label: "Tax (0%)", value: "$215.00" },
     { label: "Total", value: "$4515.00" },
 ];
 
@@ -152,7 +152,9 @@ function Invoice() {
     );
 }
 
-function PaymentInvoice({ userId, countryPanelId, amount, paymentType, paymentMethodId }) {
+function PaymentInvoice({ userId, countryPanelId, amount, total, quantity, panelName, paymentType, paymentMethodId }) {
+    const unitPrice = quantity ? amount / quantity : 0;
+    const tax = amount * 0.00;
     return (
         <Document>
             <Page size="A4" style={styles.page}>
@@ -173,6 +175,12 @@ function PaymentInvoice({ userId, countryPanelId, amount, paymentType, paymentMe
                     <Text style={[styles.billTo, styles.textBold]}>Payment Details:</Text>
                 </View>
 
+                <View style={styles.spaceY}>
+                    <Text>Panel Name: {panelName}</Text>
+                    <Text>Quantity: {quantity}</Text>
+                    <Text>Unit Price: ${unitPrice.toFixed(2)}</Text>
+                </View>
+
                 <View style={styles.table}>
                     <View style={styles.tableRow}>
                         <Text style={[styles.tableCol, styles.tableHeader]}>Panel ID</Text>
@@ -191,8 +199,16 @@ function PaymentInvoice({ userId, countryPanelId, amount, paymentType, paymentMe
                 <View style={styles.totals}>
                     <View style={{ minWidth: "256px" }}>
                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: "8px" }}>
+                            <Text>Subtotal</Text>
+                            <Text>${amount.toFixed(2)}</Text>
+                        </View>
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: "8px" }}>
+                            <Text>Tax (0%)</Text>
+                            <Text>${tax.toFixed(2)}</Text>
+                        </View>
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: "8px" }}>
                             <Text style={styles.textBold}>Total</Text>
-                            <Text style={styles.textBold}>${amount.toFixed(2)}</Text>
+                            <Text style={styles.textBold}>${total.toFixed(2)}</Text>
                         </View>
                     </View>
                 </View>
