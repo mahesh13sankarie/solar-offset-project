@@ -46,6 +46,13 @@ export default function StaffNavBar({activeTab,setActiveTab}) {
                 >
                     <i className="bi bi-file-earmark-text-fill me-2"></i> Report
                 </li>
+                <li
+                    className={`nav-tab-item mb-3 ps-2 ${activeTab === "enquires" ? "active-tab" : ""}`}
+                    onClick={() => setActiveTab("enquires")}
+                    style={{ cursor: 'pointer' }}
+                >
+                    <i className="bi bi-envelope me-2"></i> Enquires
+                </li>
             </ul>
         </nav>
     );

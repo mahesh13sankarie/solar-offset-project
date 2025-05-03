@@ -76,7 +76,7 @@ const StatsTrends = ({ data }) => {
         labels,
         datasets: [
             {
-                label: "Carbon Offset Distribution",
+                label: "Carbon Offset Distribution ",
                 data: monthlyCarbonOffsets,
                 backgroundColor: [
                     "rgba(153, 102, 255, 0.7)",
@@ -169,7 +169,7 @@ const StatsTrends = ({ data }) => {
                                 },
                             }} height={150} />
                             <div className="d-flex justify-content-between align-items-center mt-2">
-                                <a href="#" className="text-primary small">View more</a>
+                                {/*<a href="#" className="text-primary small">View more</a>*/}
                                 <small className="text-muted">Updated {new Date().toLocaleTimeString()}</small>
                             </div>
                         </div>
@@ -181,6 +181,7 @@ const StatsTrends = ({ data }) => {
                                 <h6 className="mb-0 fw-semibold">Carbon Offset Distribution</h6>
                             </div>
                             <div style={{ width: '100%', height: '280px' }}>
+                                <small className="text-muted mb-3">Per Year Distribution</small>
                                 <Pie data={pieCarbonData} options={{
                                     responsive: true,
                                     plugins: {
@@ -224,7 +225,7 @@ const StatsTrends = ({ data }) => {
                                 },
                             }} height={150} />
                             <div className="d-flex justify-content-between align-items-center mt-2">
-                                <a href="#" className="text-primary small">View more</a>
+                                {/*<a href="#" className="text-primary small">View more</a>*/}
                                 <small className="text-muted">Updated {new Date().toLocaleTimeString()}</small>
                             </div>
                         </div>

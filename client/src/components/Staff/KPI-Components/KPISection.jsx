@@ -34,8 +34,8 @@ const KPISection = ({ stats }) => {
             />
             <KPIWidget
                 icon={<FaRecycle />}
-                label="Total Carbon Offset"
-                value={`${stats.totalCarbon || 0} tons`}
+                label="Total Carbon Offset Per Year"
+                value={`${stats.totalCarbon || 0} kg CO₂`}
                 bg="#fff3e0"
             />
             <KPIWidget

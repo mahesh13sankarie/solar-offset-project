@@ -142,7 +142,7 @@ export function PanelsBought() {
                                     <td>{index + 1}</td>
                                     <td>{panel.name}</td>
                                     <td>{panel.quantity}</td>
-                                    <td>${panel.amount.toFixed(2)}</td>
+                                    <td>£{panel.amount.toFixed(2)}</td>
                                 </tr>
                             ))}
                         </tbody>
