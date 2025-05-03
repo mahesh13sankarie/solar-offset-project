@@ -17,7 +17,7 @@ export default function EnquiryDashboard() {
 
     return (
         <div className="container mt-4 mb-5">
-            <h2>Enquiry Dashboard</h2>
+            <h2>Enquiries</h2>
             {enquiries.map(enquiry => (
                 <div key={enquiry.id} className="card mb-3">
                     <div className="card-header d-flex justify-content-between">
