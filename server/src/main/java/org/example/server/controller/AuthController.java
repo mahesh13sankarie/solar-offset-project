@@ -21,6 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -177,7 +178,6 @@ public class AuthController {
         }
     }
     //contact us
-
     @PostMapping("/contact-us")
     public ResponseEntity<?> sendEnquiry(@RequestBody EnquiryRequestDto payload) {
         try {
@@ -199,6 +199,26 @@ public class AuthController {
             return ResponseEntity.status(500).body(Map.of(
                     "success", false,
                     "message", "Send enquiry failed",
+                    "error", e.getMessage()
+            ));
+        }
+    }
+
+    //contact us
+    @GetMapping("/enquiries")
+    public ResponseEntity<?> getEnquiries() {
+        try {
+            List <Enquiry> enquiries = enquiryRepository.findAll();
+
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "data", enquiries
+            ));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of(
+                    "success", false,
+                    "message", "Fetching enquiry failed",
                     "error", e.getMessage()
             ));
         }

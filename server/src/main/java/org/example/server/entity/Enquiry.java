@@ -2,6 +2,9 @@ package org.example.server.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 /**
  * @author: astidhiyaa
@@ -28,4 +31,8 @@ public class Enquiry {
 
     @Column(name = "body", nullable = false)
     private String body;
+
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 }
