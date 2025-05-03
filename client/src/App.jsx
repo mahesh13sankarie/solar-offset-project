@@ -47,17 +47,18 @@ const router = createBrowserRouter([
     { path: "/Payment/:countryCode/:panelId", element: <Payment /> },
     { path: "/change-password", element: <ChangePassword /> },
     { path: "/new-password" , element: <NewPassword /> },
-        {
+    {
         path: "/staff/dashboard",
         element: <StaffDashboard />,
     },
-    { path: "/pdf/:panelId", element: <ReportGenerate /> },
     {
         path:"/test/staff",element:<TestWidget />,
     },
     {
         path:"/transaction-history",element:<TransactionHistory />
     },
+    { path: "/pdf/:panelId", element: <ReportGenerate /> },
+
 ]);
 
 const App = () => {
