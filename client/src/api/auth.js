@@ -16,7 +16,11 @@ export const authEndpoints = {
     },
 
     resetPassword: (resetEmail) => {
-        return apiClient.post("/auth/reset-password", { email: resetEmail });
+        return apiClient.post("/auth/forgot-password", { email: resetEmail });
+    },
+
+    updatePassword: (loginData) => {
+        return apiClient.put("/auth/update-password", loginData);
     },
 
     validate: () => {
