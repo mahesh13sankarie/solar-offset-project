@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import Navbar from "./Navbar.jsx";
-import axios from "axios";
-import { useAuth } from "../../context/AuthContext";
 import { api } from "../../api";
+import { useAuth } from "../../context/AuthContext";
+import Navbar from "./Navbar.jsx";
 
 const InstallationCost = () => {
     const [country, setCountry] = useState(null);
@@ -17,15 +16,6 @@ const InstallationCost = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const token = localStorage.getItem("token");
-            console.log("Fetched token:", token);
-
-            if (!token) {
-                console.error("No token found, please login first");
-                setError("Authentication required. Please login.");
-                return;
-            }
-
             try {
                 const response = await api.countries.getByCode(countryCode);
                 console.log(response.data);
