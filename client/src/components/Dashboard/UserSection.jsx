@@ -18,8 +18,9 @@ const UsersPage = () => {
     const fetchUsers = async () => {
         try {
             const res = await api.dashboard.getUsers();
-            setUsers(res.data.data);
-            console.log(res.data.data);
+            const userData = Array.isArray(res.data.data) ? res.data.data : [];
+            setUsers(userData);
+            console.log(userData);
         } catch (err) {
             console.error("Error fetching users:", err);
         }
@@ -30,7 +31,7 @@ const UsersPage = () => {
     }, []);
 
     // Compute filtered, sorted, and limited users
-    const filteredUsers = users
+    const filteredUsers = (users || [])
         .filter(
             (user) =>
                 user.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||

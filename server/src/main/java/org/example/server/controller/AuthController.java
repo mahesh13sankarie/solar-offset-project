@@ -10,8 +10,11 @@ import org.example.server.repository.EnquiryRepository;
 import org.example.server.repository.UserRepository;
 import org.example.server.service.auth.AuthService;
 import org.example.server.service.mail.MailService;
+import org.example.server.utils.ApiResponse;
+import org.example.server.utils.ApiResponseGenerator;
 import org.example.server.utils.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -106,13 +109,13 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
-    ResponseEntity<?> sendEmail(@RequestBody MailDto email) throws MessagingException {
+    ApiResponse<ApiResponse.CustomBody<Object>> sendEmail(@RequestBody MailDto email) throws MessagingException {
         String mail = email.email();
         User user = getUser(mail);
         if (user == null) {
-            return ResponseEntity.ok().body(responseMapper.buildErrorMessage("Account does not exist!", 400));
+            return ApiResponseGenerator.fail("USER_NOT_FOUND", "Account does not exist!", HttpStatus.NOT_FOUND);
         } else {
-            String link = "https://localhost:5173/new-password?" + email.email(); //should be dynamic link
+            String link = "https://localhost:5173/new-password?" + email.email(); // should be dynamic link
             String content = "<html><body>" +
                     "<p>Please click the following link: " +
                     "<a href=\"" + link + "\">Reset password</a></p>" +
@@ -120,8 +123,8 @@ public class AuthController {
                     "</body></html>";
 
             mailService.sendEmail(new MailAttributes(mail, "Solar Offset: Change password!",
-                    "Dear " + mail, content)); //construct body with link!
-            return ResponseEntity.ok().body(responseMapper.buildCustomMessage("Please check your e-mail!"));
+                    "Dear " + mail, content)); // construct body with link!
+            return ApiResponseGenerator.success(HttpStatus.OK, "Please check your e-mail!");
         }
     }
 
