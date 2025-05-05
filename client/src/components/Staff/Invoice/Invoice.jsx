@@ -41,7 +41,7 @@ export const styles = StyleSheet.create({
         flexDirection: "row",
     },
     tableCol: {
-        width: "25%",
+        width: "33.33%",
         borderStyle: "solid",
         borderWidth: 1,
         borderLeftWidth: 0,
@@ -183,13 +183,11 @@ function PaymentInvoice({ userId, countryPanelId, amount, total, quantity, panel
 
                 <View style={styles.table}>
                     <View style={styles.tableRow}>
-                        <Text style={[styles.tableCol, styles.tableHeader]}>Panel ID</Text>
                         <Text style={[styles.tableCol, styles.tableHeader]}>Payment Method</Text>
                         <Text style={[styles.tableCol, styles.tableHeader]}>Payment Type</Text>
                         <Text style={[styles.tableCol, styles.tableHeader]}>Amount</Text>
                     </View>
                     <View style={styles.tableRow}>
-                        <Text style={styles.tableCol}>{countryPanelId}</Text>
                         <Text style={styles.tableCol}>{paymentMethodId}</Text>
                         <Text style={styles.tableCol}>{paymentType}</Text>
                         <Text style={styles.tableCol}>${amount.toFixed(2)}</Text>
