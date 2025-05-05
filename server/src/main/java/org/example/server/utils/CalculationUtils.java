@@ -11,16 +11,16 @@ public class CalculationUtils {
         if (breakdown.getPowerConsumptionTotal() == null || breakdown.getPowerConsumptionTotal() == 0)
             return 0.0;
 
-        double emissions = (breakdown.getPowerConsumptionTotal() * 1000 * 24 * carbonIntensity.getCarbonIntensity()) / 1_000_000.0;
+        double emissions = (breakdown.getPowerConsumptionTotal() * 24 * carbonIntensity.getCarbonIntensity()) / 1000.0;
         return round(emissions); // tonnes
     }
 
     public static int calculateElectricityAvailability(ElectricityBreakdown breakdown) {
         double availabilityWh = (breakdown.getPowerProductionTotal()
                 + breakdown.getPowerImportTotal()
-                - breakdown.getPowerExportTotal()) * 1000 * 24;
+                - breakdown.getPowerExportTotal()) * 24;
 
-        return (int) Math.round(availabilityWh / 1_000_000.0); // return in MWh
+        return (int) Math.round(availabilityWh / 1000); // return in MWh
     }
 
     public static double calculateSolarPowerPotential(ElectricityBreakdown breakdown) {
