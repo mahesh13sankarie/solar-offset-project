@@ -139,11 +139,12 @@ const StatsTrends = ({ data }) => {
                                 <div className="d-flex align-items-center">
                                     <h4 className="mb-0 fw-bold">£{totalDonations.toLocaleString()}</h4>
                                    <span
-                                        className={`badge ms-2 ${donationGrowth >= 0 ? 'bg-success' : 'bg-danger'}`}
+                                        className={` badge ms-2 ${donationGrowth >= 0 ? 'bg-success' : 'bg-danger'}`}
                                         title="Cumulative growth compared to previous month"
                                         style={{ cursor: 'pointer' }}
                                     >
-                                        {donationGrowth >= 0 ? "+" : ""}{donationGrowth.toFixed(2)}%
+                                    <small className="">Cummulative growth: </small>
+                                       {donationGrowth >= 0 ? "+" : ""}{donationGrowth.toFixed(2)}%
                                     </span>
                                 </div>
                                 <small className="text-muted">£{previousDonations.toLocaleString()} previous period</small>
