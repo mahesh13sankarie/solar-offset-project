@@ -1,29 +1,30 @@
 package org.example.server.controller;
 
 import jakarta.mail.MessagingException;
-import org.example.server.dto.AccountType;
-import org.example.server.dto.LoginDto;
-import org.example.server.dto.MailDto;
-import org.example.server.dto.UserDto;
+import org.example.server.dto.*;
+import org.example.server.entity.Enquiry;
 import org.example.server.entity.MailAttributes;
 import org.example.server.entity.User;
 import org.example.server.mapper.AuthResponseMapper;
+import org.example.server.repository.EnquiryRepository;
 import org.example.server.repository.UserRepository;
 import org.example.server.service.auth.AuthService;
 import org.example.server.service.mail.MailService;
+import org.example.server.utils.ApiResponse;
+import org.example.server.utils.ApiResponseGenerator;
 import org.example.server.utils.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 
@@ -58,6 +59,9 @@ public class AuthController {
 
     @Autowired
     MailService mailService;
+
+    @Autowired
+    private EnquiryRepository enquiryRepository;
 
     //token for Google - OAuth2
     @GetMapping("/generatetoken")
@@ -105,13 +109,13 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
-    ResponseEntity<?> sendEmail(@RequestBody MailDto email) throws MessagingException {
+    ApiResponse<ApiResponse.CustomBody<Object>> sendEmail(@RequestBody MailDto email) throws MessagingException {
         String mail = email.email();
         User user = getUser(mail);
         if (user == null) {
-            return ResponseEntity.ok().body(responseMapper.buildErrorMessage("Account does not exist!", 400));
+            return ApiResponseGenerator.fail("USER_NOT_FOUND", "Account does not exist!", HttpStatus.NOT_FOUND);
         } else {
-            String link = "https://localhost:5173/new-password?" + email.email(); //should be dynamic link
+            String link = "https://localhost:5173/new-password?" + email.email(); // should be dynamic link
             String content = "<html><body>" +
                     "<p>Please click the following link: " +
                     "<a href=\"" + link + "\">Reset password</a></p>" +
@@ -119,8 +123,8 @@ public class AuthController {
                     "</body></html>";
 
             mailService.sendEmail(new MailAttributes(mail, "Solar Offset: Change password!",
-                    "Dear " + mail, content)); //construct body with link!
-            return ResponseEntity.ok().body(responseMapper.buildCustomMessage("Please check your e-mail!"));
+                    "Dear " + mail, content)); // construct body with link!
+            return ApiResponseGenerator.success(HttpStatus.OK, "Please check your e-mail!");
         }
     }
 
@@ -176,6 +180,51 @@ public class AuthController {
             ));
         }
     }
+    //contact us
+    @PostMapping("/contact-us")
+    public ResponseEntity<?> sendEnquiry(@RequestBody EnquiryRequestDto payload) {
+        try {
+            Enquiry enquiry = Enquiry.builder()
+                    .subject(payload.subject())
+                    .body(payload.body())
+                    .name(payload.name())
+                    .email(payload.email())
+                    .build();
 
+            enquiryRepository.save(enquiry);
+
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "data", enquiry
+            ));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of(
+                    "success", false,
+                    "message", "Send enquiry failed",
+                    "error", e.getMessage()
+            ));
+        }
+    }
+
+    //contact us
+    @GetMapping("/enquiries")
+    public ResponseEntity<?> getEnquiries() {
+        try {
+            List <Enquiry> enquiries = enquiryRepository.findAll();
+
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "data", enquiries
+            ));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of(
+                    "success", false,
+                    "message", "Fetching enquiry failed",
+                    "error", e.getMessage()
+            ));
+        }
+    }
 
 }

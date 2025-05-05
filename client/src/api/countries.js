@@ -6,7 +6,6 @@ export const countriesEndpoints = {
     getByCode: (countryCode) => {
         return apiClient.get(`/countries/${countryCode}`, {
             headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "application/json",
             },
         });

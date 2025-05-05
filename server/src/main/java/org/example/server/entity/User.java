@@ -36,6 +36,10 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PanelTransaction> transactions = new ArrayList<>();
 
+    //bidirectional
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Payment> payments = new ArrayList<>();
+
     public User(String email, String password, String fullName, int accountType) {
         this.email = email;
         this.password = password;

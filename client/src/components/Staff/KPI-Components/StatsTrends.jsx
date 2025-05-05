@@ -76,7 +76,7 @@ const StatsTrends = ({ data }) => {
         labels,
         datasets: [
             {
-                label: "Carbon Offset Distribution",
+                label: "Carbon Offset Distribution ",
                 data: monthlyCarbonOffsets,
                 backgroundColor: [
                     "rgba(153, 102, 255, 0.7)",
@@ -139,11 +139,12 @@ const StatsTrends = ({ data }) => {
                                 <div className="d-flex align-items-center">
                                     <h4 className="mb-0 fw-bold">£{totalDonations.toLocaleString()}</h4>
                                    <span
-                                        className={`badge ms-2 ${donationGrowth >= 0 ? 'bg-success' : 'bg-danger'}`}
+                                        className={` badge ms-2 ${donationGrowth >= 0 ? 'bg-success' : 'bg-danger'}`}
                                         title="Cumulative growth compared to previous month"
                                         style={{ cursor: 'pointer' }}
                                     >
-                                        {donationGrowth >= 0 ? "+" : ""}{donationGrowth.toFixed(2)}%
+                                    <small className="">Cummulative growth: </small>
+                                       {donationGrowth >= 0 ? "+" : ""}{donationGrowth.toFixed(2)}%
                                     </span>
                                 </div>
                                 <small className="text-muted">£{previousDonations.toLocaleString()} previous period</small>
@@ -169,7 +170,7 @@ const StatsTrends = ({ data }) => {
                                 },
                             }} height={150} />
                             <div className="d-flex justify-content-between align-items-center mt-2">
-                                <a href="#" className="text-primary small">View more</a>
+                                {/*<a href="#" className="text-primary small">View more</a>*/}
                                 <small className="text-muted">Updated {new Date().toLocaleTimeString()}</small>
                             </div>
                         </div>
@@ -181,6 +182,7 @@ const StatsTrends = ({ data }) => {
                                 <h6 className="mb-0 fw-semibold">Carbon Offset Distribution</h6>
                             </div>
                             <div style={{ width: '100%', height: '280px' }}>
+                                <small className="text-muted mb-3">Per Year Distribution</small>
                                 <Pie data={pieCarbonData} options={{
                                     responsive: true,
                                     plugins: {
@@ -224,7 +226,7 @@ const StatsTrends = ({ data }) => {
                                 },
                             }} height={150} />
                             <div className="d-flex justify-content-between align-items-center mt-2">
-                                <a href="#" className="text-primary small">View more</a>
+                                {/*<a href="#" className="text-primary small">View more</a>*/}
                                 <small className="text-muted">Updated {new Date().toLocaleTimeString()}</small>
                             </div>
                         </div>

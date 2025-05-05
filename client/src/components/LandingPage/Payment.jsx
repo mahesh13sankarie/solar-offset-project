@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { api } from "../../api";
 import { useAuth } from "../../context/AuthContext";
-import { PaymentInvoice } from "../Report/Invoice/Invoice.jsx";
+import { PaymentInvoice } from "../Staff/Invoice/Invoice.jsx";
 import Navbar from "./Navbar.jsx";
 
 const Payment = () => {
@@ -549,12 +549,13 @@ const Payment = () => {
                                                     <div className="mt-2">
                                                         <PDFDownloadLink
                                                             document={
-                                                                <PaymentInvoice
+                                                               <PaymentInvoice
                                                                     userId={userId}
-                                                                    countryPanelId={
-                                                                        selectedPanel?.id
-                                                                    }
+                                                                    countryPanelId={selectedPanel?.id}
                                                                     amount={calculateTotal()}
+                                                                    total={calculateTotal()}
+                                                                    quantity={quantity}
+                                                                    panelName={selectedPanel?.panelName}
                                                                     paymentType="STRIPE"
                                                                     paymentMethodId={`pm_card_${formData.cardNumber
                                                                         .replace(/\s/g, "")

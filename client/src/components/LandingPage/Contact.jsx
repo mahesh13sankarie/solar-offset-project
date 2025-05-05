@@ -1,9 +1,23 @@
+import axios from "axios";
 import React from "react";
 
 const Contact = () => {
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission
+    const formData = new FormData(e.target);
+    const payload = {
+      name: formData.get("name"),
+      email: formData.get("email"),
+      subject: formData.get("subject"),
+      body: formData.get("body"),
+    };
+    try {
+      const response = await axios.post("http://localhost:8000/api/v1/auth/contact-us", payload);
+      alert("Message sent successfully!");
+    } catch (error) {
+      console.error("Error sending message:", error);
+      alert("Failed to send message.");
+    }
   };
 
   return (
@@ -51,16 +65,16 @@ const Contact = () => {
               <form onSubmit={handleSubmit}>
                 <div className="row gy-3">
                   <div className="col-md-6">
-                    <input type="text" className="form-control" placeholder="Your Name" required />
+                    <input name="name" type="text" className="form-control" placeholder="Your Name" required />
                   </div>
                   <div className="col-md-6">
-                    <input type="email" className="form-control" placeholder="Your Email" required />
+                    <input name="email" type="email" className="form-control" placeholder="Your Email" required />
                   </div>
                   <div className="col-12">
-                    <input type="text" className="form-control" placeholder="Subject" required />
+                    <input name="subject" type="text" className="form-control" placeholder="Subject" required />
                   </div>
                   <div className="col-12">
-                    <textarea className="form-control" rows="5" placeholder="Message" required></textarea>
+                    <textarea name="body" className="form-control" rows="5" placeholder="Message" required></textarea>
                   </div>
                   <div className="col-12 text-center">
                     <button type="submit" className="btn btn-primary px-4 py-2 mt-2">

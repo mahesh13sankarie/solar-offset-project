@@ -19,7 +19,7 @@ const KPIWidget = ({ icon, label, value, bg }) => {
 
 const KPISection = ({ stats }) => {
     return (
-        <div className="d-flex justify-content-center flex-wrap gap-4">
+        <div className="d-flex justify-content-center text-center flex-wrap gap-4">
             <KPIWidget
                 icon={<FaSun />}
                 label="Total Panels Funded"
@@ -34,14 +34,14 @@ const KPISection = ({ stats }) => {
             />
             <KPIWidget
                 icon={<FaRecycle />}
-                label="Total Carbon Offset"
-                value={`${stats.totalCarbon || 0} tons`}
+                label="Total Carbon Offset Per Year"
+                value={`${stats.totalCarbon || 0} kg CO₂`}
                 bg="#fff3e0"
             />
             <KPIWidget
                 icon={<FaUsers />}
-                label="Active Donors / New Users"
-                value={`${stats.activeDonors || 0} / ${stats.newUsers || 0}`}
+                label="Total Active Users"
+                value={`${stats.activeDonors || 0} `}
                 bg="#ede7f6"
             />
         </div>
