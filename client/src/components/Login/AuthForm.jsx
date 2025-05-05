@@ -53,6 +53,25 @@ const AuthForm = () => {
         }));
     };
 
+    const handleLoginSuccess = (userData, token, name) => {
+        login({
+            token: token,
+            userId: userData.id,
+        });
+
+        // Store data in localStorage
+        localStorage.setItem("token", token);
+        localStorage.setItem("fullName", name || userData.fullName);
+        localStorage.setItem("accountType", userData.accountType);
+
+        // Update UI states
+        setMessage("Login successful");
+        setIsLoading(true);
+
+        // Navigate after delay
+        setTimeout(() => navigate("/SolarComparison"), 2000);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setMessage("");
@@ -74,18 +93,8 @@ const AuthForm = () => {
                 };
                 const res = await api.auth.login(credentials);
                 const userData = res.data.data;
-                login({
-                    token: res.data.token,
-                    userId: userData.id,
-                });
-                localStorage.setItem("token", res.data.token);
-                localStorage.setItem("fullName", userData.fullName);
-                localStorage.setItem("accountType", userData.accountType); // Store accountType
 
-                setMessage("Login successful");
-                setIsSuccess(true);
-                setIsLoading(true); // Show the loading animation
-                setTimeout(() => navigate("/SolarComparison"), 2000); // Increased delay to show animation
+                handleLoginSuccess(userData, res.data.token, userData.fullName);
             } else {
                 const userData = {
                     email: formData.email,
@@ -141,19 +150,9 @@ const AuthForm = () => {
                     email: googleUser.data.email,
                     name: googleUser.data.name,
                 });
-                console.log("Backend Response:", res.data);
 
                 const userData = res.data.data;
-                login({
-                    token: res.data.token,
-                    userId: userData.id,
-                });
-                localStorage.setItem("token", res.data.token);
-                localStorage.setItem("fullName", userData.fullName || googleUser.data.name);
-                localStorage.setItem("accountType", userData.accountType);
-                setMessage("Login successful");
-                setIsLoading(true);
-                setTimeout(() => navigate("/SolarComparison"), 2000);
+                handleLoginSuccess(userData, res.data.token, googleUser.data.name);
             } catch (error) {
                 console.error("Error during Google login:", error);
                 setMessage("Google Login Failed");
