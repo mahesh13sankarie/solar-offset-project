@@ -190,118 +190,89 @@ const AuthForm = () => {
                                         <h3 className="text-center">
                                             {formState === "login" ? "Login" : "Register"}
                                         </h3>
-                                        <form onSubmit={handleSubmit}>
-                                            <div className="mb-3">
-                                                <label className="form-label">Email</label>
-                                                <input
-                                                    type="email"
-                                                    className="form-control"
-                                                    name="email"
-                                                    value={formData.email}
-                                                    onChange={handleChange}
-                                                    required
-                                                />
-                                            </div>
-                                            <div className="mb-3">
-                                                <label className="form-label">Password</label>
-                                                <input
-                                                    type="password"
-                                                    className="form-control"
-                                                    name="password"
-                                                    value={formData.password}
-                                                    onChange={handleChange}
-                                                    required
-                                                />
-                                            </div>
 
-                                            {formState === "register" && (
-                                                <>
+                                        {formState === "login" ? (
+                                            <>
+                                                {/* Email Login Form */}
+                                                <form onSubmit={handleSubmit}>
+                                                    <div className="mb-3">
+                                                        <label className="form-label">Email</label>
+                                                        <input
+                                                            type="email"
+                                                            className="form-control"
+                                                            name="email"
+                                                            value={formData.email}
+                                                            onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </div>
                                                     <div className="mb-3">
                                                         <label className="form-label">
-                                                            Confirm Password
+                                                            Password
                                                         </label>
                                                         <input
                                                             type="password"
                                                             className="form-control"
-                                                            name="confirmPassword"
-                                                            value={formData.confirmPassword}
+                                                            name="password"
+                                                            value={formData.password}
                                                             onChange={handleChange}
                                                             required
                                                         />
                                                     </div>
-                                                    <div className="mb-3">
-                                                        <label className="form-label">
-                                                            Full Name
-                                                        </label>
-                                                        <input
-                                                            type="text"
-                                                            className="form-control"
-                                                            name="fullName"
-                                                            value={formData.fullName}
-                                                            onChange={handleChange}
-                                                            required
-                                                        />
-                                                    </div>
-                                                </>
-                                            )}
 
-                                            {message && (
-                                                <p className="text-danger text-center">{message}</p>
-                                            )}
+                                                    {message && (
+                                                        <p className="text-danger text-center">
+                                                            {message}
+                                                        </p>
+                                                    )}
 
-                                            <button type="submit" className="btn btn-primary w-100">
-                                                Submit
-                                            </button>
-                                        </form>
+                                                    <button
+                                                        type="submit"
+                                                        className="btn btn-primary w-100"
+                                                    >
+                                                        Login
+                                                    </button>
+                                                </form>
 
-                                        <div className="text-center mt-3">
-                                            {formState === "login" ? (
-                                                <>
-                                                    <a
-                                                        href="#"
-                                                        onClick={(e) => {
-                                                            e.preventDefault();
-                                                            switchForm("register");
+                                                {/* Google Login Button */}
+                                                <div className="text-center mt-4">
+                                                    <button
+                                                        className="btn btn-light d-flex align-items-center justify-content-center mx-auto"
+                                                        type="button"
+                                                        onClick={() => googleLogin()}
+                                                        style={{
+                                                            borderRadius: "30px",
+                                                            padding: "10px 20px",
+                                                            transition: "all 0.3s ease",
+                                                            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                                                            border: "1px solid #e6e6e6",
+                                                            width: "100%",
+                                                            maxWidth: "280px",
+                                                            fontWeight: "500",
+                                                            fontSize: "15px",
+                                                            color: "#3c4043",
+                                                        }}
+                                                        onMouseOver={(e) => {
+                                                            e.currentTarget.style.boxShadow =
+                                                                "0 4px 8px rgba(0,0,0,0.15)";
+                                                            e.currentTarget.style.backgroundColor =
+                                                                "#f8f9fa";
+                                                        }}
+                                                        onMouseOut={(e) => {
+                                                            e.currentTarget.style.boxShadow =
+                                                                "0 2px 4px rgba(0,0,0,0.1)";
+                                                            e.currentTarget.style.backgroundColor =
+                                                                "#fff";
                                                         }}
                                                     >
-                                                        Don't have an account? Register
-                                                    </a>
-                                                    <br />
-                                                    <a
-                                                        href="/change-password"
-                                                        className="text-decoration-none mt-2 d-inline-block"
-                                                    >
-                                                        Forgot Password?
-                                                    </a>
-                                                    <br />
-                                                    <p className="mt-2">Or</p>
-                                                </>
-                                            ) : (
-                                                <a
-                                                    href="#"
-                                                    onClick={(e) => {
-                                                        e.preventDefault();
-                                                        switchForm("login");
-                                                    }}
-                                                >
-                                                    Already have an account? Login
-                                                </a>
-                                            )}
-                                        </div>
-
-                                        {/* Google Login Button */}
-                                        <div className="text-center mt-3">
-                                            <button
-                                                className="gsi-material-button"
-                                                type="button"
-                                                onClick={() => googleLogin()}
-                                            >
-                                                <div className="gsi-material-button-content-wrapper">
-                                                    <div className="gsi-material-button-icon">
                                                         <svg
                                                             xmlns="http://www.w3.org/2000/svg"
                                                             viewBox="0 0 48 48"
-                                                            style={{ height: 20, width: 20 }}
+                                                            style={{
+                                                                height: 20,
+                                                                width: 20,
+                                                                marginRight: "12px",
+                                                            }}
                                                         >
                                                             <path
                                                                 fill="#EA4335"
@@ -320,14 +291,132 @@ const AuthForm = () => {
                                                                 d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
                                                             ></path>
                                                         </svg>
-                                                        <span className="gsi-material-button-contents">
-                                                            {" "}
-                                                            Sign in with Google
-                                                        </span>
+                                                        Sign in with Google
+                                                    </button>
+                                                </div>
+
+                                                {/* Divider */}
+                                                <div className="d-flex align-items-center mt-4 mb-4">
+                                                    <hr className="flex-grow-1" />
+                                                    <span className="px-2 text-secondary">OR</span>
+                                                    <hr className="flex-grow-1" />
+                                                </div>
+
+                                                {/* Secondary Options */}
+                                                <div className="text-center">
+                                                    <div className="mb-3">
+                                                        <a
+                                                            href="#"
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                switchForm("register");
+                                                            }}
+                                                            className="text-decoration-none"
+                                                        >
+                                                            Don't have an account? Register
+                                                        </a>
+                                                    </div>
+                                                    <div>
+                                                        <a
+                                                            href="/change-password"
+                                                            className="text-decoration-none"
+                                                        >
+                                                            Forgot Password?
+                                                        </a>
                                                     </div>
                                                 </div>
-                                            </button>
-                                        </div>
+                                            </>
+                                        ) : (
+                                            <>
+                                                {/* Register Form */}
+                                                <form onSubmit={handleSubmit}>
+                                                    <div className="mb-3">
+                                                        <label className="form-label">Email</label>
+                                                        <input
+                                                            type="email"
+                                                            className="form-control"
+                                                            name="email"
+                                                            value={formData.email}
+                                                            onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </div>
+                                                    <div className="mb-3">
+                                                        <label className="form-label">
+                                                            Full Name
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control"
+                                                            name="fullName"
+                                                            value={formData.fullName}
+                                                            onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </div>
+                                                    <div className="mb-3">
+                                                        <label className="form-label">
+                                                            Password
+                                                        </label>
+                                                        <input
+                                                            type="password"
+                                                            className="form-control"
+                                                            name="password"
+                                                            value={formData.password}
+                                                            onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </div>
+                                                    <div className="mb-3">
+                                                        <label className="form-label">
+                                                            Confirm Password
+                                                        </label>
+                                                        <input
+                                                            type="password"
+                                                            className="form-control"
+                                                            name="confirmPassword"
+                                                            value={formData.confirmPassword}
+                                                            onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </div>
+
+                                                    {message && (
+                                                        <p className="text-danger text-center">
+                                                            {message}
+                                                        </p>
+                                                    )}
+
+                                                    <button
+                                                        type="submit"
+                                                        className="btn btn-primary w-100"
+                                                    >
+                                                        Register
+                                                    </button>
+                                                </form>
+
+                                                {/* Divider */}
+                                                <div className="d-flex align-items-center mt-4 mb-4">
+                                                    <hr className="flex-grow-1" />
+                                                    <span className="px-2 text-secondary">OR</span>
+                                                    <hr className="flex-grow-1" />
+                                                </div>
+
+                                                {/* Back to Login */}
+                                                <div className="text-center">
+                                                    <a
+                                                        href="#"
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            switchForm("login");
+                                                        }}
+                                                        className="text-decoration-none"
+                                                    >
+                                                        Already have an account? Login
+                                                    </a>
+                                                </div>
+                                            </>
+                                        )}
                                     </>
                                 ) : (
                                     <h3 className="text-center">Submitted Successfully</h3>
