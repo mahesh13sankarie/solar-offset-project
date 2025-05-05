@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip } from "chart.js";
 import { api } from "../../api";
 
+
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 // Color palette
@@ -104,6 +105,32 @@ const SolarComparison = () => {
         ],
     };
 
+    const countryScores = countries.map((item) => {
+        const emission = item.carbonEmissions;
+        const renewable = item.renewablePercentage;
+        const solar = item.solarPowerPotential;
+
+        const emissionScore = emission; // Bisa distandarisasi jika perlu
+        const renewableScore = 100 - renewable;
+        const solarScore = 100 - solar;
+
+        const totalScore = emissionScore * 0.4 + renewableScore * 0.3 + solarScore * 0.3;
+
+        return {
+            country: item.country,
+            score: totalScore.toFixed(2)
+        };
+    });
+
+    const getRecommendedCountry = () => {
+        const recommended = countryScores.sort((a, b) => b.score - a.score)[0];
+        console.log("recomended country",recommended.country)
+        return recommended.country;
+    };
+
+
+
+
     const formatValue = (key, value) => {
         if (value == null) return "-";
         switch (key) {
@@ -154,7 +181,26 @@ const SolarComparison = () => {
                     <tbody>
                     {filtered.map((item, index) => (
                         <tr key={item.zone} style={{ verticalAlign: "middle" }}>
-                            <td>{item.country}</td>
+                            <td>{item.country}
+
+                                {item.country === getRecommendedCountry() && (
+                                    <span
+                                        style={{
+                                            display: "inline-block",
+                                            fontSize: "0.75rem",
+                                            padding: "0.35em 0.65em",
+                                            fontWeight: "600",
+                                            lineHeight: "1",
+                                            color: "#fff",
+                                            backgroundColor: "#17a2b8",
+                                            borderRadius: "10px",
+                                            marginLeft: "8px"}}
+                                        className="badge badge-pill badge-info">Recommended</span>
+                                )
+
+                                }
+                            </td>
+
                             <td>{formatValue("carbonEmissions", item.carbonEmissions)}</td>
                             <td>
                                 {formatValue(
@@ -198,6 +244,11 @@ const SolarComparison = () => {
                     </tbody>
                 </table>
 
+                <div><p style={{fontSize: "0.85rem"}}><span className="bi-info-circle"></span> A country with high
+                    carbon emissions, low renewable energy production, and low solar production is the
+                    recommended country to receive donations.
+                </p>
+                </div>
                 {/* Color Legend */}
                 {filtered.length > 0 && (
                     <div className="d-flex flex-wrap justify-content-center gap-4 mb-4 mt-4">
