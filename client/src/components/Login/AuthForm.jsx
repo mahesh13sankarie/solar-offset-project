@@ -33,6 +33,7 @@ const AuthForm = () => {
         fullName: "",
     });
     const [message, setMessage] = useState("");
+    const [isSuccess, setIsSuccess] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
@@ -55,10 +56,12 @@ const AuthForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setMessage("");
+        setIsSuccess(false);
         setSubmitted(true);
 
         if (formState === "register" && formData.password !== formData.confirmPassword) {
             setMessage("Passwords do not match");
+            setIsSuccess(false);
             setSubmitted(false);
             return;
         }
@@ -80,6 +83,7 @@ const AuthForm = () => {
                 localStorage.setItem("accountType", userData.accountType); // Store accountType
 
                 setMessage("Login successful");
+                setIsSuccess(true);
                 setIsLoading(true); // Show the loading animation
                 setTimeout(() => navigate("/SolarComparison"), 2000); // Increased delay to show animation
             } else {
@@ -94,14 +98,23 @@ const AuthForm = () => {
 
                 if (res.status === 200) {
                     setMessage("Registered successfully, please login");
+                    setIsSuccess(true);
                     setFormState("login");
+                    setFormData({
+                        email: "",
+                        password: "",
+                        confirmPassword: "",
+                        fullName: "",
+                    });
                 }
             }
         } catch (err) {
             if (err.response && err.response.status === 404) {
                 setMessage("User does not exist. Please try logging in again.");
+                setIsSuccess(false);
             } else {
                 setMessage("Error: Unable to connect to server");
+                setIsSuccess(false);
             }
         } finally {
             if (formState !== "login") {
@@ -112,8 +125,9 @@ const AuthForm = () => {
 
     const switchForm = (state) => {
         setFormState(state);
-        setFormData({ email: "", password: "", confirmPassword: "", fullName: "", country: "" });
+        setFormData({ email: "", password: "", confirmPassword: "", fullName: "" });
         setMessage("");
+        setIsSuccess(false);
     };
     const googleLogin = useGoogleLogin({
         onSuccess: async (response) => {
@@ -221,7 +235,13 @@ const AuthForm = () => {
                                                     </div>
 
                                                     {message && (
-                                                        <p className="text-danger text-center">
+                                                        <p
+                                                            className={`text-center ${
+                                                                isSuccess
+                                                                    ? "text-success"
+                                                                    : "text-danger"
+                                                            }`}
+                                                        >
                                                             {message}
                                                         </p>
                                                     )}
@@ -382,7 +402,13 @@ const AuthForm = () => {
                                                     </div>
 
                                                     {message && (
-                                                        <p className="text-danger text-center">
+                                                        <p
+                                                            className={`text-center ${
+                                                                isSuccess
+                                                                    ? "text-success"
+                                                                    : "text-danger"
+                                                            }`}
+                                                        >
                                                             {message}
                                                         </p>
                                                     )}
