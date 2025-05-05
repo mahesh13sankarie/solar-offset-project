@@ -41,7 +41,7 @@ const InstallationCost = () => {
             // After 2 seconds, close modal and redirect to home
             setTimeout(() => {
                 setShowLoginModal(false);
-                navigate("/solarComparison");
+                navigate("/login");
             }, 2000);
         }
     };
