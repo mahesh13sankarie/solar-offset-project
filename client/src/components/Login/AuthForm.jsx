@@ -150,6 +150,7 @@ const AuthForm = () => {
                 });
                 localStorage.setItem("token", res.data.token);
                 localStorage.setItem("fullName", userData.fullName || googleUser.data.name);
+                localStorage.setItem("accountType", userData.accountType);
                 setMessage("Login successful");
                 setIsLoading(true);
                 setTimeout(() => navigate("/SolarComparison"), 2000);
