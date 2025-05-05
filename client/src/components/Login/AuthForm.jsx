@@ -113,7 +113,7 @@ const AuthForm = () => {
                 setMessage("User does not exist. Please try logging in again.");
                 setIsSuccess(false);
             } else {
-                setMessage("Error: Unable to connect to server");
+                setMessage("Wrong email or password");
                 setIsSuccess(false);
             }
         } finally {
