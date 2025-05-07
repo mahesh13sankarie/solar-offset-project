@@ -2,16 +2,9 @@ import Navbar from "./Navbar.jsx";
 import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { Link } from "react-router-dom";
-import {
-    BarElement,
-    CategoryScale,
-    Chart as ChartJS,
-    Legend,
-    LinearScale,
-    Title,
-    Tooltip,
-} from "chart.js";
+import { BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip } from "chart.js";
 import { api } from "../../api";
+
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -85,6 +78,22 @@ const SolarComparison = () => {
         ],
     };
 
+    const carbonIntensityChart = {
+        labels: filtered.map((c) => c.country),
+        datasets: [
+            {
+                label: "tCO₂ per MWh",
+                data: filtered.map((c) =>
+                    c.electricityAvailability > 0
+                        ? (c.carbonEmissions / c.electricityAvailability).toFixed(2)
+                        : 0,
+                ),
+                backgroundColor: filtered.map((_, i) => COLORS[i % COLORS.length]),
+            },
+        ],
+    };
+
+
     const renewablesChart = {
         labels: filtered.map((c) => c.country),
         datasets: [
@@ -95,6 +104,32 @@ const SolarComparison = () => {
             },
         ],
     };
+
+    const countryScores = countries.map((item) => {
+        const emission = item.carbonEmissions;
+        const renewable = item.renewablePercentage;
+        const solar = item.solarPowerPotential;
+
+        const emissionScore = emission; // Bisa distandarisasi jika perlu
+        const renewableScore = 100 - renewable;
+        const solarScore = 100 - solar;
+
+        const totalScore = emissionScore * 0.4 + renewableScore * 0.3 + solarScore * 0.3;
+
+        return {
+            country: item.country,
+            score: totalScore.toFixed(2)
+        };
+    });
+
+    const getRecommendedCountry = () => {
+        const recommended = countryScores.sort((a, b) => b.score - a.score)[0];
+        console.log("recomended country",recommended.country)
+        return recommended.country;
+    };
+
+
+
 
     const formatValue = (key, value) => {
         if (value == null) return "-";
@@ -132,58 +167,88 @@ const SolarComparison = () => {
                 {/* Table */}
                 <table className="table table-bordered table-striped mb-3">
                     <thead className="table-light">
-                        <tr>
-                            <th>Country</th>
-                            <th>Carbon Emissions</th>
-                            <th>Electricity</th>
-                            <th>Renewables</th>
-                            <th>Existing Solar Production</th>
-                            <th>Population</th>
-                            <th>Actions</th>
-                        </tr>
+                    <tr>
+                        <th>Country</th>
+                        <th>Carbon Emissions</th>
+                        <th>Electricity</th>
+                        <th>tCO₂ per MWh</th>
+                        <th>Renewables</th>
+                        <th>Existing Solar Production</th>
+                        <th>Population</th>
+                        <th>Actions</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        {filtered.map((item, index) => (
-                            <tr key={item.zone} style={{ verticalAlign: "middle" }}>
-                                <td>{item.country}</td>
-                                <td>{formatValue("carbonEmissions", item.carbonEmissions)}</td>
-                                <td>
-                                    {formatValue(
-                                        "electricityAvailability",
-                                        item.electricityAvailability,
-                                    )}
-                                </td>
-                                <td>
-                                    {formatValue("renewablePercentage", item.renewablePercentage)}
-                                </td>
-                                <td>
-                                    {formatValue("solarPowerPotential", item.solarPowerPotential)}
-                                </td>
-                                <td>{formatValue("population", item.population)}</td>
-                                <td>
-                                    <Link
-                                        to={`/InstallationCost/${item.zone}`}
-                                        className="btn btn-outline-primary btn-sm d-flex align-items-center justify-content-center gap-1"
+                    {filtered.map((item, index) => (
+                        <tr key={item.zone} style={{ verticalAlign: "middle" }}>
+                            <td>{item.country}
+
+                                {item.country === getRecommendedCountry() && (
+                                    <span
                                         style={{
-                                            fontWeight: 600,
-                                            fontSize: "0.9rem",
-                                            minWidth: "120px",
-                                            borderRadius: "0.5rem",
-                                            padding: "6px 12px",
-                                        }}
-                                    >
-                                        <i
-                                            className="bi bi-arrow-right-circle"
-                                            style={{ fontSize: "1rem" }}
-                                        ></i>
-                                        Details
-                                    </Link>
-                                </td>
-                            </tr>
-                        ))}
+                                            display: "inline-block",
+                                            fontSize: "0.75rem",
+                                            padding: "0.35em 0.65em",
+                                            fontWeight: "600",
+                                            lineHeight: "1",
+                                            color: "#fff",
+                                            backgroundColor: "#17a2b8",
+                                            borderRadius: "10px",
+                                            marginLeft: "8px"}}
+                                        className="badge badge-pill badge-info">Recommended</span>
+                                )
+
+                                }
+                            </td>
+
+                            <td>{formatValue("carbonEmissions", item.carbonEmissions)}</td>
+                            <td>
+                                {formatValue(
+                                    "electricityAvailability",
+                                    item.electricityAvailability,
+                                )}
+                            </td>
+                            <td>
+                                {item.electricityAvailability > 0
+                                    ? (item.carbonEmissions / item.electricityAvailability).toFixed(2)
+                                    : "-"}
+                            </td>
+                            <td>
+                                {formatValue("renewablePercentage", item.renewablePercentage)}
+                            </td>
+                            <td>
+                                {formatValue("solarPowerPotential", item.solarPowerPotential)}
+                            </td>
+                            <td>{formatValue("population", item.population)}</td>
+                            <td>
+                                <Link
+                                    to={`/InstallationCost/${item.zone}`}
+                                    className="btn btn-outline-primary btn-sm d-flex align-items-center justify-content-center gap-1"
+                                    style={{
+                                        fontWeight: 600,
+                                        fontSize: "0.9rem",
+                                        minWidth: "120px",
+                                        borderRadius: "0.5rem",
+                                        padding: "6px 12px",
+                                    }}
+                                >
+                                    <i
+                                        className="bi bi-arrow-right-circle"
+                                        style={{ fontSize: "1rem" }}
+                                    ></i>
+                                    Details
+                                </Link>
+                            </td>
+                        </tr>
+                    ))}
                     </tbody>
                 </table>
 
+                <div><p style={{fontSize: "0.85rem"}}><span className="bi-info-circle"></span> A country with high
+                    carbon emissions, low renewable energy production, and low solar production is the
+                    recommended country to receive donations.
+                </p>
+                </div>
                 {/* Color Legend */}
                 {filtered.length > 0 && (
                     <div className="d-flex flex-wrap justify-content-center gap-4 mb-4 mt-4">
