@@ -57,39 +57,39 @@ public class MailServiceTest {
     }
 
     @Test
-//    void send_email_throw() {
-//        // Given
-//        MailAttributes mailAttributes = new MailAttributes(
-//                "recipient@example.com",
-//                "Test Subject",
-//                "Email Body",
-//                content
-//        );
-//
-//        when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
-//        doThrow(new MessagingException("Failed to send email")).when(mailSender).send(mimeMessage);
-//
-//        // When & Then
-//        assertThrows(MessagingException.class, () -> mailService.sendEmail(mailAttributes));
-//        verify(mailSender).createMimeMessage();
-//        verify(mailSender).send(mimeMessage);
-//    }
+    void send_email_throw() throws MessagingException{
+        // Given
+        MailAttributes mailAttributes = new MailAttributes(
+                "recipient@example.com",
+                "Test Subject",
+                "Email Body",
+                content
+        );
 
-//    @Test
-//    void send_email_fail_msg() {
-//        // Given
-//        MailAttributes mailAttributes = new MailAttributes(
-//                "recipient@example.com",
-//                "Test Subject",
-//                "Email Body",
-//                content
-//        );
-//
-//        when(mailSender.createMimeMessage()).thenThrow(new MessagingException("Failed to create message"));
-//
-//        // When & Then
-//        assertThrows(MessagingException.class, () -> mailService.sendEmail(mailAttributes));
-//        verify(mailSender).createMimeMessage();
-//        verify(mailSender, never()).send(any(MimeMessage.class));
-//    }
+        when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
+        doThrow(new MessagingException("Failed to send email")).when(mailSender).send(mimeMessage);
+
+        // When & Then
+        assertThrows(MessagingException.class, () -> mailService.sendEmail(mailAttributes));
+        verify(mailSender).createMimeMessage();
+        verify(mailSender).send(mimeMessage);
+    }
+
+    @Test
+    void send_email_fail_msg() throws MessagingException {
+        // Given
+        MailAttributes mailAttributes = new MailAttributes(
+                "recipient@example.com",
+                "Test Subject",
+                "Email Body",
+                content
+        );
+
+        when(mailSender.createMimeMessage()).thenThrow(new MessagingException("Failed to create message"));
+
+        // When & Then
+        assertThrows(MessagingException.class, () -> mailService.sendEmail(mailAttributes));
+        verify(mailSender).createMimeMessage();
+        verify(mailSender, never()).send(any(MimeMessage.class));
+    }
 }
