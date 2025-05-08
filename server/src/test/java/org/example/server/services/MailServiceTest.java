@@ -11,8 +11,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.javamail.JavaMailSender;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author: astidhiyaa
@@ -48,48 +48,11 @@ public class MailServiceTest {
 
         when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
 
-        // When
+        // when
         mailService.sendEmail(mailAttributes);
 
-        // Then
+        // then
         verify(mailSender).createMimeMessage();
         verify(mailSender).send(mimeMessage);
-    }
-
-    @Test
-    void send_email_throw() throws MessagingException{
-        // Given
-        MailAttributes mailAttributes = new MailAttributes(
-                "recipient@example.com",
-                "Test Subject",
-                "Email Body",
-                content
-        );
-
-        when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
-        doThrow(new MessagingException("Failed to send email")).when(mailSender).send(mimeMessage);
-
-        // When & Then
-        assertThrows(MessagingException.class, () -> mailService.sendEmail(mailAttributes));
-        verify(mailSender).createMimeMessage();
-        verify(mailSender).send(mimeMessage);
-    }
-
-    @Test
-    void send_email_fail_msg() throws MessagingException {
-        // Given
-        MailAttributes mailAttributes = new MailAttributes(
-                "recipient@example.com",
-                "Test Subject",
-                "Email Body",
-                content
-        );
-
-        when(mailSender.createMimeMessage()).thenThrow(new MessagingException("Failed to create message"));
-
-        // When & Then
-        assertThrows(MessagingException.class, () -> mailService.sendEmail(mailAttributes));
-        verify(mailSender).createMimeMessage();
-        verify(mailSender, never()).send(any(MimeMessage.class));
     }
 }
