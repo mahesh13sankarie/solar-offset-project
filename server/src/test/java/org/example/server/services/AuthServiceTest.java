@@ -13,13 +13,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -139,13 +139,11 @@ public class AuthServiceTest {
         // given
         LoginDto loginDto = buildLoginDto();
 
-        //when(userRepository.findByEmail(anyString())).thenReturn(null);
+        when(userRepository.findByEmail(anyString())).thenReturn(null);
 
-        // when
-        //authService.updatePassword(loginDto);
-
-        // then
-        //Mockito.doThrow(UsernameNotFoundException.class).when(userRepository).updatePassword(any(), any());
+        // when & then
+        UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class, () -> authService.updatePassword(loginDto));
+        assertEquals(loginDto.email(), exception.getMessage());
     }
 
     @Test
@@ -181,13 +179,11 @@ public class AuthServiceTest {
         // given
         Long userId = 1L;
 
-        //when(userRepository.findById(any())).thenReturn(null);
+        when(userRepository.findById(any())).thenReturn(Optional.empty());
 
-        // when
-        //authService.deleteUser(userId);
-
-        // then
-        //verify(userRepository).findById(userId);
+        //when and then
+        UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class, () -> authService.deleteUser(userId));
+        assertEquals("User not found", exception.getMessage());
     }
 
     @Test
