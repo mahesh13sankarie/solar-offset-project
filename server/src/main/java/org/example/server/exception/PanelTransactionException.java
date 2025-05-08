@@ -57,4 +57,11 @@ public class PanelTransactionException extends RuntimeException {
 				"User not found with ID: " + userId,
 				HttpStatus.NOT_FOUND);
 	}
+
+	public static PanelTransactionException paymentNotFound(Long paymentId) {
+		return new PanelTransactionException(
+				PANEL_NOT_FOUND_ERROR,
+				"Payment not found with ID: " + paymentId,
+				HttpStatus.NOT_FOUND);
+	}
 }

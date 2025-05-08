@@ -45,12 +45,13 @@ public class PanelTransactionServiceImpl implements PanelTransactionService {
                 .orElseThrow(() -> PanelTransactionException.userNotFound(panelTransaction.userId()));
 
         List<Payment> payments = paymentRepository.findByUserId(panelTransaction.userId());
-        Payment payment = payments.stream()
+        Payment payment = payments
+                .stream()
                 .filter(p -> Objects.equals(p.getUser().getId(), user.getId()))
                 .filter(p -> Objects.equals(p.getId(), panelTransaction.paymentId()))
                 .findFirst()
                 .orElseThrow(
-                        () -> PanelTransactionException.panelNotFound(panelTransaction.panelId())
+                        () -> PanelTransactionException.paymentNotFound(panelTransaction.paymentId())
                 );
         PanelTransaction newTransaction = new PanelTransaction(user, panel, payment);
         return panelTransactionRepository.save(newTransaction);
