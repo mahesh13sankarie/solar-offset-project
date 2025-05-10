@@ -68,35 +68,16 @@ class AuthControllerTest {
 		mailService = mock(MailService.class);
 		enquiryRepository = mock(EnquiryRepository.class);
 
-		// Create controller with mocked dependencies
-		authController = new AuthController();
-
-		// Set dependencies using reflection (since there are no setters)
-		java.lang.reflect.Field[] fields = AuthController.class.getDeclaredFields();
-		try {
-			for (java.lang.reflect.Field field : fields) {
-				field.setAccessible(true);
-				if (field.getType() == AuthService.class) {
-					field.set(authController, authService);
-				} else if (field.getType() == UserRepository.class) {
-					field.set(authController, userRepository);
-				} else if (field.getType() == BCryptPasswordEncoder.class) {
-					field.set(authController, encoder);
-				} else if (field.getType() == TokenProvider.class) {
-					field.set(authController, tokenProvider);
-				} else if (field.getType() == AuthenticationManager.class) {
-					field.set(authController, authenticationManager);
-				} else if (field.getType() == AuthResponseMapper.class) {
-					field.set(authController, responseMapper);
-				} else if (field.getType() == MailService.class) {
-					field.set(authController, mailService);
-				} else if (field.getType() == EnquiryRepository.class) {
-					field.set(authController, enquiryRepository);
-				}
-			}
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException("Error setting up test dependencies", e);
-		}
+		// Create controller with mocked dependencies using constructor injection
+		authController = new AuthController(
+				userRepository,
+				authService,
+				encoder,
+				tokenProvider,
+				authenticationManager,
+				responseMapper,
+				mailService,
+				enquiryRepository);
 	}
 
 	@Test

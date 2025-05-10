@@ -19,7 +19,6 @@ import org.example.server.service.mail.MailService;
 import org.example.server.utils.ApiResponse;
 import org.example.server.utils.ApiResponseGenerator;
 import org.example.server.utils.TokenProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.mail.MessagingException;
+import lombok.RequiredArgsConstructor;
 
 /**
  * *
@@ -46,32 +46,18 @@ import jakarta.mail.MessagingException;
 @RestController
 @RequestMapping("/api/v1/auth")
 @CrossOrigin(origins = "http://localhost:5173")
+@RequiredArgsConstructor
 public class AuthController {
     private static final String CLIENT_ID = "234686151907-h0egb9h34beugoudlrffovu95nkt4a10.apps.googleusercontent.com";
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private AuthService authService;
-
-    @Autowired
-    BCryptPasswordEncoder encoder;
-
-    @Autowired
-    TokenProvider tokenProvider;
-
-    @Autowired
-    AuthenticationManager authenticationManager;
-
-    @Autowired
-    AuthResponseMapper responseMapper;
-
-    @Autowired
-    MailService mailService;
-
-    @Autowired
-    private EnquiryRepository enquiryRepository;
+    private final UserRepository userRepository;
+    private final AuthService authService;
+    private final BCryptPasswordEncoder encoder;
+    private final TokenProvider tokenProvider;
+    private final AuthenticationManager authenticationManager;
+    private final AuthResponseMapper responseMapper;
+    private final MailService mailService;
+    private final EnquiryRepository enquiryRepository;
 
     // token for Google - OAuth2
     @GetMapping("/generatetoken")
@@ -89,13 +75,13 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    ApiResponse<ApiResponse.CustomBody<Object>> register(@RequestBody UserDto userDto) {
+    public ApiResponse<ApiResponse.CustomBody<Object>> register(@RequestBody UserDto userDto) {
         authService.saveUser(userDto);
         return ApiResponseGenerator.success(HttpStatus.OK, responseMapper.buildSuccessResponse());
     }
 
     @PostMapping("/login")
-    ApiResponse<ApiResponse.CustomBody<Object>> login(@RequestBody LoginDto loginDto) {
+    public ApiResponse<ApiResponse.CustomBody<Object>> login(@RequestBody LoginDto loginDto) {
         User user = getUser(loginDto.email());
 
         if (user == null) {
@@ -114,13 +100,13 @@ public class AuthController {
 
     // remove in front end;
     @PostMapping("/logout")
-    ApiResponse<ApiResponse.CustomBody<Object>> logout() {
+    public ApiResponse<ApiResponse.CustomBody<Object>> logout() {
         SecurityContextHolder.clearContext();
         return ApiResponseGenerator.success(HttpStatus.OK, responseMapper.buildSuccessResponse());
     }
 
     @PostMapping("/forgot-password")
-    ApiResponse<ApiResponse.CustomBody<Object>> sendEmail(@RequestBody MailDto email) throws MessagingException {
+    public ApiResponse<ApiResponse.CustomBody<Object>> sendEmail(@RequestBody MailDto email) throws MessagingException {
         String mail = email.email();
         User user = getUser(mail);
         if (user == null) {
@@ -141,7 +127,7 @@ public class AuthController {
 
     // could be use as regular change password as well!
     @PutMapping("/update-password")
-    ApiResponse<ApiResponse.CustomBody<Object>> updatePassword(@RequestBody LoginDto loginDto) {
+    public ApiResponse<ApiResponse.CustomBody<Object>> updatePassword(@RequestBody LoginDto loginDto) {
         authService.updatePassword(loginDto);
         return ApiResponseGenerator.success(HttpStatus.OK,
                 responseMapper.buildCustomMessage("Password updated successfully!"));
