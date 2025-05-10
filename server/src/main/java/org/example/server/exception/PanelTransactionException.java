@@ -10,6 +10,7 @@ public class PanelTransactionException extends RuntimeException {
 	public static final String PANEL_NOT_FOUND_ERROR = "PANEL_TRX-001";
 	public static final String USER_NOT_FOUND_ERROR = "PANEL_TRX-002";
 	public static final String TRANSACTION_PROCESSING_ERROR = "PANEL_TRX-003";
+	public static final String PAYMENT_NOT_FOUND_ERROR = "PANEL_TRX-004";
 
 	private final String code;
 	private final HttpStatus status;
@@ -55,6 +56,13 @@ public class PanelTransactionException extends RuntimeException {
 		return new PanelTransactionException(
 				USER_NOT_FOUND_ERROR,
 				"User not found with ID: " + userId,
+				HttpStatus.NOT_FOUND);
+	}
+
+	public static PanelTransactionException paymentNotFound(Long paymentId) {
+		return new PanelTransactionException(
+				PAYMENT_NOT_FOUND_ERROR,
+				"Payment not found with ID: " + paymentId,
 				HttpStatus.NOT_FOUND);
 	}
 }

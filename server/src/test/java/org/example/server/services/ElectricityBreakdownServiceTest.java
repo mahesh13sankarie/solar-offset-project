@@ -1,4 +1,4 @@
-package org.example.server;
+package org.example.server.services;
 
 import org.example.server.entity.ElectricityBreakdown;
 import org.example.server.repository.ElectricityBreakdownRepository;
