@@ -1,46 +1,39 @@
 package org.example.server.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.server.dto.PanelCreateRequestDTO;
-import org.example.server.dto.SolarPanelDTO;
-import org.example.server.service.panel.PanelService;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.example.server.dto.PanelCreateRequestDTO;
+import org.example.server.dto.SolarPanelDTO;
+import org.example.server.service.panel.PanelService;
+import org.example.server.utils.ApiResponse;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
-@WebMvcTest(PanelController.class)
-@Import(TestSecurityConfig.class)
 class PanelControllerTest {
 
-	@Autowired
-	private MockMvc mockMvc;
-
-	@Autowired
-	private ObjectMapper objectMapper;
-
-	@MockBean
+	private PanelController panelController;
 	private PanelService panelService;
 
+	@BeforeEach
+	void setUp() {
+		// Mock the service layer
+		panelService = mock(PanelService.class);
+
+		// Create controller with mocked dependency
+		panelController = new PanelController(panelService);
+	}
+
 	@Test
-	@WithMockUser
 	@DisplayName("HTTP 200 OK: Returns all panels when no country code is provided")
-	void getPanelByZone_WithNoCode_ReturnsAllPanels() throws Exception {
+	void getPanelByZone_WithNoCode_ReturnsAllPanels() {
 		// Arrange
 		SolarPanelDTO panel1 = SolarPanelDTO.builder()
 				.id(1L)
@@ -68,21 +61,22 @@ class PanelControllerTest {
 
 		when(panelService.getAllPanels()).thenReturn(panels);
 
-		// Act & Assert
-		mockMvc.perform(get("/api/v1/panels")
-				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-				// These tests assume ApiResponse is already integrated, but controller
-				// currently uses ResponseEntity directly
-				.andExpect(jsonPath("$[0].panelName").value("SunPower Maxeon 7DC 445W"))
-				.andExpect(jsonPath("$[0].countryCode").value("GB"))
-				.andExpect(jsonPath("$[1].panelName").value("Project Solar Evo Max Super Series 480W"));
+		// Act
+		ApiResponse<ApiResponse.CustomBody<List<SolarPanelDTO>>> response = panelController.getPanelByZone(null);
+
+		// Assert
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertTrue(response.getBody().getSuccess());
+		assertNotNull(response.getBody().getResponse());
+		assertEquals(2, response.getBody().getResponse().size());
+		assertEquals("SunPower Maxeon 7DC 445W", response.getBody().getResponse().get(0).getPanelName());
+		assertEquals("GB", response.getBody().getResponse().get(0).getCountryCode());
+		assertEquals("Project Solar Evo Max Super Series 480W", response.getBody().getResponse().get(1).getPanelName());
 	}
 
 	@Test
-	@WithMockUser
 	@DisplayName("HTTP 200 OK: Returns panels for specific country code")
-	void getPanelByZone_WithCode_ReturnsPanelsForCountry() throws Exception {
+	void getPanelByZone_WithCode_ReturnsPanelsForCountry() {
 		// Arrange
 		String countryCode = "FR";
 
@@ -101,19 +95,21 @@ class PanelControllerTest {
 
 		when(panelService.getPanelByZone(countryCode)).thenReturn(panels);
 
-		// Act & Assert
-		mockMvc.perform(get("/api/v1/panels")
-				.param("code", countryCode)
-				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$[0].panelName").value("AIKO ABC Neostar 3N54 495W"))
-				.andExpect(jsonPath("$[0].countryCode").value(countryCode));
+		// Act
+		ApiResponse<ApiResponse.CustomBody<List<SolarPanelDTO>>> response = panelController.getPanelByZone(countryCode);
+
+		// Assert
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertTrue(response.getBody().getSuccess());
+		assertNotNull(response.getBody().getResponse());
+		assertEquals(1, response.getBody().getResponse().size());
+		assertEquals("AIKO ABC Neostar 3N54 495W", response.getBody().getResponse().get(0).getPanelName());
+		assertEquals(countryCode, response.getBody().getResponse().get(0).getCountryCode());
 	}
 
 	@Test
-	@WithMockUser
 	@DisplayName("HTTP 200 OK: Returns panel details by ID")
-	void getPanelById_ReturnsPanelDetails() throws Exception {
+	void getPanelById_ReturnsPanelDetails() {
 		// Arrange
 		Long panelId = 1L;
 
@@ -130,18 +126,20 @@ class PanelControllerTest {
 
 		when(panelService.getPanelById(panelId)).thenReturn(panel);
 
-		// Act & Assert
-		mockMvc.perform(get("/api/v1/panels/{id}", panelId)
-				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.panelName").value("SunPower Maxeon 7DC 445W"))
-				.andExpect(jsonPath("$.id").value(panelId));
+		// Act
+		ApiResponse<ApiResponse.CustomBody<SolarPanelDTO>> response = panelController.getPanelById(panelId);
+
+		// Assert
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertTrue(response.getBody().getSuccess());
+		assertNotNull(response.getBody().getResponse());
+		assertEquals("SunPower Maxeon 7DC 445W", response.getBody().getResponse().getPanelName());
+		assertEquals(panelId, response.getBody().getResponse().getId());
 	}
 
 	@Test
-	@WithMockUser
 	@DisplayName("HTTP 200 OK: Successfully creates new panel")
-	void createPanel_ReturnsCreatedPanels() throws Exception {
+	void createPanel_ReturnsCreatedPanels() {
 		// Arrange
 		PanelCreateRequestDTO requestDTO = new PanelCreateRequestDTO();
 		requestDTO.setName("New Solar Panel");
@@ -172,20 +170,22 @@ class PanelControllerTest {
 
 		when(panelService.createPanel(any(PanelCreateRequestDTO.class))).thenReturn(createdPanels);
 
-		// Act & Assert
-		mockMvc.perform(post("/api/v1/panels")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(requestDTO)))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$[0].panelName").value("New Solar Panel"))
-				.andExpect(jsonPath("$[0].countryCode").value("GB"))
-				.andExpect(jsonPath("$[1].countryCode").value("TH"));
+		// Act
+		ApiResponse<ApiResponse.CustomBody<List<SolarPanelDTO>>> response = panelController.createPanel(requestDTO);
+
+		// Assert
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertTrue(response.getBody().getSuccess());
+		assertNotNull(response.getBody().getResponse());
+		assertEquals(2, response.getBody().getResponse().size());
+		assertEquals("New Solar Panel", response.getBody().getResponse().get(0).getPanelName());
+		assertEquals("GB", response.getBody().getResponse().get(0).getCountryCode());
+		assertEquals("TH", response.getBody().getResponse().get(1).getCountryCode());
 	}
 
 	@Test
-	@WithMockUser
 	@DisplayName("HTTP 200 OK: Successfully updates panel")
-	void updatePanel_ReturnsSuccess() throws Exception {
+	void updatePanel_ReturnsSuccess() {
 		// Arrange
 		Long panelId = 1L;
 		PanelCreateRequestDTO requestDTO = new PanelCreateRequestDTO();
@@ -195,10 +195,38 @@ class PanelControllerTest {
 		requestDTO.setDescription("Updated high-efficiency panel");
 		requestDTO.setCountryCodes(Arrays.asList("FR", "CA"));
 
-		// Act & Assert
-		mockMvc.perform(put("/api/v1/panels/{id}", panelId)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(requestDTO)))
-				.andExpect(status().isOk());
+		// Act
+		ApiResponse<ApiResponse.CustomBody<Object>> response = panelController.updatePanel(panelId, requestDTO);
+
+		// Assert
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertTrue(response.getBody().getSuccess());
+		assertNull(response.getBody().getError());
+
+		// Verify the service was called with the correct parameters
+		verify(panelService).updatePanel(eq(panelId), any(PanelCreateRequestDTO.class));
+	}
+
+	@Test
+	@DisplayName("HTTP 400 BAD REQUEST: Returns error when country codes are empty")
+	void createPanel_WithEmptyCountryCodes_ReturnsBadRequest() {
+		// Arrange
+		PanelCreateRequestDTO requestDTO = new PanelCreateRequestDTO();
+		requestDTO.setName("New Solar Panel");
+		requestDTO.setInstallationCost(350.00);
+		requestDTO.setProductionPerPanel(420.00);
+		requestDTO.setDescription("New high-efficiency panel");
+		requestDTO.setCountryCodes(Collections.emptyList());
+
+		// Act
+		ApiResponse<ApiResponse.CustomBody<List<SolarPanelDTO>>> response = panelController.createPanel(requestDTO);
+
+		// Assert
+		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+		assertFalse(response.getBody().getSuccess());
+		assertNull(response.getBody().getResponse());
+		assertNotNull(response.getBody().getError());
+		assertEquals("INVALID_REQUEST", response.getBody().getError().getCode());
+		assertEquals("Country codes must not be empty", response.getBody().getError().getMessage());
 	}
 }
