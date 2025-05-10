@@ -1,0 +1,60 @@
+
+:root {
+    --primary: #37507E;
+    --primary-light: #4e6ca3;
+    --primary-dark: #223354;
+    --primary-pale: #f5f7fa;
+
+    --secondary: #e6edf7;
+    --card: #fff;
+    --text: #223354;
+}
+
+body {
+    background: var(--primary-pale);
+    color: var(--text);
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.dashboard-hero {
+    background: linear-gradient(90deg, var(--primary), var(--primary-light));
+    color: #fff;
+    box-shadow: 0 8px 28px 0 rgba(55,80,126,0.07);
+}
+
+.panel-card {
+    background: var(--card);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px 0 rgba(55,80,126,0.07);
+    border: 1px solid var(--primary-light);
+}
+
+.btn-fund {
+    background: var(--primary);
+    color: #fff;
+    font-weight: 600;
+}
+
+.info-card {
+    background: var(--secondary);
+    color: var(--text);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    box-shadow: 0 1px 6px 0 rgba(33,51,84,.07);
+    text-align: center;
+}
+
+.info-label {
+    font-size: 0.92rem;
+    color: var(--primary-light);
+}
+
+.info-value {
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+@media (max-width: 600px) {
+    .dashboard-hero { text-align: center; }
+}

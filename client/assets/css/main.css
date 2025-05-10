@@ -87,6 +87,13 @@ h6 {
   font-family: var(--heading-font);
 }
 
+/* Google login button
+.gsi-material-button.clicked {
+  transform: scale(0.97);
+  background-color: #e0e0e0; /* slightly darker */
+  transition: transform 0.1s ease, background-color 0.1s ease;
+}
+
 /* PHP Email Form Messages
 ------------------------------*/
 .php-email-form .error-message {

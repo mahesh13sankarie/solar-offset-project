@@ -1,13 +1,14 @@
 package org.example.server.controller;
 
+import org.example.server.dto.UserRequest;
+import org.example.server.entity.User;
 import org.example.server.mapper.AuthResponseMapper;
 import org.example.server.service.auth.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author: astidhiyaa
@@ -26,6 +27,23 @@ public class AdminController {
     //Fetch all user data except admin
     @GetMapping("/users")
     public ResponseEntity<?> fetchUser() {
-        return ResponseEntity.ok().body(responseMapper.buildCustomResponse(authService.getUsers()));
+        List<User> users = authService.getUsers();
+        if (users.isEmpty()) {
+            return ResponseEntity.ok().body(responseMapper.buildErrorMessage("Empty user", 400));
+        } else {
+            return ResponseEntity.ok().body(responseMapper.buildCustomResponse(users));
+        }
+    }
+
+    @PutMapping("/update-role")
+    public ResponseEntity<?> updateRole(@RequestBody UserRequest userRequest) {
+        authService.updateRole(userRequest);
+        return ResponseEntity.ok().body(responseMapper.buildSuccessResponse());
+    }
+
+    @DeleteMapping("/delete-user")
+    public ResponseEntity<?> deleteUser(@RequestBody UserRequest userRequest) {
+        authService.deleteUser(userRequest.userId());
+        return ResponseEntity.ok().body(responseMapper.buildSuccessResponse());
     }
 }

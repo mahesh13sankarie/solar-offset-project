@@ -3,6 +3,7 @@ package org.example.server.controller;
 import org.example.server.dto.CountryDetailDTO;
 import org.example.server.service.electricitymetrics.ElectricityMetricsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,16 +21,18 @@ public class CountryController {
     }
 
     @GetMapping("")
-    public List<CountryDetailDTO> getAllElectricityMetrics() {
+    public ResponseEntity<List<CountryDetailDTO>> getAllElectricityMetrics() {
         System.out.println("Fetching all electricity metrics");
-        return electricityMetricsService.getAllElectricityData();
+        List<CountryDetailDTO> countries = electricityMetricsService.getAllElectricityData();
+        return ResponseEntity.ok(countries);
     }
 
     @GetMapping("/{countryCode}")
-    public CountryDetailDTO getElectricityMetricsByCountry(
+    public ResponseEntity<CountryDetailDTO> getElectricityMetricsByCountry(
             @PathVariable String countryCode) {
         System.out.println("Fetching electricity metrics for country: " + countryCode);
-        return electricityMetricsService.getElectricityDataByCountry(countryCode);
+        CountryDetailDTO country = electricityMetricsService.getElectricityDataByCountry(countryCode);
+        return ResponseEntity.ok(country);
     }
 
 }

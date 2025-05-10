@@ -1,3 +1,12 @@
+CREATE TABLE IF NOT EXISTS users
+(
+    id           BIGINT AUTO_INCREMENT PRIMARY KEY,
+    email        VARCHAR(255) NOT NULL UNIQUE,
+    password     VARCHAR(255) NOT NULL,
+    full_name    VARCHAR(255) NOT NULL,
+    account_type INT         NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS country
 (
     id         BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -8,14 +17,15 @@ CREATE TABLE IF NOT EXISTS country
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-
 CREATE TABLE IF NOT EXISTS panel
 (
     id                   BIGINT AUTO_INCREMENT PRIMARY KEY,
     name                 VARCHAR(255) NOT NULL,
     installation_cost    DOUBLE       NOT NULL,
     production_per_panel DOUBLE       NOT NULL,
-    description          TEXT
+    description          TEXT,
+    efficiency           VARCHAR(50),
+    warranty             VARCHAR(50)
 );
 
 CREATE TABLE IF NOT EXISTS country_panel

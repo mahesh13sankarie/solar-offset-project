@@ -5,7 +5,7 @@ spring:
     active: dev
 
   datasource:
-    url: jdbc:mysql://localhost:3306/solaroffset?serverTimezone=UTC&useLegacyDatetimeCode=false
+    url: jdbc:mysql://localhost:3306/solaroffset?serverTimezone=UTC&useLegacyDatetimeCode=false&createDatabaseIfNotExist=true
     username: root
     password: Shreyas@123
   sql:
@@ -16,6 +16,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+    defer-datasource-initialization: true
 
   security:
     oauth2:
@@ -42,7 +43,9 @@ server:
 logging:
   level:
     org.hibernate.SQL: DEBUG
-
+jwt:
+  secret:
+    key: "x4p9d7f8g2h1k6q3w7e5r9t2y6u7i8o0l1a2b3c4d5e6f7g8"
 stripe:
   secret:
     key: "sk_test_51QwmaiPrlrRfBw5poWTCLViYs4omAuLFYw2nxjXQAZaNlXFcGh5GK7JSWdBSEvrPvsrhAXpJ1cgcYM4vb1m1ZbuK00wjYwLacc"
