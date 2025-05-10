@@ -2,8 +2,10 @@ package org.example.server.controller;
 
 import org.example.server.dto.CountryDetailDTO;
 import org.example.server.service.electricitymetrics.ElectricityMetricsService;
+import org.example.server.utils.ApiResponse;
+import org.example.server.utils.ApiResponseGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,18 +23,18 @@ public class CountryController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<CountryDetailDTO>> getAllElectricityMetrics() {
+    public ApiResponse<ApiResponse.CustomBody<List<CountryDetailDTO>>> getAllElectricityMetrics() {
         System.out.println("Fetching all electricity metrics");
         List<CountryDetailDTO> countries = electricityMetricsService.getAllElectricityData();
-        return ResponseEntity.ok(countries);
+        return ApiResponseGenerator.success(HttpStatus.OK, countries);
     }
 
     @GetMapping("/{countryCode}")
-    public ResponseEntity<CountryDetailDTO> getElectricityMetricsByCountry(
+    public ApiResponse<ApiResponse.CustomBody<CountryDetailDTO>> getElectricityMetricsByCountry(
             @PathVariable String countryCode) {
         System.out.println("Fetching electricity metrics for country: " + countryCode);
         CountryDetailDTO country = electricityMetricsService.getElectricityDataByCountry(countryCode);
-        return ResponseEntity.ok(country);
+        return ApiResponseGenerator.success(HttpStatus.OK, country);
     }
 
 }
