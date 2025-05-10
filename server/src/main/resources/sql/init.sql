@@ -5,7 +5,7 @@ FROM (SELECT 'GB' as code, 'United Kingdom' as name, 67000000 as population
       UNION ALL
       SELECT 'FR', 'France', 67000000
       UNION ALL
-      SELECT 'NO', 'Norway', 5400000
+      SELECT 'TH', 'Thailand', 71700000
       UNION ALL
       SELECT 'ZA', 'South Africa', 59000000
       UNION ALL
@@ -68,7 +68,7 @@ FROM country c
     OR (c.code = 'GB' AND p.name IN ('SunPower Maxeon 7DC 445W', 'Project Solar Evo Max Super Series 480W',
                                      'REC Alpha Pure RX Series 470W'))
     OR (c.code = 'FR' AND p.name IN ('AIKO ABC Neostar 3N54 495W', 'Perlight PLM-435 DH8N 450W'))
-    OR (c.code = 'NO' AND
+    OR (c.code = 'TH' AND
         p.name IN ('SunPower Maxeon 7DC 445W', 'Project Solar Evo Max Super Series 480W', 'Perlight PLM-435 DH8N 450W'))
     OR (c.code = 'ZA' AND p.name IN ('Project Solar Evo Max Super Series 480W', 'AIKO ABC Neostar 3N54 495W'))
     OR (c.code = 'CA' AND

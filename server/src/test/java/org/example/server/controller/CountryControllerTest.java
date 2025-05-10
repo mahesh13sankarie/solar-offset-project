@@ -44,7 +44,7 @@ class CountryControllerTest {
 				"FR", "France", 0.38, 0.92, 0.7, 32, 67000000L, Collections.emptyList());
 
 		CountryDetailDTO country3 = new CountryDetailDTO(
-				"NO", "Norway", 0.2, 0.95, 0.8, 98, 5400000L, Collections.emptyList());
+				"TH", "Thailand", 0.2, 0.95, 0.8, 98, 5400000L, Collections.emptyList());
 
 		CountryDetailDTO country4 = new CountryDetailDTO(
 				"ZA", "South Africa", 0.78, 0.65, 0.9, 12, 59000000L, Collections.emptyList());
@@ -65,8 +65,8 @@ class CountryControllerTest {
 				.andExpect(jsonPath("$.response[0].country").value("United Kingdom"))
 				.andExpect(jsonPath("$.response[1].zone").value("FR"))
 				.andExpect(jsonPath("$.response[1].country").value("France"))
-				.andExpect(jsonPath("$.response[2].zone").value("NO"))
-				.andExpect(jsonPath("$.response[2].country").value("Norway"))
+				.andExpect(jsonPath("$.response[2].zone").value("TH"))
+				.andExpect(jsonPath("$.response[2].country").value("Thailand"))
 				.andExpect(jsonPath("$.error").doesNotExist());
 	}
 
@@ -93,12 +93,12 @@ class CountryControllerTest {
 
 	@Test
 	@WithMockUser
-	@DisplayName("HTTP 200 OK: Returns Norway's electricity metrics with high renewable percentage")
-	void getElectricityMetricsByNorway_ReturnsCountryDetails() throws Exception {
+	@DisplayName("HTTP 200 OK: Returns Thailand's electricity metrics with high renewable percentage")
+	void getElectricityMetricsByThailand_ReturnsCountryDetails() throws Exception {
 		// Arrange
-		String countryCode = "NO";
+		String countryCode = "TH";
 		CountryDetailDTO country = new CountryDetailDTO(
-				countryCode, "Norway", 0.2, 0.95, 0.8, 98, 5400000L, Collections.emptyList());
+				countryCode, "Thailand", 0.2, 0.95, 0.8, 98, 5400000L, Collections.emptyList());
 
 		when(electricityMetricsService.getElectricityDataByCountry(countryCode)).thenReturn(country);
 
@@ -108,7 +108,7 @@ class CountryControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.success").value(true))
 				.andExpect(jsonPath("$.response.zone").value(countryCode))
-				.andExpect(jsonPath("$.response.country").value("Norway"))
+				.andExpect(jsonPath("$.response.country").value("Thailand"))
 				.andExpect(jsonPath("$.response.renewablePercentage").value(98))
 				.andExpect(jsonPath("$.error").doesNotExist());
 	}

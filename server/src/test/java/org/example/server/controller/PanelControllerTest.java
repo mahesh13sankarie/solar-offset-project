@@ -148,7 +148,7 @@ class PanelControllerTest {
 		requestDTO.setInstallationCost(350.00);
 		requestDTO.setProductionPerPanel(420.00);
 		requestDTO.setDescription("New high-efficiency panel");
-		requestDTO.setCountryCodes(Arrays.asList("GB", "NO"));
+		requestDTO.setCountryCodes(Arrays.asList("GB", "TH"));
 
 		SolarPanelDTO panel1 = SolarPanelDTO.builder()
 				.id(10L)
@@ -165,7 +165,7 @@ class PanelControllerTest {
 				.installationCost(350.00)
 				.productionPerPanel(420.00)
 				.description("New high-efficiency panel")
-				.countryCode("NO")
+				.countryCode("TH")
 				.build();
 
 		List<SolarPanelDTO> createdPanels = Arrays.asList(panel1, panel2);
@@ -179,7 +179,7 @@ class PanelControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$[0].panelName").value("New Solar Panel"))
 				.andExpect(jsonPath("$[0].countryCode").value("GB"))
-				.andExpect(jsonPath("$[1].countryCode").value("NO"));
+				.andExpect(jsonPath("$[1].countryCode").value("TH"));
 	}
 
 	@Test
