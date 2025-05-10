@@ -1,4 +1,4 @@
-package org.example.server.services;
+package org.example.server.unit.services;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

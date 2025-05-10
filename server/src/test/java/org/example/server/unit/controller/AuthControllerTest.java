@@ -1,27 +1,7 @@
-package org.example.server.controller;
+package org.example.server.unit.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.example.server.dto.AccountType;
-import org.example.server.dto.EnquiryRequestDto;
-import org.example.server.dto.LoginDto;
-import org.example.server.dto.MailDto;
-import org.example.server.dto.UserDto;
+import org.example.server.controller.AuthController;
+import org.example.server.dto.*;
 import org.example.server.entity.Enquiry;
 import org.example.server.entity.MailAttributes;
 import org.example.server.entity.User;
@@ -43,6 +23,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 class AuthControllerTest {
 

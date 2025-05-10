@@ -1,4 +1,4 @@
-package org.example.server.services;
+package org.example.server.unit.services;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 

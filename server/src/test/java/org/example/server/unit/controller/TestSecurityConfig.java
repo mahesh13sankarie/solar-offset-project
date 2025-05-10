@@ -1,4 +1,4 @@
-package org.example.server.controller;
+package org.example.server.unit.controller;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;

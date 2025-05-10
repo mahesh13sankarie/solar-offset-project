@@ -1,4 +1,4 @@
-package org.example.server.controller;
+package org.example.server.unit.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.example.server.controller.AdminController;
 import org.example.server.dto.UserRequest;
 import org.example.server.entity.User;
 import org.example.server.mapper.AuthResponseMapper;

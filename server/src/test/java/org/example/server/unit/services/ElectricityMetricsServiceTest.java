@@ -1,4 +1,4 @@
-package org.example.server.services;
+package org.example.server.unit.services;
 
 import org.example.server.dto.CountryDetailDTO;
 import org.example.server.dto.SolarPanelDTO;

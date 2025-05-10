@@ -1,4 +1,4 @@
-package org.example.server.services;
+package org.example.server.unit.services;
 
 import org.example.server.entity.CarbonIntensity;
 import org.example.server.repository.CarbonIntensityRepository;

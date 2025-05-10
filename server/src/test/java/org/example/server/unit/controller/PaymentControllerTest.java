@@ -1,4 +1,4 @@
-package org.example.server.controller;
+package org.example.server.unit.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import org.example.server.controller.PaymentController;
 import org.example.server.dto.PaymentRequestDTO;
 import org.example.server.dto.PaymentResponseDTO;
 import org.example.server.exception.PaymentException;

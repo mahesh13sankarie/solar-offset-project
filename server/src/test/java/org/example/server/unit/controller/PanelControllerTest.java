@@ -1,4 +1,4 @@
-package org.example.server.controller;
+package org.example.server.unit.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.example.server.controller.PanelController;
 import org.example.server.dto.PanelCreateRequestDTO;
 import org.example.server.dto.SolarPanelDTO;
 import org.example.server.service.panel.PanelService;
