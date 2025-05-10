@@ -1,175 +1,213 @@
 package org.example.server.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.server.dto.PanelTransactionDTO;
-import org.example.server.dto.StaffTransactionDTO;
-import org.example.server.entity.*;
-import org.example.server.service.panel.PanelTransactionService;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.example.server.dto.PanelTransactionDTO;
+import org.example.server.dto.SolarPanelDTO;
+import org.example.server.dto.StaffTransactionDTO;
+import org.example.server.entity.Country;
+import org.example.server.entity.CountryPanel;
+import org.example.server.entity.Panel;
+import org.example.server.entity.PanelTransaction;
+import org.example.server.entity.Payment;
+import org.example.server.entity.User;
+import org.example.server.entity.response.PanelTransactionResponse;
+import org.example.server.service.panel.PanelTransactionService;
+import org.example.server.utils.ApiResponse;
+import org.example.server.utils.PaymentType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.springframework.http.HttpStatus;
 
-@WebMvcTest(PanelTransactionController.class)
-@Import(TestSecurityConfig.class)
 class PanelTransactionControllerTest {
 
-	@Autowired
-	private MockMvc mockMvc;
-
-	@Autowired
-	private ObjectMapper objectMapper;
-
-	@MockBean
+	private PanelTransactionController panelTransactionController;
 	private PanelTransactionService panelTransactionService;
 
+	@BeforeEach
+	void setUp() {
+		// Mock the service layer
+		panelTransactionService = mock(PanelTransactionService.class);
+
+		// Create controller instance
+		panelTransactionController = new PanelTransactionController();
+
+		// Set dependencies using reflection (since there are no setters)
+		try {
+			java.lang.reflect.Field field = PanelTransactionController.class
+					.getDeclaredField("panelTransactionService");
+			field.setAccessible(true);
+			field.set(panelTransactionController, panelTransactionService);
+		} catch (Exception e) {
+			throw new RuntimeException("Error setting up test dependencies", e);
+		}
+	}
+
 	@Test
-	@WithMockUser
 	@DisplayName("HTTP 200 OK: Successfully adds a panel transaction")
-	void addTransaction_ReturnsSuccess() throws Exception {
+	void addTransaction_ReturnsSuccess() {
 		// Arrange
-		// Using the record constructor pattern instead of setters
 		PanelTransactionDTO transactionDTO = new PanelTransactionDTO(1L, 2L, 3L);
 
-		// Act & Assert
-		mockMvc.perform(post("/api/v1/transaction/add")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(transactionDTO)))
-				.andExpect(status().isOk());
+		// Act
+		ApiResponse<ApiResponse.CustomBody<Object>> response = panelTransactionController
+				.addTransaction(transactionDTO);
+
+		// Assert
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertTrue(response.getBody().getSuccess());
+		assertNull(response.getBody().getError());
+
+		// Verify that panelTransactionService.save was called with the correct
+		// parameters
+		verify(panelTransactionService).save(transactionDTO);
 	}
 
 	@Test
-	@WithMockUser
 	@DisplayName("HTTP 200 OK: Returns all transactions")
-	void getAllTransaction_ReturnsAllTransactions() throws Exception {
-		// Arrange
+	void getAllTransaction_ReturnsAllTransactions() {
+		// Arrange - Create a properly mocked PanelTransaction that won't throw
+		// exceptions
 		List<PanelTransaction> transactions = Arrays.asList(
-				createMockPanelTransaction(1L),
-				createMockPanelTransaction(2L));
+				createFullyMockedPanelTransaction(1L),
+				createFullyMockedPanelTransaction(2L));
 
-		// Mock the service method to return our transactions
+		// Set up the mock service
 		when(panelTransactionService.fetchAll()).thenReturn(transactions);
 
-		// Act & Assert
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/transaction/all")
-				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk());
+		// Act
+		ApiResponse<ApiResponse.CustomBody<List<PanelTransactionResponse>>> response = panelTransactionController
+				.getAllTransaction();
+
+		// Assert
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertTrue(response.getBody().getSuccess());
+		assertNotNull(response.getBody().getResponse());
+		assertNull(response.getBody().getError());
 	}
 
 	@Test
-	@WithMockUser
 	@DisplayName("HTTP 200 OK: Returns transactions for a specific user")
-	void getTransactionByUserId_ReturnsUserTransactions() throws Exception {
+	void getTransactionByUserId_ReturnsUserTransactions() {
 		// Arrange
 		Long userId = 1L;
 		List<PanelTransaction> transactions = Arrays.asList(
-				createMockPanelTransaction(userId),
-				createMockPanelTransaction(userId));
+				createFullyMockedPanelTransaction(userId),
+				createFullyMockedPanelTransaction(userId));
 
-		// Mock the service method to return our transactions
+		// Set up the mock service
 		when(panelTransactionService.fetchById(userId)).thenReturn(transactions);
 
-		// Act & Assert
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/transaction/{id}", userId)
-				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk());
+		// Act
+		ApiResponse<ApiResponse.CustomBody<List<PanelTransactionResponse>>> response = panelTransactionController
+				.getTransactionByUserId(userId);
+
+		// Assert
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertTrue(response.getBody().getSuccess());
+		assertNotNull(response.getBody().getResponse());
+		assertNull(response.getBody().getError());
+
+		// Verify that the service was called with the correct user ID
+		verify(panelTransactionService).fetchById(userId);
 	}
 
 	@Test
-	@WithMockUser
 	@DisplayName("HTTP 200 OK: Returns staff transaction history")
-	void getStaffTransactionHistory_ReturnsStaffTransactions() throws Exception {
+	void getStaffTransactionHistory_ReturnsStaffTransactions() {
 		// Arrange
-		// Using the record constructor pattern to match the actual DTO structure
 		List<StaffTransactionDTO> staffTransactions = Arrays.asList(
 				new StaffTransactionDTO("2023-01-01", "User1", "USA", "Solar Panel A", 3, 400, 250.0),
 				new StaffTransactionDTO("2023-01-02", "User2", "Germany", "Solar Panel B", 1, 350, 175.0));
 
 		when(panelTransactionService.getStaffTransactionHistory()).thenReturn(staffTransactions);
 
-		// Act & Assert
-		mockMvc.perform(get("/api/v1/transaction/staff")
-				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$").isArray())
-				.andExpect(jsonPath("$[0].date").value("2023-01-01"))
-				.andExpect(jsonPath("$[0].user").value("User1"))
-				.andExpect(jsonPath("$[1].panelType").value("Solar Panel B"));
+		// Act
+		ApiResponse<ApiResponse.CustomBody<List<StaffTransactionDTO>>> response = panelTransactionController
+				.getStaffTransactionHistory();
+
+		// Assert
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertTrue(response.getBody().getSuccess());
+		assertNotNull(response.getBody().getResponse());
+		assertEquals(2, response.getBody().getResponse().size());
+		assertEquals("User1", response.getBody().getResponse().get(0).user());
+		assertEquals("Solar Panel B", response.getBody().getResponse().get(1).panelType());
+		assertNull(response.getBody().getError());
 	}
 
 	@Test
-	@WithMockUser
 	@DisplayName("HTTP 400 Bad Request: Fails when transaction data is invalid")
-	void addTransaction_WithInvalidData_ReturnsBadRequest() throws Exception {
+	void addTransaction_WithInvalidData_ReturnsBadRequest() {
 		// Arrange - create invalid data (missing required fields)
-		String invalidJson = "{\"userId\": null, \"panelId\": 2}";
+		PanelTransactionDTO invalidData = new PanelTransactionDTO(null, 2L, 3L);
 
-		// Act & Assert
-		mockMvc.perform(post("/api/v1/transaction/add")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(invalidJson))
-				.andExpect(status().isBadRequest());
+		// Act
+		ApiResponse<ApiResponse.CustomBody<Object>> response = panelTransactionController.addTransaction(invalidData);
+
+		// Assert
+		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+		assertFalse(response.getBody().getSuccess());
+		assertNull(response.getBody().getResponse());
+		assertNotNull(response.getBody().getError());
+		assertEquals("VALIDATION_ERROR", response.getBody().getError().getCode());
+		assertEquals("User ID must not be null", response.getBody().getError().getMessage());
 	}
 
-	// Helper method to create properly mocked PanelTransaction objects
-	private PanelTransaction createMockPanelTransaction(Long userId) {
-		PanelTransaction transaction = Mockito.mock(PanelTransaction.class);
+	// Helper method to create fully mocked PanelTransaction objects with all
+	// necessary nested objects
+	private PanelTransaction createFullyMockedPanelTransaction(Long userId) {
+		PanelTransaction transaction = mock(PanelTransaction.class);
 
 		// Mock User
-		User mockUser = Mockito.mock(User.class);
+		User mockUser = mock(User.class);
 		when(mockUser.getId()).thenReturn(userId);
 		when(mockUser.getEmail()).thenReturn("user" + userId + "@example.com");
 		when(mockUser.getFullName()).thenReturn("User " + userId);
 		when(mockUser.getDetail(any())).thenReturn(mockUser);
 
-		// Mock CountryPanel with all required nested objects
-		CountryPanel mockPanel = Mockito.mock(CountryPanel.class);
-		Country mockCountry = Mockito.mock(Country.class);
-		Panel mockSolarPanel = Mockito.mock(Panel.class);
+		// Mock Panel
+		Panel mockPanel = mock(Panel.class);
+		when(mockPanel.getId()).thenReturn(userId);
+		when(mockPanel.getName()).thenReturn("Test Panel " + userId);
+		when(mockPanel.getInstallationCost()).thenReturn(100.0);
+		when(mockPanel.getProductionPerPanel()).thenReturn(200.0);
+		when(mockPanel.getDescription()).thenReturn("Test Description");
+		when(mockPanel.getEfficiency()).thenReturn("90%");
+		when(mockPanel.getLifespan()).thenReturn("25 years");
+		when(mockPanel.getTemperatureTolerance()).thenReturn("80°C");
+		when(mockPanel.getWarranty()).thenReturn("10 years");
 
+		// Mock Country
+		Country mockCountry = mock(Country.class);
 		when(mockCountry.getCode()).thenReturn("US");
-		when(mockSolarPanel.getName()).thenReturn("Test Panel");
-		when(mockSolarPanel.getInstallationCost()).thenReturn(100.0);
-		when(mockSolarPanel.getProductionPerPanel()).thenReturn(200.0);
-		when(mockSolarPanel.getDescription()).thenReturn("Test Description");
-		when(mockSolarPanel.getEfficiency()).thenReturn("90%");
-		when(mockSolarPanel.getLifespan()).thenReturn("25 years");
-		when(mockSolarPanel.getTemperatureTolerance()).thenReturn("80°C");
-		when(mockSolarPanel.getWarranty()).thenReturn("10 years");
 
-		when(mockPanel.getId()).thenReturn(1L);
-		when(mockPanel.getCountry()).thenReturn(mockCountry);
-		when(mockPanel.getPanel()).thenReturn(mockSolarPanel);
+		// Mock CountryPanel
+		CountryPanel mockCountryPanel = mock(CountryPanel.class);
+		when(mockCountryPanel.getId()).thenReturn(userId);
+		when(mockCountryPanel.getCountry()).thenReturn(mockCountry);
+		when(mockCountryPanel.getPanel()).thenReturn(mockPanel);
 
 		// Mock Payment
-		Payment mockPayment = Mockito.mock(Payment.class);
+		Payment mockPayment = mock(Payment.class);
 		when(mockPayment.getAmount()).thenReturn(500);
-		when(mockPayment.getType()).thenReturn("CREDIT_CARD");
+		when(mockPayment.getType()).thenReturn(PaymentType.STRIPE.name());
+		when(mockPayment.getCountryPanel()).thenReturn(mockCountryPanel);
 
 		// Set up transaction with all mocked components
 		when(transaction.getId()).thenReturn(userId);
 		when(transaction.getUser()).thenReturn(mockUser);
-		when(transaction.getPanel()).thenReturn(mockPanel);
+		when(transaction.getPanel()).thenReturn(mockCountryPanel);
 		when(transaction.getPayment()).thenReturn(mockPayment);
 
 		return transaction;
 	}
-
 }
