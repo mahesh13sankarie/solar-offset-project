@@ -18,9 +18,9 @@ const UsersPage = () => {
     const fetchUsers = async () => {
         try {
             const res = await api.dashboard.getUsers();
-            const userData = Array.isArray(res.data.data) ? res.data.data : [];
+            const userData = res.data;
             setUsers(userData);
-            console.log(userData);
+            console.log("Fetched user data:", userData);
         } catch (err) {
             console.error("Error fetching users:", err);
         }
