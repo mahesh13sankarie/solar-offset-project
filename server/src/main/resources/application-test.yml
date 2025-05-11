@@ -1,5 +1,4 @@
 spring:
-  # Database configuration for dev environment
   datasource:
     url: jdbc:h2:mem:devdb;DB_CLOSE_DELAY=-1
     driver-class-name: org.h2.Driver
