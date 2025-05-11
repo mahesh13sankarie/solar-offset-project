@@ -8,3 +8,4 @@
 /.idea/vcs.xml
 .cursor/*
 node_modules
+out
