@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  frontend:
+    build:
+      context: ./client
+    container_name: solaroffset-frontend
+    depends_on:
+      - backend
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+
+  backend:
+
+    build:
+      context: ./server
+    container_name: solaroffset-backend
+    depends_on:
+      - database
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+      - SPRING_DATASOURCE_URL=jdbc:mysql://database:3306/solaroffset
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=Shreyas@123
+    ports:
+      - "8000:8000"
+
+  database:
+    image: mysql:latest
+    container_name: solaroffset-database
+    environment:
+      - MYSQL_DATABASE=solaroffset
+      - MYSQL_ROOT_PASSWORD=Shreyas@123
+    volumes:
+      - mysql-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+volumes:
+  mysql-data:
+  frontend-build:
