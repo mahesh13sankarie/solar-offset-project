@@ -47,6 +47,16 @@ public class PanelTransactionTest {
     @Mock
     private PaymentRepository paymentRepository;
 
+    public static void modifyId(Object entity, Long id) {
+        try {
+            Field field = entity.getClass().getDeclaredField("id");
+            field.setAccessible(true);
+            field.set(entity, id);
+        } catch (Exception e) {
+            throw new RuntimeException("Test setup failed", e);
+        }
+    }
+
     @Test
     void test_save_success() {
         // given
@@ -132,7 +142,6 @@ public class PanelTransactionTest {
         verify(panelTransactionRepository, never()).save(any(PanelTransaction.class));
     }
 
-
     @Test
     void test_fetch_all_success() {
         // given
@@ -200,7 +209,6 @@ public class PanelTransactionTest {
         verify(paymentRepository).findAll();
     }
 
-
     private User buildUser() {
         User user = new User("test@gmail.com", "password", "User", 1);
         return user;
@@ -249,15 +257,5 @@ public class PanelTransactionTest {
 
     private PanelTransactionDTO buildPanelTransactionDTO() {
         return new PanelTransactionDTO(1L, 1L, 1L);
-    }
-
-    public static void modifyId(Object entity, Long id) {
-        try {
-            Field field = entity.getClass().getDeclaredField("id");
-            field.setAccessible(true);
-            field.set(entity, id);
-        } catch (Exception e) {
-            throw new RuntimeException("Test setup failed", e);
-        }
     }
 }

@@ -20,21 +20,17 @@ import static org.mockito.Mockito.when;
  */
 @ExtendWith(MockitoExtension.class)
 public class MailServiceTest {
-    @InjectMocks
-    private MailServiceImpl mailService;
-
-    @Mock
-    private JavaMailSender mailSender;
-
-    @Mock
-    private MimeMessage mimeMessage;
-
     String content = "<html><body>" +
             "<p>Please click the following link: " +
             "<a href=\"" + "link" + "\">Reset password</a></p>" +
             "<p>Best regards,<br/>Syntax Squad</p>" +
             "</body></html>";
-
+    @InjectMocks
+    private MailServiceImpl mailService;
+    @Mock
+    private JavaMailSender mailSender;
+    @Mock
+    private MimeMessage mimeMessage;
 
     @Test
     void send_email_success() throws MessagingException {

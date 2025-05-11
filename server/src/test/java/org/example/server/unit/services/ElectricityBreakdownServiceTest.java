@@ -1,11 +1,5 @@
 package org.example.server.unit.services;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-
 import org.example.server.entity.Country;
 import org.example.server.entity.ElectricityBreakdown;
 import org.example.server.repository.CountryRepository;
@@ -16,6 +10,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
 @Transactional
@@ -77,8 +77,8 @@ class ElectricityBreakdownServiceTest {
         System.out.println("=== Fetched Electricity Breakdown Data ===");
         for (ElectricityBreakdown data : allData) {
             System.out.printf("Zone: %s, Updated At: %s, Solar Consumption: %.2f, Solar Production: %.2f, " +
-                    "Fossil-Free%%: %d, Renewable%%: %d, Total Consumption: %d, Total Production: %d, " +
-                    "Import Total: %d, Export Total: %d%n",
+                            "Fossil-Free%%: %d, Renewable%%: %d, Total Consumption: %d, Total Production: %d, " +
+                            "Import Total: %d, Export Total: %d%n",
                     data.getZone(),
                     data.getUpdatedAt(),
                     data.getPowerConsumptionBreakdownSolar(),
