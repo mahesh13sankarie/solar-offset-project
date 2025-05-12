@@ -1,8 +1,6 @@
 spring:
   application:
     name: solar-offset
-  profiles:
-    active: dev
 
   datasource:
     url: jdbc:mysql://localhost:3306/solaroffset?serverTimezone=UTC&useLegacyDatetimeCode=false&createDatabaseIfNotExist=true

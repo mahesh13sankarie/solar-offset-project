@@ -1,7 +1,13 @@
 package org.example.server.controller;
 
-import jakarta.mail.MessagingException;
-import org.example.server.dto.*;
+import java.util.List;
+import java.util.Map;
+
+import org.example.server.dto.AccountType;
+import org.example.server.dto.EnquiryRequestDto;
+import org.example.server.dto.LoginDto;
+import org.example.server.dto.MailDto;
+import org.example.server.dto.UserDto;
 import org.example.server.entity.Enquiry;
 import org.example.server.entity.MailAttributes;
 import org.example.server.entity.User;
@@ -13,103 +19,94 @@ import org.example.server.service.mail.MailService;
 import org.example.server.utils.ApiResponse;
 import org.example.server.utils.ApiResponseGenerator;
 import org.example.server.utils.TokenProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Map;
-
+import jakarta.mail.MessagingException;
+import lombok.RequiredArgsConstructor;
 
 /**
  * *
- * Google login path: <a href="http://localhost:8000/login/oauth2/code/google">...</a>
+ * Google login path:
+ * <a href="http://localhost:8000/login/oauth2/code/google">...</a>
  */
 
 @RestController
 @RequestMapping("/api/v1/auth")
 @CrossOrigin(origins = "http://localhost:5173")
+@RequiredArgsConstructor
 public class AuthController {
     private static final String CLIENT_ID = "234686151907-h0egb9h34beugoudlrffovu95nkt4a10.apps.googleusercontent.com";
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final AuthService authService;
+    private final BCryptPasswordEncoder encoder;
+    private final TokenProvider tokenProvider;
+    private final AuthenticationManager authenticationManager;
+    private final AuthResponseMapper responseMapper;
+    private final MailService mailService;
+    private final EnquiryRepository enquiryRepository;
 
-    @Autowired
-    private AuthService authService;
-
-    @Autowired
-    BCryptPasswordEncoder encoder;
-
-    @Autowired
-    TokenProvider tokenProvider;
-
-    @Autowired
-    AuthenticationManager authenticationManager;
-
-    @Autowired
-    AuthResponseMapper responseMapper;
-
-    @Autowired
-    MailService mailService;
-
-    @Autowired
-    private EnquiryRepository enquiryRepository;
-
-    //token for Google - OAuth2
+    // token for Google - OAuth2
     @GetMapping("/generatetoken")
-    public ResponseEntity<?> generateOAuthToken(OAuth2AuthenticationToken authentication) {
+    public ApiResponse<ApiResponse.CustomBody<Object>> generateOAuthToken(OAuth2AuthenticationToken authentication) {
         if (authentication == null) {
-            return ResponseEntity.ok(Map.of("token", "")); //throw Error
+            return ApiResponseGenerator.fail("AUTH_ERROR", "Authentication failed", HttpStatus.BAD_REQUEST);
         }
-        //Logout is via /logout
+        // Logout is via /logout
         String email = authentication.getPrincipal().getAttribute("email");
         String name = authentication.getPrincipal().getAttribute("name");
         String token = tokenProvider.generateToken(email, AccountType.Google.ordinal());
         UserDto user = new UserDto(email, "", name, AccountType.Google);
         authService.saveUser(user);
-        return ResponseEntity.ok().body(responseMapper.buildLoginResponse(user, token));
+        return ApiResponseGenerator.success(HttpStatus.OK, responseMapper.buildLoginResponse(user, token));
     }
 
     @PostMapping("/register")
-    ResponseEntity<?> register(@RequestBody UserDto userDto) {
+    public ApiResponse<ApiResponse.CustomBody<Object>> register(@RequestBody UserDto userDto) {
         authService.saveUser(userDto);
-        return ResponseEntity.ok().body(responseMapper.buildSuccessResponse());
+        return ApiResponseGenerator.success(HttpStatus.OK, responseMapper.buildSuccessResponse());
     }
 
     @PostMapping("/login")
-    ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
+    public ApiResponse<ApiResponse.CustomBody<Object>> login(@RequestBody LoginDto loginDto) {
         User user = getUser(loginDto.email());
 
         if (user == null) {
-            return ResponseEntity.ok().body(responseMapper.buildErrorMessage("Account does not exist!", 400));
+            return ApiResponseGenerator.fail("USER_NOT_FOUND", "Account does not exist!", HttpStatus.BAD_REQUEST);
         } else if (!isValidPassword(loginDto.password(), user.getPassword())) {
-            return ResponseEntity.ok().body(responseMapper.buildErrorMessage("Wrong password!", 400));
+            return ApiResponseGenerator.fail("INVALID_PASSWORD", "Wrong password!", HttpStatus.BAD_REQUEST);
         } else {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     loginDto.email(), loginDto.password()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String token = tokenProvider.generateToken(loginDto.email(), user.getAccountType());
-            return ResponseEntity.ok().body(responseMapper.buildLoginResponse(user.getDetail(user), token));
+            return ApiResponseGenerator.success(HttpStatus.OK,
+                    responseMapper.buildLoginResponse(user.getDetail(user), token));
         }
     }
 
-    //remove in front end;
+    // remove in front end;
     @PostMapping("/logout")
-    ResponseEntity<?> logout() {
+    public ApiResponse<ApiResponse.CustomBody<Object>> logout() {
         SecurityContextHolder.clearContext();
-        return ResponseEntity.ok().body(responseMapper.buildSuccessResponse());
+        return ApiResponseGenerator.success(HttpStatus.OK, responseMapper.buildSuccessResponse());
     }
 
     @PostMapping("/forgot-password")
-    ApiResponse<ApiResponse.CustomBody<Object>> sendEmail(@RequestBody MailDto email) throws MessagingException {
+    public ApiResponse<ApiResponse.CustomBody<Object>> sendEmail(@RequestBody MailDto email) throws MessagingException {
         String mail = email.email();
         User user = getUser(mail);
         if (user == null) {
@@ -128,13 +125,13 @@ public class AuthController {
         }
     }
 
-    //could be use as regular change password as well!
+    // could be use as regular change password as well!
     @PutMapping("/update-password")
-    ResponseEntity<?> updatePassword(@RequestBody LoginDto loginDto) {
+    public ApiResponse<ApiResponse.CustomBody<Object>> updatePassword(@RequestBody LoginDto loginDto) {
         authService.updatePassword(loginDto);
-        return ResponseEntity.ok().body(responseMapper.buildCustomMessage("Password updated successfully!"));
+        return ApiResponseGenerator.success(HttpStatus.OK,
+                responseMapper.buildCustomMessage("Password updated successfully!"));
     }
-
 
     private User getUser(String email) {
         return userRepository.findByEmail(email);
@@ -145,13 +142,13 @@ public class AuthController {
     }
 
     @GetMapping("/test")
-    public ResponseEntity<?> test() {
-        return ResponseEntity.ok(Map.of("message", "Server is running"));
+    public ApiResponse<ApiResponse.CustomBody<Object>> test() {
+        return ApiResponseGenerator.success(HttpStatus.OK, Map.of("message", "Server is running"));
     }
 
     // Receive token from frontend
     @PostMapping("/google-login")
-    public ResponseEntity<?> googleLogin(@RequestBody Map<String, String> payload) {
+    public ApiResponse<ApiResponse.CustomBody<Object>> googleLogin(@RequestBody Map<String, String> payload) {
         try {
             String email = payload.get("email");
             String name = payload.get("name");
@@ -165,24 +162,20 @@ public class AuthController {
 
             String token = tokenProvider.generateToken(email, AccountType.Google.ordinal());
 
-            return ResponseEntity.ok(Map.of(
-                    "success", true,
+            return ApiResponseGenerator.success(HttpStatus.OK, Map.of(
                     "token", token,
-                    "data", user.getDetail(user)
-            ));
+                    "data", user.getDetail(user)));
 
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body(Map.of(
-                    "success", false,
-                    "message", "Google login failed",
-                    "error", e.getMessage()
-            ));
+            return ApiResponseGenerator.fail("AUTH_ERROR", "Google login failed: " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    //contact us
+
+    // contact us
     @PostMapping("/contact-us")
-    public ResponseEntity<?> sendEnquiry(@RequestBody EnquiryRequestDto payload) {
+    public ApiResponse<ApiResponse.CustomBody<Object>> sendEnquiry(@RequestBody EnquiryRequestDto payload) {
         try {
             Enquiry enquiry = Enquiry.builder()
                     .subject(payload.subject())
@@ -193,37 +186,23 @@ public class AuthController {
 
             enquiryRepository.save(enquiry);
 
-            return ResponseEntity.ok(Map.of(
-                    "success", true,
-                    "data", enquiry
-            ));
+            return ApiResponseGenerator.success(HttpStatus.OK, enquiry);
 
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(Map.of(
-                    "success", false,
-                    "message", "Send enquiry failed",
-                    "error", e.getMessage()
-            ));
+            return ApiResponseGenerator.fail("ENQUIRY_ERROR", "Send enquiry failed: " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    //contact us
+    // contact us
     @GetMapping("/enquiries")
-    public ResponseEntity<?> getEnquiries() {
+    public ApiResponse<ApiResponse.CustomBody<Object>> getEnquiries() {
         try {
-            List <Enquiry> enquiries = enquiryRepository.findAll();
-
-            return ResponseEntity.ok(Map.of(
-                    "success", true,
-                    "data", enquiries
-            ));
-
+            List<Enquiry> enquiries = enquiryRepository.findAll();
+            return ApiResponseGenerator.success(HttpStatus.OK, enquiries);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(Map.of(
-                    "success", false,
-                    "message", "Fetching enquiry failed",
-                    "error", e.getMessage()
-            ));
+            return ApiResponseGenerator.fail("ENQUIRY_ERROR", "Fetching enquiry failed: " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
