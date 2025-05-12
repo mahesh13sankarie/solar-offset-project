@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Integration tests for Stripe payment service.
  * <p>
  * These tests make actual API calls to the Stripe test environment using
- * the test API key from application-dev.yml. They validate the complete payment
+ * the test API key from application-test.yml. They validate the complete payment
  * flow from creating payment intents to processing charges.
  * <p>
  * Run these tests selectively as they depend on external services and
@@ -71,7 +71,7 @@ public class PaymentServiceIntegrationTest {
      */
     @BeforeEach
     void setUp() {
-        // Configure Stripe with API key from application-dev.yml
+        // Configure Stripe with API key from application-test.yml
         Stripe.apiKey = stripeApiKey;
 
         // Always create a new test user

@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Integration tests for ElectricityMapService.
  * <p>
  * These tests make actual API calls to the Electricity Map service using
- * credentials from application-dev.yml. They validate the full integration
+ * credentials from application-test.yml. They validate the full integration
  * from API connection through data processing to database storage.
  * <p>
  * Run these tests selectively as they depend on external services and
