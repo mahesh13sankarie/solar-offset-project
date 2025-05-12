@@ -1,24 +1,23 @@
-import axios from "axios";
 import React from "react";
-
+import { api } from "../../api";
 const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const payload = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      subject: formData.get("subject"),
-      body: formData.get("body"),
+        name: formData.get("name"),
+        email: formData.get("email"),
+        subject: formData.get("subject"),
+        body: formData.get("body"),
     };
     try {
-      const response = await axios.post("http://localhost:8000/api/v1/auth/contact-us", payload);
-      alert("Message sent successfully!");
+        const response  = await api.auth.contactUs(payload);
+        alert("Message sent successfully!");
     } catch (error) {
-      console.error("Error sending message:", error);
-      alert("Failed to send message.");
+        console.error("Error sending message:", error);
+        alert("Failed to send message.");
     }
-  };
+};
 
   return (
     <section id="contact" className="contact section py-5 bg-light">

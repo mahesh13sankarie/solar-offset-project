@@ -1,4 +1,4 @@
-package org.example.server.services;
+package org.example.server.unit.services;
 
 import org.example.server.dto.CountryDetailDTO;
 import org.example.server.dto.SolarPanelDTO;
@@ -32,25 +32,19 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class ElectricityMetricsServiceTest {
 
+    private static long A_MILLION = 1_000_000L;
     @InjectMocks
     private ElectricityMetricsServiceImpl electricityMetricsService;
-
     @Mock
     private CarbonIntensityRepository carbonIntensityRepository;
-
     @Mock
     private ElectricityBreakdownRepository electricityBreakdownRepository;
-
     @Mock
     private ElectricityMetricsMapper electricityMetricsMapper;
-
     @Mock
     private CountryRepository countryRepository;
-
     @Mock
     private CountryPanelRepository countryPanelRepository;
-
-    private static long A_MILLION = 1_000_000L;
 
     @Test
     void test_getAllElectricityData_success() {
