@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * may affect your Stripe test account data.
  */
 @SpringBootTest
-@ActiveProfiles("dev")
+@ActiveProfiles("test")
 @Tag("integration")
 @Transactional // For test data cleanup
 public class PaymentServiceIntegrationTest {

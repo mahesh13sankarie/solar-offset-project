@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * may consume API quotas.
  */
 @SpringBootTest
-@ActiveProfiles("dev")
+@ActiveProfiles("test")
 @Tag("integration")
 public class ElectricityMapServiceIntegrationTest {
 
