@@ -7,14 +7,10 @@ services:
     container_name: solaroffset-frontend
     depends_on:
       - backend
-    volumes:
-      - ./client:/app
-      - /app/node_modules
     ports:
       - "5173:5173"
 
   backend:
-
     build:
       context: ./server
     container_name: solaroffset-backend

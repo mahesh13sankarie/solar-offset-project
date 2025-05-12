@@ -1,18 +1,17 @@
-# Frontend Dockerfile
+# Stage 1 : Build 
 FROM node:20-alpine as build
-
 WORKDIR /app
-
-# Copy package files
 COPY package*.json ./
-
-# Install dependencies
 RUN npm ci
-
-# Copy source code
 COPY . ./
+RUN npm run build
 
-# Expose port
+# Stage 2 : Runtime
+FROM node:20-alpine
+RUN npm install -g serve
+WORKDIR /app
+COPY --from=build /app/dist ./dist
+
 EXPOSE 5173
 
-CMD ["npm", "run", "dev", "--", "--host"]
+CMD ["serve", "-s", "dist", "--single", "-l", "5173"]
